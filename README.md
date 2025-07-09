@@ -1,4 +1,4 @@
-### Werewolf-Core
+# Werewolf-Core
 **Stable Script API**
 - @minecraft/server - 2.0.0
 
