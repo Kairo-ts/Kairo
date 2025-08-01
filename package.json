@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc && npm run deploy",
     "deploy": "node deploy.js",
-    "dev": "tsc --watch"
+    "dev": "concurrently \"tsc --watch\" \"chokidar './BP/scripts/**/*.js' -c 'npm run deploy'\""
   },
   "repository": {
     "type": "git",
