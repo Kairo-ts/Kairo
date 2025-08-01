@@ -3,7 +3,7 @@
   "compilerOptions": {
     // File Layout
     "rootDir": "./src",
-    "outDir": "./dist",
+    "outDir": "./BP/scripts",
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
