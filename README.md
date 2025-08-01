@@ -8,9 +8,10 @@ This is core add-on for the new Minecraft Werewolf, acting as a mediator for com
 ## runtime
 - Node.js
 
-## ts install
-- `npm install typescript --save-dev`
+## setup
+- `npm install`
 
 ## build
-
-### auto build
+- ts compile: `tsc`
+- compile && deploy: `npm run build`
+- auto deploy: `npm run dev`
