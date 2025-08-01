@@ -2,17 +2,17 @@
 **Stable Script API**
 - @minecraft/server - 2.0.0
 
-## Dscription
+## Description
 This is the core add-on for the new Minecraft Werewolf project.
 It serves as a communication bridge between other add-ons and is designed to remain compatible even as the project evolves in future updates.
 
-## runtime
+## Runtime
 - Node.js
 
-## setup
+## Setup
 - `npm install`
 
-## build
+## Build
 - ts compile: `tsc`
 - compile && deploy: `npm run build`
 - Auto deploy: `npm run dev`
