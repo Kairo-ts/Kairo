@@ -14,6 +14,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@minecraft/server": "^2.0.0",
     "typescript": "^5.9.2"
   }
 }
