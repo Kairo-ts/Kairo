@@ -7,9 +7,9 @@
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "nodenext",
-    "target": "esnext",
-    "types": [],
+    "module": "ESNext",
+    "target": "ES2020",
+    "types": ["@minecraft/server"],
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
