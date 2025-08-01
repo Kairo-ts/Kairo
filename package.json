@@ -4,7 +4,9 @@
   "description": "**Stable Script API**\r - @minecraft/server - 2.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc && npm run deploy",
+    "deploy": "node deploy.js",
+    "dev": "tsc --watch"
   },
   "repository": {
     "type": "git",
@@ -15,6 +17,8 @@
   "license": "ISC",
   "devDependencies": {
     "@minecraft/server": "^2.0.0",
+    "@minecraft/server-ui": "^2.0.0",
+    "chokidar-cli": "^3.0.0",
     "typescript": "^5.9.2"
   }
 }
