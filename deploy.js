@@ -3,13 +3,11 @@ const path = require('path');
 const os = require('os');
 const fse = require('fs-extra');
 
-// OS 判定
 if (process.platform !== 'win32') {
     console.log('Not on Windows. Skipping copy.');
     process.exit(0);
 }
 
-// manifest.json 読み込み
 const manifestPath = path.join(__dirname, '..', 'BP', 'manifest.json');
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
 const addonName = manifest.header?.name;
@@ -19,7 +17,6 @@ if (!addonName) {
     process.exit(1);
 }
 
-// パス構築
 const userHome = os.homedir();
 const devBpRoot = path.join(
     userHome,
@@ -44,11 +41,10 @@ const minecraftPath = path.join(
     addonName
 );
 
-// コピー実行
-const srcDir = path.join(__dirname, '..', 'BP', 'scripts');
+const srcDir = path.join(__dirname, '..', 'BP');
 fse.ensureDirSync(minecraftPath);
-fse.copySync(srcDir, path.join(minecraftPath, 'scripts'), {
-    filter: file => file.endsWith('.js')
+fse.copySync(srcDir, minecraftPath, {
+    overwrite: true
 });
 
-console.log(`Copied scripts to ${minecraftPath}`);
+console.log(`Copied entire BP to ${minecraftPath}`);
