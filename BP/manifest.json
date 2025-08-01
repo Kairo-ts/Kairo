@@ -1,0 +1,40 @@
+{
+	"format_version": 2,
+	"metadata": { 
+        "authors": [
+            "静空",
+            "サバ２号",
+            "ゆた",
+            "津田 繁",
+            "禍月尊",
+            "Minu",
+            "とほにき"
+        ]
+    },
+	"header": {
+		"name": "Werewolf-Core",
+		"description": "アドオン間通信の管理を担う、マイクラ人狼の中枢となるアドオンです",
+		"min_engine_version": [ 1,21,90 ],
+		"uuid": "787fc43c-86ec-4953-8095-db2d6b85e04f",
+		"version": [ 1,0,0 ]
+	},
+	"modules": [
+		{
+			"type": "script",
+			"language": "javascript",
+			"uuid": "aaee1727-8d9d-4800-b95e-7d237fdcf806",
+			"entry": "scripts/index.js",
+			"version": [ 1,0,0 ]
+		}
+	],
+	"dependencies": [
+		{
+			"module_name": "@minecraft/server",
+			"version": "2.0.0"
+		},
+		{
+			"module_name": "@minecraft/server-ui",
+			"version": "2.0.0"
+		}
+	]
+}

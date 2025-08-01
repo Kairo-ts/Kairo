@@ -1,0 +1,25 @@
+{
+  "name": "werewolf-core",
+  "version": "1.0.0",
+  "description": "**Stable Script API**\r - @minecraft/server - 2.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && npm run deploy",
+    "deploy": "node deploy.js",
+    "dev": "concurrently \"tsc --watch\" \"chokidar './BP/scripts/**/*.js' -c 'npm run deploy'\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com-shizu:Minecraft-Werewolf/Werewolf-Core.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@minecraft/server": "^2.0.0",
+    "@minecraft/server-ui": "^2.0.0",
+    "chokidar-cli": "^3.0.0",
+    "concurrently": "^9.2.0",
+    "typescript": "^5.9.2"
+  }
+}
