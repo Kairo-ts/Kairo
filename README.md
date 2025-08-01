@@ -15,4 +15,4 @@ It serves as a communication bridge between other add-ons and is designed to rem
 ## build
 - ts compile: `tsc`
 - compile && deploy: `npm run build`
-- auto deploy: `npm run dev`
+- Auto deploy: `npm run dev`
