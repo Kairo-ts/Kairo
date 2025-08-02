@@ -1,5 +1,5 @@
-export class BehaviorInitializeResister {
-    static registerAddon(): void {
+export class BehaviorInitializeRegister {
+    static registerAddon(message: string): void {
 
     }
 }
