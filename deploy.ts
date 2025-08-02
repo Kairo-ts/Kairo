@@ -1,16 +1,17 @@
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
-const fse = require('fs-extra');
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
+import fse from 'fs-extra';
 
 if (process.platform !== 'win32') {
     console.log('Not on Windows. Skipping copy.');
     process.exit(0);
 }
 
-const manifestPath = path.join(__dirname, 'BP', 'manifest.json');
-const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
-const addonName = manifest.header?.name;
+const manifestPath = path.join(__dirname, '..', 'BP', 'manifest.json');
+const manifestRaw = fs.readFileSync(manifestPath, 'utf-8');
+const manifest: any = JSON.parse(manifestRaw);
+const addonName: string | undefined = manifest.header?.name;
 
 if (!addonName) {
     console.error('Addon name not found in manifest.');
@@ -18,19 +19,16 @@ if (!addonName) {
 }
 
 const userHome = os.homedir();
-const devBpRoot = path.join(
-    userHome,
-    'AppData',
-    'Local',
-    'Packages'
-);
-const minecraftFolders = fs.readdirSync(devBpRoot).filter(name =>
+const devBpRoot = path.join(userHome, 'AppData', 'Local', 'Packages');
+const minecraftFolders = fs.readdirSync(devBpRoot).filter((name: string) =>
     name.startsWith('Microsoft.MinecraftUWP')
 );
+
 if (minecraftFolders.length === 0) {
     console.error('Minecraft UWP folder not found.');
     process.exit(1);
 }
+
 const minecraftPath = path.join(
     devBpRoot,
     minecraftFolders[0],
@@ -41,7 +39,7 @@ const minecraftPath = path.join(
     addonName
 );
 
-const srcDir = path.join(__dirname, 'BP');
+const srcDir = path.join(__dirname, '..', 'BP');
 fse.ensureDirSync(minecraftPath);
 fse.copySync(srcDir, minecraftPath, {
     overwrite: true
