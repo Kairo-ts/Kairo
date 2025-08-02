@@ -1,13 +1,8 @@
-import { system, type ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
+import { system } from "@minecraft/server";
+import { BehaviorInitializeReceive } from "./init/behaviorInitializeReceive";
 
 export class BehaviorManager {
-    private static handleScriptEventReceive(ev: ScriptEventCommandMessageAfterEvent): void {
-        const { id, message } = ev;
-
-        if (id !== "core:initializeRequest") return;
-    }
-
     static initialize() {
-        system.afterEvents.scriptEventReceive.subscribe(this.handleScriptEventReceive);
+        system.afterEvents.scriptEventReceive.subscribe(BehaviorInitializeReceive.handleScriptEventReceive);
     }
 }
