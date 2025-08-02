@@ -1,4 +1,5 @@
 import type { ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
+import { ConsoleManager } from "../../utils/consoleManager";
 
 export class BehaviorInitializeRegister {
     static handleScriptEventReceive(ev: ScriptEventCommandMessageAfterEvent): void {
@@ -9,6 +10,8 @@ export class BehaviorInitializeRegister {
     }
 
     private static registerAddon(message: string): void {
+        const addonProperties = JSON.parse(message);
 
+        ConsoleManager.info("Router", `registerd ${addonProperties.name} ver.${addonProperties.version.join(".")}`);
     }
 }
