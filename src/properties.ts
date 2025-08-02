@@ -14,7 +14,7 @@ export const properties = {
         name: "Werewolf-Core",
         description: "アドオン間通信の管理を担う、マイクラ人狼の中枢となるアドオンです",
         min_engine_version: [ 1,21,90 ],
-        version: [ 0,0,1 ],
+        version: [ 1,0,0 ],
         uuid: "45826daa-bf9f-4443-b746-944a0970bfef"
     },
     modules: [
