@@ -39,7 +39,6 @@ export const properties = {
     /** 前提アドオン */
     requiredAddons: {
         /**
-         * format
          * name: [version]
          */
     },
