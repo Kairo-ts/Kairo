@@ -8,7 +8,7 @@ if (process.platform !== 'win32') {
     process.exit(0);
 }
 
-const manifestPath = path.join(__dirname, '..', 'BP', 'manifest.json');
+const manifestPath = path.join(__dirname, 'BP', 'manifest.json');
 const manifestRaw = fs.readFileSync(manifestPath, 'utf-8');
 const manifest: any = JSON.parse(manifestRaw);
 const addonName: string | undefined = manifest.header?.name;
@@ -39,7 +39,7 @@ const minecraftPath = path.join(
     addonName
 );
 
-const srcDir = path.join(__dirname, '..', 'BP');
+const srcDir = path.join(__dirname, 'BP');
 fse.ensureDirSync(minecraftPath);
 fse.copySync(srcDir, minecraftPath, {
     overwrite: true

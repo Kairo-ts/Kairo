@@ -22,5 +22,5 @@ const manifest = {
     dependencies: properties.dependencies,
 };
 
-const outputPath = path.resolve("BP/manifest.json");
+const outputPath = path.join(__dirname, 'BP', 'manifest.json');
 fs.writeFileSync(outputPath, JSON.stringify(manifest, null, 4));

@@ -10,7 +10,7 @@
     "module": "ESNext",
     "target": "ES2020",
     "moduleResolution": "node",
-    "types": ["@minecraft/server", "@minecraft/server-ui"],
+    "types": ["node", "@minecraft/server", "@minecraft/server-ui"],
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],

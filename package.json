@@ -18,6 +18,7 @@
   "devDependencies": {
     "@minecraft/server": "^2.0.0",
     "@minecraft/server-ui": "^2.0.0",
+    "@types/node": "^24.1.0",
     "chokidar-cli": "^3.0.0",
     "concurrently": "^9.2.0",
     "fs-extra": "^11.3.0",
