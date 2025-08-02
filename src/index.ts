@@ -1,2 +1,3 @@
-import "./server/scriptEventReceive";
-import "./server/worldLoad";
+import { Core } from "./router/index";
+
+Core.initialize();
