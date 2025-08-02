@@ -3,6 +3,6 @@ import { BehaviorInitializeReceive } from "./init/behaviorInitializeReceive";
 
 export class BehaviorManager {
     static initialize() {
-        system.afterEvents.scriptEventReceive.subscribe(BehaviorInitializeReceive.handleScriptEventReceive);
+        system.afterEvents.scriptEventReceive.subscribe((ev) => BehaviorInitializeReceive.handleScriptEventReceive(ev));
     }
 }

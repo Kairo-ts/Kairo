@@ -4,7 +4,7 @@ import { BehaviorInitializeRequest } from "./init/behaviorInitializeRequest";
 
 export class AddonRouter {
     static initialize() {
-        world.afterEvents.worldLoad.subscribe(BehaviorInitializeRequest.handleWorldLoad);
-        system.afterEvents.scriptEventReceive.subscribe(BehaviorInitializeRegister.handleScriptEventReceive);
+        world.afterEvents.worldLoad.subscribe((ev) => BehaviorInitializeRequest.handleWorldLoad(ev));
+        system.afterEvents.scriptEventReceive.subscribe((ev) => BehaviorInitializeRegister.handleScriptEventReceive(ev));
     }
 }
