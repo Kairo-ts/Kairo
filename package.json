@@ -4,9 +4,10 @@
   "description": "**Stable Script API**\r - @minecraft/server - 2.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && npm run deploy",
+    "build": "rimraf BP/scripts && tsc && npm run deploy",
     "deploy": "tsx generate-manifest.ts && tsx deploy.ts",
-    "dev": "concurrently \"tsc --watch\" \"chokidar './BP/scripts/**/*.js' -c 'npm run deploy'\""
+    "dev": "concurrently \"tsc --watch\" \"chokidar './BP/scripts/**/*.js' -c 'npm run deploy'\"",
+    "predev": "rimraf BP/scripts"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
     "chokidar-cli": "^3.0.0",
     "concurrently": "^9.2.0",
     "fs-extra": "^11.3.0",
+    "rimraf": "^6.0.1",
     "tsx": "^4.20.3",
     "typescript": "^5.9.2"
   }
