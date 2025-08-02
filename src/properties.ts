@@ -37,10 +37,10 @@ export const properties = {
 		}
 	],
     /** 前提アドオン */
-    requiredAddons: [
+    requiredAddons: {
         /**
          * format
-         * { name: "", version: [] }
+         * name: [version]
          */
-    ],
+    },
 }
