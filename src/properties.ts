@@ -11,7 +11,7 @@ export const properties = {
         ]
     },
     header: {
-        name: "Werewolf-Core",
+        name: "Werewolf-AddonRouter",
         description: "アドオン間通信の管理を担う、マイクラ人狼の中枢となるアドオンです",
         min_engine_version: [ 1,21,90 ],
         version: [ 1,0,0 ],
