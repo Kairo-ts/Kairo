@@ -8,7 +8,7 @@ export class ConsoleManager {
     }
 
     static error(message: string): void {
-        console.error(`[Werewolf][ERROR] ${message}`);
+        console.error(`[Werewolf][Error] ${message}`);
     }
 
     static info(tag: string = "Info", message: string): void {
