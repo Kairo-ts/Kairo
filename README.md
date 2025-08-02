@@ -1,4 +1,4 @@
-# Werewolf-Core
+# Werewolf-AddonRouter
 **Stable Script API**
 - @minecraft/server - 2.0.0
 
