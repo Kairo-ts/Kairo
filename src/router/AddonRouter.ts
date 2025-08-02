@@ -4,7 +4,7 @@ import { BehaviorInitializeRegister } from "./init/behaviorInitializeRegister";
 import { BehaviorInitializeRequest } from "./init/behaviorInitializeRequest";
 import { ConsoleManager } from "../utils/consoleManager";
 
-export class Core {
+export class AddonRouter {
     private static handleWorldLoad(ev: WorldLoadAfterEvent): void {
         ConsoleManager.info("Core", "World loaded. Sending core initialization request...");
         BehaviorInitializeRequest.sendRequest();

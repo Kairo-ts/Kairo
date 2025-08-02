@@ -1,3 +1,3 @@
-import { Core } from "./router/index";
+import { AddonRouter } from "./router/AddonRouter";
 
-Core.initialize();
+AddonRouter.initialize();
