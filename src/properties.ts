@@ -1,3 +1,8 @@
+/**
+ * scripts/properties から manifest.jsonを自動生成する
+ * propertiesは、アドオン間通信においても、識別などに利用する
+ */
+
 export const properties = {
     metadata: { 
         /** 製作者の名前 */
