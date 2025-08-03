@@ -1,7 +1,8 @@
 import type { ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
+import type { AddonProperty } from "../AddonProperty";
 
 export class BehaviorInitializePending {
-    private static readonly pendingAddons: Set<string> = new Set();
+    private static readonly pendingAddons: Map<string, AddonProperty> = new Map();
 
     static handleScriptEventReceive(ev: ScriptEventCommandMessageAfterEvent): void {
         const { id, message } = ev;
@@ -11,6 +12,15 @@ export class BehaviorInitializePending {
     }
 
     private static add(message: string): void {
-        this.pendingAddons.add(message);
+        let addonProperties: AddonProperty = JSON.parse(message) as AddonProperty;
+        this.pendingAddons.set(addonProperties.name, addonProperties);
+    }
+
+    static has(addonName: string): boolean {
+        return this.pendingAddons.has(addonName);
+    }
+
+    static get(addonName: string): AddonProperty {
+        return this.pendingAddons.get(addonName) as AddonProperty;
     }
 }
