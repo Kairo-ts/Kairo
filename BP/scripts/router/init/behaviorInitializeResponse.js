@@ -1,5 +1,5 @@
-import { system } from "@minecraft/server";
-import { properties } from "../../properties";
+import { system, world } from "@minecraft/server";
+import { BehaviorManager } from "../behaviorManager";
 /**
  * アドオンの properties を参照して、ルーターに応答するためのクラス
  * propertiesの必要な部分を抜粋して、JSON.stringifyで送信します
@@ -9,14 +9,7 @@ import { properties } from "../../properties";
  */
 export class BehaviorInitializeResponse {
     static sendResponse() {
-        system.sendScriptEvent("router:initializeResponse", this.serializeForTransmission());
-    }
-    static serializeForTransmission() {
-        return JSON.stringify({
-            name: properties.header.name,
-            version: properties.header.version,
-            dependencies: properties.dependencies,
-            requiredAddons: properties.requiredAddons
-        });
+        world.scoreboard.getObjective("AddonCounter")?.addScore("AddonCounter", 1);
+        system.sendScriptEvent("router:initializeResponse", JSON.stringify(BehaviorManager.getSelfAddonProperty()));
     }
 }
