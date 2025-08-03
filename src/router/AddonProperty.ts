@@ -35,7 +35,7 @@ export class AddonPropertyManager {
         this.self.sessionId = this.generateRandomId(8);
     }
 
-    static generateRandomId(length: number = 8): string {
+    private static generateRandomId(length: number = 8): string {
         return Array.from({ length }, () => this.charset[Math.floor(Math.random() * this.charset.length)]).join('');
     }
 }
