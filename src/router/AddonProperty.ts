@@ -2,7 +2,7 @@ import { properties } from "../properties";
 
 export interface AddonProperty {
     name: string;
-    sessionId?: string;
+    sessionId: string;
     version: number[];
     dependencies: {
         module_name: string;
