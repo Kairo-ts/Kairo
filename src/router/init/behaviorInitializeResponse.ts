@@ -14,4 +14,8 @@ export class BehaviorInitializeResponse {
 
         system.sendScriptEvent("router:initializeResponse", JSON.stringify(AddonPropertyManager.getSelfAddonProperty()));
     }
+
+    static resendResponse(): void {
+        system.sendScriptEvent("router:initializeResponse", JSON.stringify(AddonPropertyManager.getSelfAddonProperty()));
+    }
 }
