@@ -1,5 +1,5 @@
 import { system, world } from "@minecraft/server";
-import { BehaviorManager } from "../behaviorManager";
+import { AddonPropertyManager } from "../AddonProperty";
 /**
  * アドオンの properties を参照して、ルーターに応答するためのクラス
  * propertiesの必要な部分を抜粋して、JSON.stringifyで送信します
@@ -9,7 +9,6 @@ import { BehaviorManager } from "../behaviorManager";
  */
 export class BehaviorInitializeResponse {
     static sendResponse() {
-        world.scoreboard.getObjective("AddonCounter")?.addScore("AddonCounter", 1);
-        system.sendScriptEvent("router:initializeResponse", JSON.stringify(BehaviorManager.getSelfAddonProperty()));
+        system.sendScriptEvent("router:initializeResponse", JSON.stringify(AddonPropertyManager.getSelfAddonProperty()));
     }
 }

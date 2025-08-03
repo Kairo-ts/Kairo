@@ -10,6 +10,6 @@ import { BehaviorInitializePending } from "./behaviorInitializePending";
  */
 export class BehaviorInitializeRegister {
     static registerAddon() {
-        console.log(BehaviorInitializePending.getAll());
+        console.log(BehaviorInitializePending.getAll().map(addon => addon.sessionId).join(", "));
     }
 }

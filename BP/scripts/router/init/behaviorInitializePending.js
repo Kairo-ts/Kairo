@@ -1,5 +1,5 @@
 var _a;
-import { world } from "@minecraft/server";
+import { system, world } from "@minecraft/server";
 /**
  * BehaviorInitializeRequestの要求に対して、BehaviorInitializeResponseで応答したアドオンを
  * 登録するために一時的に保存しておくためのクラス
@@ -22,13 +22,21 @@ export class BehaviorInitializePending {
     }
     static add(message) {
         let addonProperties = JSON.parse(message);
-        this.pendingAddons.set(addonProperties.name, addonProperties);
+        /**
+         * Idが重複している場合は、再度IDを要求する
+         * If the ID is duplicated, request a new ID again
+         */
+        if (this.pendingAddons.has(addonProperties.sessionId)) {
+            system.sendScriptEvent("router:requestReseedId", addonProperties.sessionId);
+            return;
+        }
+        this.pendingAddons.set(addonProperties.sessionId, addonProperties);
     }
-    static has(addonName) {
-        return this.pendingAddons.has(addonName);
+    static has(sessionId) {
+        return this.pendingAddons.has(sessionId);
     }
-    static get(addonName) {
-        return this.pendingAddons.get(addonName);
+    static get(sessionId) {
+        return this.pendingAddons.get(sessionId);
     }
     static getAll() {
         return Array.from(this.pendingAddons.values());
