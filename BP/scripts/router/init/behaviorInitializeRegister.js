@@ -9,12 +9,6 @@ import { ConsoleManager } from "../../utils/consoleManager";
  * *Currently, only the functionality for receiving responses is implemented.*
  */
 export class BehaviorInitializeRegister {
-    static handleScriptEventReceive(ev) {
-        const { id, message } = ev;
-        if (id !== "router:initializeResponse")
-            return;
-        this.registerAddon(message);
-    }
     static registerAddon(message) {
         const addonProperties = JSON.parse(message);
         ConsoleManager.log(`registerd ${addonProperties.name} ver.${addonProperties.version.join(".")}`);

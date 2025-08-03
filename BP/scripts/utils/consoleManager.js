@@ -1,14 +1,12 @@
+import { properties } from "../properties";
 export class ConsoleManager {
     static log(message) {
-        console.log(`[Werewolf][Log] ${message}`);
+        console.log(`[${properties.header.name}][Log] ${message}`);
     }
     static warn(message) {
-        console.warn(`[Werewolf][Warning] ${message}`);
+        console.warn(`[${properties.header.name}][Warning] ${message}`);
     }
     static error(message) {
-        console.error(`[Werewolf][Error] ${message}`);
-    }
-    static info(tag = "Info", message) {
-        console.log(`[Werewolf][${tag}] ${message}`);
+        console.error(`[${properties.header.name}][Error] ${message}`);
     }
 }
