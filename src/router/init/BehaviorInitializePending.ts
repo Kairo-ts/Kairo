@@ -23,4 +23,8 @@ export class BehaviorInitializePending {
     static get(addonName: string): AddonProperty {
         return this.pendingAddons.get(addonName) as AddonProperty;
     }
+
+    static getAll(): AddonProperty[] {
+        return Array.from(this.pendingAddons.values());
+    }
 }
