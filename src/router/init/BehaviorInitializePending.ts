@@ -1,6 +1,13 @@
 import type { ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
 import type { AddonProperty } from "../AddonProperty";
 
+/**
+ * BehaviorInitializeRequestの要求に対して、BehaviorInitializeResponseで応答したアドオンを
+ * 登録するために一時的に保存しておくためのクラス
+ * 
+ * A class for temporarily storing addons that responded with BehaviorInitializeResponse
+ * to a BehaviorInitializeRequest, in order to register them
+ */
 export class BehaviorInitializePending {
     private static readonly pendingAddons: Map<string, AddonProperty> = new Map();
 
