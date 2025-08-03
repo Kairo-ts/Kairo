@@ -1,6 +1,6 @@
 import { system, world } from "@minecraft/server";
 import { BehaviorInitializeRequest } from "./init/behaviorInitializeRequest";
-import { BehaviorInitializePending } from "./init/BehaviorInitializePending";
+import { BehaviorInitializePending } from "./init/behaviorInitializePending";
 
 /**
  * Werewolf-AddonRouterの中枢となるクラス
