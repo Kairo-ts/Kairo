@@ -1,5 +1,6 @@
-import type { ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
+import { world, type ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
 import { BehaviorInitializeResponse } from "./behaviorInitializeResponse";
+import { AddonPropertyManager } from "../AddonProperty";
 
 /**
  * 各アドオンが、ルーターからのリクエストを受け取るためのクラス
@@ -12,11 +13,26 @@ export class BehaviorInitializeReceive {
     static handleScriptEventReceive(ev: ScriptEventCommandMessageAfterEvent): void {
         const { id, message } = ev;
 
-        if (id !== "router:initializeRequest") return;
-        this.forwardRequest();
+        if (id === "router:requestReseedId") {
+            this.handleReseedRequest(message);
+            return;
+        }
+
+        if (id === "router:initializeRequest") {
+            this.handleInitializeRequest();
+            return;
+        }
     }
 
-    private static forwardRequest(): void {
+    private static handleReseedRequest(message: string): void {
+        if (message !== AddonPropertyManager.getSelfAddonProperty().sessionId) return;
+
+        AddonPropertyManager.refreshSessionId();
+        BehaviorInitializeResponse.sendResponse();
+    }
+
+    private static handleInitializeRequest(): void {
+        world.scoreboard.getObjective("AddonCounter")?.addScore("AddonCounter", 1);
         BehaviorInitializeResponse.sendResponse();
     }
 }
