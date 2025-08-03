@@ -1,4 +1,4 @@
-import type { ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
+import { world, type ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
 import type { AddonProperty } from "../AddonProperty";
 
 /**
@@ -11,11 +11,21 @@ import type { AddonProperty } from "../AddonProperty";
 export class BehaviorInitializePending {
     private static readonly pendingAddons: Map<string, AddonProperty> = new Map();
 
+    private static _resolveReady: (() => void) | null = null;
+    static readonly ready: Promise<void> = new Promise(resolve => {
+        this._resolveReady = resolve;
+    });
+
     static handleScriptEventReceive(ev: ScriptEventCommandMessageAfterEvent): void {
         const { id, message } = ev;
 
         if (id !== "router:initializeResponse") return;
         this.add(message);
+
+        const addonCount: number = world.scoreboard.getObjective("AddonCounter")?.getScore("AddonCounter") ?? 0;
+        if (addonCount === this.pendingAddons.size) {
+            this._resolveReady?.();
+        }
     }
 
     private static add(message: string): void {
