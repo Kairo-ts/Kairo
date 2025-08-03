@@ -25,6 +25,8 @@ export class BehaviorInitializePending {
         const addonCount: number = world.scoreboard.getObjective("AddonCounter")?.getScore("AddonCounter") ?? 0;
         if (addonCount === this.pendingAddons.size) {
             this._resolveReady?.();
+            this._resolveReady = null;
+            world.scoreboard.removeObjective("AddonCounter");
         }
     }
 
