@@ -41,6 +41,7 @@ const minecraftPath = path.join(
 
 const srcDir = path.join(__dirname, 'BP');
 fse.ensureDirSync(minecraftPath);
+fse.emptyDirSync(minecraftPath);
 fse.copySync(srcDir, minecraftPath, {
     overwrite: true
 });
