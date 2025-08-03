@@ -10,12 +10,6 @@ import { AddonPropertyManager } from "../AddonProperty";
  */
 export class BehaviorInitializeResponse {
     static sendResponse(): void {
-        world.scoreboard.getObjective("AddonCounter")?.addScore("AddonCounter", 1);
-
-        system.sendScriptEvent("router:initializeResponse", JSON.stringify(AddonPropertyManager.getSelfAddonProperty()));
-    }
-
-    static resendResponse(): void {
         system.sendScriptEvent("router:initializeResponse", JSON.stringify(AddonPropertyManager.getSelfAddonProperty()));
     }
 }
