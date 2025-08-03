@@ -1,4 +1,4 @@
-import { world, type ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
+import { system, world, type ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
 import type { AddonProperty } from "../AddonProperty";
 
 /**
@@ -32,15 +32,24 @@ export class BehaviorInitializePending {
 
     private static add(message: string): void {
         let addonProperties: AddonProperty = JSON.parse(message) as AddonProperty;
-        this.pendingAddons.set(addonProperties.name, addonProperties);
+
+        /**
+         * Idが重複している場合は、再度IDを要求する
+         * If the ID is duplicated, request a new ID again
+         */
+        if (this.pendingAddons.has(addonProperties.sessionId)) {
+            system.sendScriptEvent("router:requestReseedId", addonProperties.sessionId);
+            return;
+        }
+        this.pendingAddons.set(addonProperties.sessionId, addonProperties);
     }
 
-    static has(addonName: string): boolean {
-        return this.pendingAddons.has(addonName);
+    static has(sessionId: string): boolean {
+        return this.pendingAddons.has(sessionId);
     }
 
-    static get(addonName: string): AddonProperty {
-        return this.pendingAddons.get(addonName) as AddonProperty;
+    static get(sessionId: string): AddonProperty {
+        return this.pendingAddons.get(sessionId) as AddonProperty;
     }
 
     static getAll(): AddonProperty[] {
