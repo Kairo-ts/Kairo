@@ -1,4 +1,4 @@
-import { ConsoleManager } from "../../utils/consoleManager";
+import { BehaviorInitializePending } from "./behaviorInitializePending";
 
 /**
  * 応答したアドオンを登録するためのクラス
@@ -10,9 +10,7 @@ import { ConsoleManager } from "../../utils/consoleManager";
  * *Currently, only the functionality for receiving responses is implemented.*
  */
 export class BehaviorInitializeRegister {
-    private static registerAddon(message: string): void {
-        const addonProperties = JSON.parse(message);
-
-        ConsoleManager.log(`registerd ${addonProperties.name} ver.${addonProperties.version.join(".")}`);
+    static registerAddon(): void {
+        console.log(BehaviorInitializePending.getAll());
     }
 }
