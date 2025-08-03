@@ -1,4 +1,4 @@
-import { system, WorldLoadAfterEvent } from "@minecraft/server";
+import { system, world, WorldLoadAfterEvent } from "@minecraft/server";
 import { ConsoleManager } from "../../utils/consoleManager";
 
 /**
@@ -14,6 +14,16 @@ export class BehaviorInitializeRequest {
     }
 
     private static sendRequest(): void {
+        /**
+         * アドオンの数を数えるためのscoreboardを用意しておく
+         * Prepare a scoreboard to count the number of addons
+         */
+        world.scoreboard.addObjective("AddonCounter").setScore("AddonCounter", 0);
+        
+        /**
+         * scriptEventを送信して、各アドオンに登録要求を送る
+         * Send a scriptEvent to request registration from each addon
+         */
         ConsoleManager.log("World loaded. Sending core initialization request...");
         system.sendScriptEvent("router:initializeRequest", "");
     }
