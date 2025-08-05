@@ -1,5 +1,5 @@
 # Kairo
-Kairo (回路) **means "circuit" in Japanese** — symbolizing a system of connections.
+**Kairo (回路)** means "circuit" in Japanese — symbolizing a system of connections.
 
 Kairo is a ScriptAPI-based framework for Minecraft Bedrock Edition that **enables communication between multiple behavior packs** by leveraging the `ScriptAPI` as a communication layer.
 
