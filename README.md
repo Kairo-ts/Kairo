@@ -24,15 +24,11 @@ Kairo is built using the stable Script API:
    ```bash
    npm install
    ```
-2. Build typescript
-    ```bash
-    tsc
-    ```
-3. Deploy
+2. Deploy
     ```bash
     npm run build
     ```
-4. Auto-deploy on file change:
+3. Auto-deploy on file change:
     ```bash
     npm run dev
     ```
