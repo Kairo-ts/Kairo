@@ -1,6 +1,6 @@
 import { world, type ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
 import { BehaviorInitializeResponse } from "./behaviorInitializeResponse";
-import { AddonPropertyManager } from "../AddonProperty";
+import { AddonPropertyManager } from "../../AddonProperty";
 
 /**
  * 各アドオンが、ルーターからのリクエストを受け取るためのクラス
