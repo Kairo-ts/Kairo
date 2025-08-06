@@ -1,5 +1,5 @@
 import { system } from "@minecraft/server";
-import { AddonPropertyManager } from "../AddonProperty";
+import { AddonPropertyManager } from "../../AddonProperty";
 
 /**
  * アドオンの properties を参照して、ルーターに応答するためのクラス

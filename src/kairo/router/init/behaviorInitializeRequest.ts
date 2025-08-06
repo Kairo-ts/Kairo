@@ -1,5 +1,5 @@
 import { system, world, WorldLoadAfterEvent } from "@minecraft/server";
-import { ConsoleManager } from "../../utils/consoleManager";
+import { ConsoleManager } from "../../../utils/consoleManager";
 
 /**
  * ルーターが各アドオンに登録要求を送るためのクラス
