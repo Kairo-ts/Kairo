@@ -1,6 +1,6 @@
 import { system } from "@minecraft/server";
-import { BehaviorInitializeReceive } from "./init/behaviorInitializeReceive";
-import { AddonPropertyManager } from "./AddonProperty";
+import { BehaviorInitializeReceive } from "./behaviorInitializeReceive";
+import { AddonPropertyManager } from "../AddonProperty";
 export class BehaviorManager {
     /**
      * ScriptEventReceiveに、BehaviorInitializeのハンドルを追加する

@@ -6,12 +6,12 @@ export const properties = {
     metadata: {
         /** 製作者の名前 */
         authors: [
-            "静空"
+            "shizuku86"
         ]
     },
     header: {
-        name: "Werewolf-AddonRouter",
-        description: "アドオン間通信の管理を担う、マイクラ人狼の中枢となるアドオンです",
+        name: "Kairo",
+        description: "Enables communication between multiple behavior packs by leveraging the ScriptAPI as a communication layer.",
         min_engine_version: [1, 21, 90],
         version: [1, 0, 0],
         uuid: "45826daa-bf9f-4443-b746-944a0970bfef"

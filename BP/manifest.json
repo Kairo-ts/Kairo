@@ -2,12 +2,12 @@
     "format_version": 2,
     "metadata": {
         "authors": [
-            "静空"
+            "shizuku86"
         ]
     },
     "header": {
-        "name": "Werewolf-AddonRouter",
-        "description": "アドオン間通信の管理を担う、マイクラ人狼の中枢となるアドオンです",
+        "name": "Kairo",
+        "description": "Enables communication between multiple behavior packs by leveraging the ScriptAPI as a communication layer.",
         "min_engine_version": [
             1,
             21,
