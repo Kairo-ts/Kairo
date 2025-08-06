@@ -1,4 +1,4 @@
-import { system, world } from "@minecraft/server";
+import { system } from "@minecraft/server";
 import { AddonPropertyManager } from "../AddonProperty";
 /**
  * アドオンの properties を参照して、ルーターに応答するためのクラス

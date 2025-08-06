@@ -1,4 +1,4 @@
-import { properties } from "../properties";
+import { properties } from "../../properties";
 export class AddonPropertyManager {
     static setSelfAddonProperty() {
         this.self = {
