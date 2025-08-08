@@ -1,3 +1,4 @@
+import type { Kairo } from ".";
 import { properties } from "../properties";
 
 export interface AddonProperty {
@@ -17,7 +18,7 @@ export class AddonPropertyManager {
     private self: AddonProperty;
     private readonly charset = [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'];
 
-    constructor() {
+    private constructor(private readonly kairo: Kairo) {
         this.self = {
             name: properties.header.name,
             sessionId: this.generateRandomId(8),
@@ -26,7 +27,11 @@ export class AddonPropertyManager {
             requiredAddons: properties.requiredAddons
         }
     }
-    
+
+    public static create(kairo: Kairo): AddonPropertyManager {
+        return new AddonPropertyManager(kairo);
+    }
+
     public getSelfAddonProperty(): AddonProperty {
         return this.self;
     }
