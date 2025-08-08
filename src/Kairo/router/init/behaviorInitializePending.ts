@@ -1,5 +1,5 @@
 import { system, world, type ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
-import type { AddonProperty } from "../AddonProperty";
+import type { AddonProperty } from "../../AddonProperty";
 
 /**
  * BehaviorInitializeRequestの要求に対して、BehaviorInitializeResponseで応答したアドオンを

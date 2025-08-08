@@ -1,4 +1,4 @@
-import { properties } from "../../properties";
+import { properties } from "../properties";
 
 export interface AddonProperty {
     name: string;
