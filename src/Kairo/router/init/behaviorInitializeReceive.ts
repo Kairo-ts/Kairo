@@ -1,6 +1,7 @@
 import { world, type ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
 import { BehaviorInitializeResponse } from "./behaviorInitializeResponse";
 import { AddonPropertyManager } from "../../AddonProperty";
+import type { AddonRouter } from "../AddonRouter";
 
 /**
  * 各アドオンが、ルーターからのリクエストを受け取るためのクラス
@@ -10,7 +11,13 @@ import { AddonPropertyManager } from "../../AddonProperty";
  * Forwards the received initializeRequest directly to BehaviorInitializeResponse.
  */
 export class BehaviorInitializeReceive {
-    static handleScriptEventReceive(ev: ScriptEventCommandMessageAfterEvent): void {
+    private constructor(private readonly addonRouter: AddonRouter) {}
+
+    public static create(addonRouter: AddonRouter): BehaviorInitializeReceive {
+        return new BehaviorInitializeReceive(addonRouter);
+    }
+
+    public handleScriptEventReceive(ev: ScriptEventCommandMessageAfterEvent): void {
         const { id, message } = ev;
 
         if (id === "router:requestReseedId") {
@@ -24,14 +31,14 @@ export class BehaviorInitializeReceive {
         }
     }
 
-    private static handleReseedRequest(message: string): void {
+    private handleReseedRequest(message: string): void {
         if (message !== AddonPropertyManager.getSelfAddonProperty().sessionId) return;
 
         AddonPropertyManager.refreshSessionId();
         BehaviorInitializeResponse.sendResponse();
     }
 
-    private static handleInitializeRequest(): void {
+    private handleInitializeRequest(): void {
         world.scoreboard.getObjective("AddonCounter")?.addScore("AddonCounter", 1);
         BehaviorInitializeResponse.sendResponse();
     }

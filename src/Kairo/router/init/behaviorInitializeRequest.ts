@@ -1,5 +1,6 @@
 import { system, world, WorldLoadAfterEvent } from "@minecraft/server";
 import { ConsoleManager } from "../../../utils/consoleManager";
+import type { AddonRouter } from "../AddonRouter";
 
 /**
  * ルーターが各アドオンに登録要求を送るためのクラス
@@ -9,11 +10,17 @@ import { ConsoleManager } from "../../../utils/consoleManager";
  * Each addon must prepare BehaviorInitializeReceive
  */
 export class BehaviorInitializeRequest {
-    static handleWorldLoad(ev: WorldLoadAfterEvent): void {
+    private constructor(private readonly addonRouter: AddonRouter) {}
+    
+    public static create(addonRouter: AddonRouter): BehaviorInitializeRequest {
+        return new BehaviorInitializeRequest(addonRouter);
+    }
+
+    public handleWorldLoad(ev: WorldLoadAfterEvent): void {
         this.sendRequest();
     }
 
-    private static sendRequest(): void {
+    private sendRequest(): void {
         /**
          * アドオンの数を数えるためのscoreboardを用意しておく
          * Prepare a scoreboard to count the number of addons

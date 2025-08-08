@@ -7,7 +7,7 @@ export class BehaviorManager {
      * ScriptEventReceiveに、BehaviorInitializeのハンドルを追加する
      * Add BehaviorInitialize handles to ScriptEventReceive
      */
-    static initialize() {
+    initialize() {
         system.afterEvents.scriptEventReceive.subscribe((ev) => BehaviorInitializeReceive.handleScriptEventReceive(ev));
         AddonPropertyManager.setSelfAddonProperty();
     }

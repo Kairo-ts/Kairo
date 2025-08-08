@@ -1,3 +1,4 @@
+import type { AddonRouter } from "../AddonRouter";
 import { BehaviorInitializePending } from "./behaviorInitializePending";
 
 /**
@@ -10,7 +11,13 @@ import { BehaviorInitializePending } from "./behaviorInitializePending";
  * *Currently, only the functionality for receiving responses is implemented.*
  */
 export class BehaviorInitializeRegister {
-    static registerAddon(): void {
+    private constructor(private readonly addonRouter: AddonRouter) {}
+    
+    public static create(addonRouter: AddonRouter): BehaviorInitializeRegister {
+        return new BehaviorInitializeRegister(addonRouter);
+    }
+
+    public registerAddon(): void {
         console.log(BehaviorInitializePending.getAll().map(addon => addon.sessionId).join(", "));
     }
 }

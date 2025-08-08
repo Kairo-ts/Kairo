@@ -14,10 +14,10 @@ export interface AddonProperty {
 }
 
 export class AddonPropertyManager {
-    private static self: AddonProperty;
-    private static readonly charset = [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'];
+    private self: AddonProperty;
+    private readonly charset = [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'];
 
-    static setSelfAddonProperty(): void {
+    constructor() {
         this.self = {
             name: properties.header.name,
             sessionId: this.generateRandomId(8),
@@ -27,15 +27,15 @@ export class AddonPropertyManager {
         }
     }
     
-    static getSelfAddonProperty(): AddonProperty {
+    public getSelfAddonProperty(): AddonProperty {
         return this.self;
     }
 
-    static refreshSessionId(): void {
+    public refreshSessionId(): void {
         this.self.sessionId = this.generateRandomId(8);
     }
 
-    private static generateRandomId(length: number = 8): string {
+    private generateRandomId(length: number = 8): string {
         return Array.from({ length }, () => this.charset[Math.floor(Math.random() * this.charset.length)]).join('');
     }
 }
