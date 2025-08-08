@@ -1,6 +1,6 @@
 import { system } from "@minecraft/server";
-import { BehaviorInitializeReceive } from "./behaviorInitializeReceive";
-import { AddonPropertyManager } from "../AddonProperty";
+import { BehaviorInitializeReceive } from "./router/init/behaviorInitializeReceive";
+import { AddonPropertyManager } from "./AddonProperty";
 
 export class BehaviorManager {
     /**
