@@ -1,10 +1,10 @@
 import { ScriptEventCommandMessageAfterEvent, system, world, WorldLoadAfterEvent } from "@minecraft/server";
 import { BehaviorInitializePending } from "./router/init/behaviorInitializePending";
-import type { Kairo } from ".";
 import { BehaviorInitializeReceive } from "./router/init/behaviorInitializeReceive";
 import { BehaviorInitializeRegister } from "./router/init/behaviorInitializeRegister";
 import { BehaviorInitializeRequest } from "./router/init/behaviorInitializeRequest";
 import { BehaviorInitializeResponse } from "./router/init/behaviorInitializeResponse";
+import type { Kairo } from ".";
 
 /**
  * Werewolf-AddonRouterの中枢となるクラス
