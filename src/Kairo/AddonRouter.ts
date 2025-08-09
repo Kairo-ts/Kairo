@@ -30,22 +30,22 @@ export class AddonRouter {
         return new AddonRouter(kairo);
     }
 
-    public installHooks() {
+    public installClientHooks() {
         system.afterEvents.scriptEventReceive.subscribe((ev: ScriptEventCommandMessageAfterEvent) => {
             this.receive.handleScriptEvent(ev);
         });
     }
 
-    public requestGetSelfAddonProperty(): AddonProperty {
+    public getSelfAddonProperty(): AddonProperty {
         return this.kairo.getSelfAddonProperty();
     }
 
-    public requestRefreshSessionId(): void {
+    public refreshSessionId(): void {
         return this.kairo.refreshSessionId();
     }
 
-    public requestSendResponse(): void {
-        const selfAddonProperty = this.requestGetSelfAddonProperty();
+    public sendResponse(): void {
+        const selfAddonProperty = this.getSelfAddonProperty();
         this.response.sendResponse(selfAddonProperty);
     }
 
@@ -53,7 +53,7 @@ export class AddonRouter {
      * WolrdLoadとScriptEventReceiveに、BehaviorInitializeのハンドルを追加する
      * Add BehaviorInitialize handles to WorldLoad and ScriptEventReceive
      */
-    public initialize() {
+    public startRouting() {
         world.afterEvents.worldLoad.subscribe((ev: WorldLoadAfterEvent) => {
             this.request.handleWorldLoad(ev);
         });
@@ -63,7 +63,7 @@ export class AddonRouter {
         });
     }
 
-    public requestGetAllPendingAddons(): AddonProperty[] {
+    public getAllPendingAddons(): AddonProperty[] {
         return this.pending.getAll();
     }
 
@@ -71,7 +71,7 @@ export class AddonRouter {
         return this.pending.ready;
     }
 
-    public requestRegisterAddon(): void {
+    public registerAddon(): void {
         this.register.registerAddon();
     }
 }

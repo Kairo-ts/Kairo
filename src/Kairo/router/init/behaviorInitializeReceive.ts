@@ -30,14 +30,14 @@ export class BehaviorInitializeReceive {
 
     private handleInitializeRequest(): void {
         world.scoreboard.getObjective("AddonCounter")?.addScore("AddonCounter", 1);
-        this.addonRouter.requestSendResponse();
+        this.addonRouter.sendResponse();
     }
 
     private handleRequestReseedId(message: string): void {
-        const selfSessionId = this.addonRouter.requestGetSelfAddonProperty().sessionId;
+        const selfSessionId = this.addonRouter.getSelfAddonProperty().sessionId;
         if (message !== selfSessionId) return;
 
-        this.addonRouter.requestRefreshSessionId();
-        this.addonRouter.requestSendResponse();
+        this.addonRouter.refreshSessionId();
+        this.addonRouter.sendResponse();
     }
 }
