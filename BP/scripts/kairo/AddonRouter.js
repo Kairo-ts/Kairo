@@ -20,40 +20,34 @@ export class AddonRouter {
     static create(kairo) {
         return new AddonRouter(kairo);
     }
-    installHooks() {
-        system.afterEvents.scriptEventReceive.subscribe((ev) => {
-            this.receive.handleScriptEvent(ev);
-        });
+    installClientHooks() {
+        system.afterEvents.scriptEventReceive.subscribe(this.receive.handleScriptEvent);
     }
-    requestGetSelfAddonProperty() {
+    getSelfAddonProperty() {
         return this.kairo.getSelfAddonProperty();
     }
-    requestRefreshSessionId() {
+    refreshSessionId() {
         return this.kairo.refreshSessionId();
     }
-    requestSendResponse() {
-        const selfAddonProperty = this.requestGetSelfAddonProperty();
+    sendResponse() {
+        const selfAddonProperty = this.getSelfAddonProperty();
         this.response.sendResponse(selfAddonProperty);
     }
     /**
-     * WolrdLoadとScriptEventReceiveに、BehaviorInitializeのハンドルを追加する
+     * WorldLoadとScriptEventReceiveに、BehaviorInitializeのハンドルを追加する
      * Add BehaviorInitialize handles to WorldLoad and ScriptEventReceive
      */
-    initialize() {
-        world.afterEvents.worldLoad.subscribe((ev) => {
-            this.request.handleWorldLoad(ev);
-        });
-        system.afterEvents.scriptEventReceive.subscribe((ev) => {
-            this.pending.handleScriptEventReceive(ev);
-        });
+    startRouting() {
+        world.afterEvents.worldLoad.subscribe(this.request.handleWorldLoad);
+        system.afterEvents.scriptEventReceive.subscribe(this.pending.handleScriptEventReceive);
     }
-    requestGetAllPendingAddons() {
+    getAllPendingAddons() {
         return this.pending.getAll();
     }
     getPendingReady() {
         return this.pending.ready;
     }
-    requestRegisterAddon() {
+    registerAddon() {
         this.register.registerAddon();
     }
 }

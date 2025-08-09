@@ -10,12 +10,12 @@ import { ConsoleManager } from "../../../utils/consoleManager";
 export class BehaviorInitializeRequest {
     constructor(addonRouter) {
         this.addonRouter = addonRouter;
+        this.handleWorldLoad = (ev) => {
+            this.sendRequest();
+        };
     }
     static create(addonRouter) {
         return new BehaviorInitializeRequest(addonRouter);
-    }
-    handleWorldLoad(ev) {
-        this.sendRequest();
     }
     sendRequest() {
         /**

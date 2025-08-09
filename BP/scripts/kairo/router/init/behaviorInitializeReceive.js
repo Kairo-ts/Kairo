@@ -9,30 +9,30 @@ import { world } from "@minecraft/server";
 export class BehaviorInitializeReceive {
     constructor(addonRouter) {
         this.addonRouter = addonRouter;
+        this.handleScriptEvent = (ev) => {
+            const { id, message } = ev;
+            switch (id) {
+                case "kairo:initializeRequest":
+                    this.handleInitializeRequest();
+                    break;
+                case "kairo:requestReseedId":
+                    this.handleRequestReseedId(message);
+                    break;
+            }
+        };
     }
     static create(addonRouter) {
         return new BehaviorInitializeReceive(addonRouter);
     }
-    handleScriptEvent(ev) {
-        const { id, message } = ev;
-        switch (id) {
-            case "kairo:initializeRequest":
-                this.handleInitializeRequest();
-                break;
-            case "kairo:requestReseedId":
-                this.handleRequestReseedId(message);
-                break;
-        }
-    }
     handleInitializeRequest() {
         world.scoreboard.getObjective("AddonCounter")?.addScore("AddonCounter", 1);
-        this.addonRouter.requestSendResponse();
+        this.addonRouter.sendResponse();
     }
     handleRequestReseedId(message) {
-        const selfSessionId = this.addonRouter.requestGetSelfAddonProperty().sessionId;
+        const selfSessionId = this.addonRouter.getSelfAddonProperty().sessionId;
         if (message !== selfSessionId)
             return;
-        this.addonRouter.requestRefreshSessionId();
-        this.addonRouter.requestSendResponse();
+        this.addonRouter.refreshSessionId();
+        this.addonRouter.sendResponse();
     }
 }

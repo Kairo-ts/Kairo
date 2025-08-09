@@ -15,6 +15,6 @@ export class BehaviorInitializeRegister {
         return new BehaviorInitializeRegister(addonRouter);
     }
     registerAddon() {
-        console.log(this.addonRouter.requestGetAllPendingAddons().map(addon => addon.sessionId).join(", "));
+        console.log(this.addonRouter.getAllPendingAddons().map(addon => addon.sessionId).join(", "));
     }
 }

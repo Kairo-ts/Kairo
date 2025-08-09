@@ -14,21 +14,21 @@ export class BehaviorInitializePending {
         this.ready = new Promise(resolve => {
             this._resolveReady = resolve;
         });
+        this.handleScriptEventReceive = (ev) => {
+            const { id, message } = ev;
+            if (id !== "kairo:initializeResponse")
+                return;
+            this.add(message);
+            const addonCount = world.scoreboard.getObjective("AddonCounter")?.getScore("AddonCounter") ?? 0;
+            if (addonCount === this.pendingAddons.size) {
+                this._resolveReady?.();
+                this._resolveReady = null;
+                world.scoreboard.removeObjective("AddonCounter");
+            }
+        };
     }
     static create(addonRouter) {
         return new BehaviorInitializePending(addonRouter);
-    }
-    handleScriptEventReceive(ev) {
-        const { id, message } = ev;
-        if (id !== "kairo:initializeResponse")
-            return;
-        this.add(message);
-        const addonCount = world.scoreboard.getObjective("AddonCounter")?.getScore("AddonCounter") ?? 0;
-        if (addonCount === this.pendingAddons.size) {
-            this._resolveReady?.();
-            this._resolveReady = null;
-            world.scoreboard.removeObjective("AddonCounter");
-        }
     }
     add(message) {
         let addonProperties = JSON.parse(message);
