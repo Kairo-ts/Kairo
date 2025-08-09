@@ -14,6 +14,6 @@ export class BehaviorInitializeResponse {
         return new BehaviorInitializeResponse(addonRouter);
     }
     sendResponse(addonProperty) {
-        system.sendScriptEvent("router:initializeResponse", JSON.stringify(addonProperty));
+        system.sendScriptEvent("kairo:initializeResponse", JSON.stringify(addonProperty));
     }
 }

@@ -20,7 +20,7 @@ export class AddonRouter {
     static create(kairo) {
         return new AddonRouter(kairo);
     }
-    clientInitialize() {
+    installHooks() {
         system.afterEvents.scriptEventReceive.subscribe((ev) => {
             this.receive.handleScriptEvent(ev);
         });

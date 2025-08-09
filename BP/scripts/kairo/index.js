@@ -2,6 +2,7 @@ import { AddonPropertyManager } from "./AddonPropertyManager";
 import { AddonRouter } from "./AddonRouter";
 export class Kairo {
     constructor() {
+        this.initialized = false;
         this.addonPropertyManager = AddonPropertyManager.create(this);
         this.addonRouter = AddonRouter.create(this);
     }
@@ -12,7 +13,11 @@ export class Kairo {
         return this.instance;
     }
     static init() {
-        this.getInstance().addonRouter.clientInitialize();
+        const inst = this.getInstance();
+        if (inst.initialized)
+            return;
+        inst.initialized = true;
+        inst.addonRouter.installHooks();
     }
     static initialize() {
         this.getInstance().addonRouter.initialize();
