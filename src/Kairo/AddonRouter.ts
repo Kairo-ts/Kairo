@@ -30,8 +30,12 @@ export class AddonRouter {
         return new AddonRouter(kairo);
     }
 
-    public installClientHooks() {
+    public subscribeClientHooks() {
         system.afterEvents.scriptEventReceive.subscribe(this.receive.handleScriptEvent);
+    }
+
+    public unsubscribeClientHooks() {
+        system.afterEvents.scriptEventReceive.unsubscribe(this.receive.handleScriptEvent);
     }
 
     public getSelfAddonProperty(): AddonProperty {
@@ -51,9 +55,14 @@ export class AddonRouter {
      * WorldLoadとScriptEventReceiveに、BehaviorInitializeのハンドルを追加する
      * Add BehaviorInitialize handles to WorldLoad and ScriptEventReceive
      */
-    public startRouting() {
+    public subscribeCoreHooks() {
         world.afterEvents.worldLoad.subscribe(this.request.handleWorldLoad);
         system.afterEvents.scriptEventReceive.subscribe(this.pending.handleScriptEventReceive);
+    }
+
+    public unsubscribeCoreHooks() {
+        world.afterEvents.worldLoad.unsubscribe(this.request.handleWorldLoad);
+        system.afterEvents.scriptEventReceive.unsubscribe(this.pending.handleScriptEventReceive);
     }
 
     public getAllPendingAddons(): AddonProperty[] {
