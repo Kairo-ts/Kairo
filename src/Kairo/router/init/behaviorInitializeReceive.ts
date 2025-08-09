@@ -15,7 +15,7 @@ export class BehaviorInitializeReceive {
         return new BehaviorInitializeReceive(addonRouter);
     }
 
-    public handleScriptEvent(ev: ScriptEventCommandMessageAfterEvent): void {
+    public handleScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
         const { id, message } = ev;
 
         switch (id) {

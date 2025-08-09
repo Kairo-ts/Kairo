@@ -16,7 +16,7 @@ export class BehaviorInitializeRequest {
         return new BehaviorInitializeRequest(addonRouter);
     }
 
-    public handleWorldLoad(ev: WorldLoadAfterEvent): void {
+    public handleWorldLoad = (ev: WorldLoadAfterEvent): void => {
         this.sendRequest();
     }
 

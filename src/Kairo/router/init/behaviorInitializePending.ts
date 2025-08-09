@@ -22,7 +22,7 @@ export class BehaviorInitializePending {
         return new BehaviorInitializePending(addonRouter);
     }
 
-    public handleScriptEventReceive(ev: ScriptEventCommandMessageAfterEvent): void {
+    public handleScriptEventReceive = (ev: ScriptEventCommandMessageAfterEvent): void => {
         const { id, message } = ev;
 
         if (id !== "kairo:initializeResponse") return;

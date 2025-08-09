@@ -31,9 +31,7 @@ export class AddonRouter {
     }
 
     public installClientHooks() {
-        system.afterEvents.scriptEventReceive.subscribe((ev: ScriptEventCommandMessageAfterEvent) => {
-            this.receive.handleScriptEvent(ev);
-        });
+        system.afterEvents.scriptEventReceive.subscribe(this.receive.handleScriptEvent);
     }
 
     public getSelfAddonProperty(): AddonProperty {
@@ -54,13 +52,8 @@ export class AddonRouter {
      * Add BehaviorInitialize handles to WorldLoad and ScriptEventReceive
      */
     public startRouting() {
-        world.afterEvents.worldLoad.subscribe((ev: WorldLoadAfterEvent) => {
-            this.request.handleWorldLoad(ev);
-        });
-
-        system.afterEvents.scriptEventReceive.subscribe((ev: ScriptEventCommandMessageAfterEvent) => {
-            this.pending.handleScriptEventReceive(ev);
-        });
+        world.afterEvents.worldLoad.subscribe(this.request.handleWorldLoad);
+        system.afterEvents.scriptEventReceive.subscribe(this.pending.handleScriptEventReceive);
     }
 
     public getAllPendingAddons(): AddonProperty[] {
