@@ -1,4 +1,4 @@
-import { ScriptEventCommandMessageAfterEvent, system, world, WorldLoadAfterEvent } from "@minecraft/server";
+import { system, world } from "@minecraft/server";
 import { BehaviorInitializePending } from "./router/init/behaviorInitializePending";
 import { BehaviorInitializeReceive } from "./router/init/behaviorInitializeReceive";
 import { BehaviorInitializeRegister } from "./router/init/behaviorInitializeRegister";
@@ -20,8 +20,11 @@ export class AddonRouter {
     static create(kairo) {
         return new AddonRouter(kairo);
     }
-    installClientHooks() {
+    subscribeClientHooks() {
         system.afterEvents.scriptEventReceive.subscribe(this.receive.handleScriptEvent);
+    }
+    unsubscribeClientHooks() {
+        system.afterEvents.scriptEventReceive.unsubscribe(this.receive.handleScriptEvent);
     }
     getSelfAddonProperty() {
         return this.kairo.getSelfAddonProperty();
@@ -37,9 +40,13 @@ export class AddonRouter {
      * WorldLoadとScriptEventReceiveに、BehaviorInitializeのハンドルを追加する
      * Add BehaviorInitialize handles to WorldLoad and ScriptEventReceive
      */
-    startRouting() {
+    subscribeCoreHooks() {
         world.afterEvents.worldLoad.subscribe(this.request.handleWorldLoad);
         system.afterEvents.scriptEventReceive.subscribe(this.pending.handleScriptEventReceive);
+    }
+    unsubscribeCoreHooks() {
+        world.afterEvents.worldLoad.unsubscribe(this.request.handleWorldLoad);
+        system.afterEvents.scriptEventReceive.unsubscribe(this.pending.handleScriptEventReceive);
     }
     getAllPendingAddons() {
         return this.pending.getAll();

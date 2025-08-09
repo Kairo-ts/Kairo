@@ -18,6 +18,9 @@ export class BehaviorInitializeReceive {
                 case "kairo:requestReseedId":
                     this.handleRequestReseedId(message);
                     break;
+                case "kairo:unsubscribeInitialize":
+                    this.addonRouter.unsubscribeClientHooks();
+                    break;
             }
         };
     }

@@ -17,10 +17,10 @@ export class Kairo {
         if (inst.initialized)
             return;
         inst.initialized = true;
-        inst.addonRouter.installClientHooks();
+        inst.addonRouter.subscribeClientHooks();
     }
-    static startRouter() {
-        this.getInstance().addonRouter.startRouting();
+    static initRouter() {
+        this.getInstance().addonRouter.subscribeCoreHooks();
     }
     getSelfAddonProperty() {
         return this.addonPropertyManager.getSelfAddonProperty();

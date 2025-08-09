@@ -1,3 +1,4 @@
+import { system } from "@minecraft/server";
 /**
  * 応答したアドオンを登録するためのクラス
  * 前提アドオンの有無などを調べて、追加するかどうかの判定もする
@@ -16,5 +17,7 @@ export class BehaviorInitializeRegister {
     }
     registerAddon() {
         console.log(this.addonRouter.getAllPendingAddons().map(addon => addon.sessionId).join(", "));
+        this.addonRouter.unsubscribeCoreHooks();
+        system.sendScriptEvent("kairo:unsubscribeInitialize", "");
     }
 }
