@@ -1,3 +1,4 @@
+import { system } from "@minecraft/server";
 import type { AddonRouter } from "../../AddonRouter";
 
 /**
@@ -18,5 +19,7 @@ export class BehaviorInitializeRegister {
 
     public registerAddon(): void {
         console.log(this.addonRouter.getAllPendingAddons().map(addon => addon.sessionId).join(", "));
+        this.addonRouter.unsubscribeCoreHooks();
+        system.sendScriptEvent("kairo:unsubscribeInitialize", "");
     }
 }
