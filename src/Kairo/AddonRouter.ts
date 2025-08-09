@@ -1,0 +1,70 @@
+import { ScriptEventCommandMessageAfterEvent, system, world, WorldLoadAfterEvent } from "@minecraft/server";
+import { BehaviorInitializePending } from "./router/init/behaviorInitializePending";
+import { BehaviorInitializeReceive } from "./router/init/behaviorInitializeReceive";
+import { BehaviorInitializeRegister } from "./router/init/behaviorInitializeRegister";
+import { BehaviorInitializeRequest } from "./router/init/behaviorInitializeRequest";
+import { BehaviorInitializeResponse } from "./router/init/behaviorInitializeResponse";
+import type { Kairo } from ".";
+import type { AddonProperty } from "./AddonPropertyManager";
+
+/**
+ * Werewolf-AddonRouterの中枢となるクラス
+ * The core class of Werewolf-AddonRouter
+ */
+export class AddonRouter {
+    private readonly pending: BehaviorInitializePending;
+    private readonly receive: BehaviorInitializeReceive;
+    private readonly register: BehaviorInitializeRegister;
+    private readonly request: BehaviorInitializeRequest;
+    private readonly response: BehaviorInitializeResponse;
+
+    private constructor(private readonly kairo: Kairo) {
+        this.pending = BehaviorInitializePending.create(this);
+        this.receive = BehaviorInitializeReceive.create(this);
+        this.register = BehaviorInitializeRegister.create(this);
+        this.request = BehaviorInitializeRequest.create(this);
+        this.response = BehaviorInitializeResponse.create(this);
+    }
+
+    public static create(kairo: Kairo): AddonRouter {
+        return new AddonRouter(kairo);
+    }
+
+    public installClientHooks() {
+        system.afterEvents.scriptEventReceive.subscribe(this.receive.handleScriptEvent);
+    }
+
+    public getSelfAddonProperty(): AddonProperty {
+        return this.kairo.getSelfAddonProperty();
+    }
+
+    public refreshSessionId(): void {
+        return this.kairo.refreshSessionId();
+    }
+
+    public sendResponse(): void {
+        const selfAddonProperty = this.getSelfAddonProperty();
+        this.response.sendResponse(selfAddonProperty);
+    }
+
+    /**
+     * WorldLoadとScriptEventReceiveに、BehaviorInitializeのハンドルを追加する
+     * Add BehaviorInitialize handles to WorldLoad and ScriptEventReceive
+     */
+    public startRouting() {
+        world.afterEvents.worldLoad.subscribe(this.request.handleWorldLoad);
+        system.afterEvents.scriptEventReceive.subscribe(this.pending.handleScriptEventReceive);
+    }
+
+    public getAllPendingAddons(): AddonProperty[] {
+        return this.pending.getAll();
+    }
+
+    public getPendingReady(): Promise<void> {
+        return this.pending.ready;
+    }
+
+    public registerAddon(): void {
+        this.register.registerAddon();
+    }
+}

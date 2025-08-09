@@ -1,37 +1,50 @@
-import { AddonPropertyManager } from "./AddonPropertyManager";
+import { AddonPropertyManager, type AddonProperty } from "./AddonPropertyManager";
 import { AddonRouter } from "./AddonRouter";
+
 export class Kairo {
-    constructor() {
-        this.initialized = false;
+    private static instance: Kairo;
+    private initialized = false;
+
+    private readonly addonPropertyManager: AddonPropertyManager;
+    private readonly addonRouter: AddonRouter;
+
+    private constructor() {
         this.addonPropertyManager = AddonPropertyManager.create(this);
         this.addonRouter = AddonRouter.create(this);
     }
-    static getInstance() {
+
+    private static getInstance(): Kairo {
         if (!this.instance) {
             this.instance = new Kairo();
         }
         return this.instance;
     }
-    static init() {
+
+    public static init(): void {
         const inst = this.getInstance();
-        if (inst.initialized)
-            return;
+        if (inst.initialized) return;
+
         inst.initialized = true;
         inst.addonRouter.installClientHooks();
     }
-    static startRouter() {
+
+    public static startRouter(): void {
         this.getInstance().addonRouter.startRouting();
     }
-    getSelfAddonProperty() {
+
+    public getSelfAddonProperty(): AddonProperty {
         return this.addonPropertyManager.getSelfAddonProperty();
     }
-    refreshSessionId() {
+
+    public refreshSessionId(): void {
         this.addonPropertyManager.refreshSessionId();
     }
-    static pendingReady() {
+
+    public static pendingReady(): Promise<void> {
         return this.getInstance().addonRouter.getPendingReady();
     }
-    static registerAddon() {
+
+    public static registerAddon(): void {
         return this.getInstance().addonRouter.registerAddon();
     }
 }

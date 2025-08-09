@@ -1,11 +1,8 @@
-import { AddonRouter } from "./kairo/router/AddonRouter";
-import { BehaviorManager } from "./kairo/router/init/behaviorManager";
-import { BehaviorInitializePending } from "./kairo/router/init/behaviorInitializePending";
-import { BehaviorInitializeRegister } from "./kairo/router/init/behaviorInitializeRegister";
+import { Kairo } from "./Kairo/index";
 async function main() {
-    BehaviorManager.initialize();
-    AddonRouter.initialize();
-    await BehaviorInitializePending.ready;
-    BehaviorInitializeRegister.registerAddon();
+    Kairo.init(); // client
+    Kairo.startRouter();
+    await Kairo.pendingReady();
+    Kairo.registerAddon();
 }
 main();

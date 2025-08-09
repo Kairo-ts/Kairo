@@ -1,4 +1,3 @@
-import { BehaviorInitializePending } from "./behaviorInitializePending";
 /**
  * 応答したアドオンを登録するためのクラス
  * 前提アドオンの有無などを調べて、追加するかどうかの判定もする
@@ -9,7 +8,13 @@ import { BehaviorInitializePending } from "./behaviorInitializePending";
  * *Currently, only the functionality for receiving responses is implemented.*
  */
 export class BehaviorInitializeRegister {
-    static registerAddon() {
-        console.log(BehaviorInitializePending.getAll().map(addon => addon.sessionId).join(", "));
+    constructor(addonRouter) {
+        this.addonRouter = addonRouter;
+    }
+    static create(addonRouter) {
+        return new BehaviorInitializeRegister(addonRouter);
+    }
+    registerAddon() {
+        console.log(this.addonRouter.getAllPendingAddons().map(addon => addon.sessionId).join(", "));
     }
 }
