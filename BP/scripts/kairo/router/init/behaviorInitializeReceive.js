@@ -1,6 +1,4 @@
 import { world } from "@minecraft/server";
-import { BehaviorInitializeResponse } from "./behaviorInitializeResponse";
-import { AddonPropertyManager } from "../AddonProperty";
 /**
  * 各アドオンが、ルーターからのリクエストを受け取るためのクラス
  * 受け取った initializeRequest を、そのまま BehaviorInitializeResponseへ流します
@@ -9,25 +7,32 @@ import { AddonPropertyManager } from "../AddonProperty";
  * Forwards the received initializeRequest directly to BehaviorInitializeResponse.
  */
 export class BehaviorInitializeReceive {
-    static handleScriptEventReceive(ev) {
+    constructor(addonRouter) {
+        this.addonRouter = addonRouter;
+    }
+    static create(addonRouter) {
+        return new BehaviorInitializeReceive(addonRouter);
+    }
+    handleScriptEvent(ev) {
         const { id, message } = ev;
-        if (id === "router:requestReseedId") {
-            this.handleReseedRequest(message);
-            return;
-        }
-        if (id === "router:initializeRequest") {
-            this.handleInitializeRequest();
-            return;
+        switch (id) {
+            case "kairo:initializeRequest":
+                this.handleInitializeRequest();
+                break;
+            case "kairo:requestReseedId":
+                this.handleRequestReseedId(message);
+                break;
         }
     }
-    static handleReseedRequest(message) {
-        if (message !== AddonPropertyManager.getSelfAddonProperty().sessionId)
-            return;
-        AddonPropertyManager.refreshSessionId();
-        BehaviorInitializeResponse.sendResponse();
-    }
-    static handleInitializeRequest() {
+    handleInitializeRequest() {
         world.scoreboard.getObjective("AddonCounter")?.addScore("AddonCounter", 1);
-        BehaviorInitializeResponse.sendResponse();
+        this.addonRouter.requestSendResponse();
+    }
+    handleRequestReseedId(message) {
+        const selfSessionId = this.addonRouter.requestGetSelfAddonProperty().sessionId;
+        if (message !== selfSessionId)
+            return;
+        this.addonRouter.requestRefreshSessionId();
+        this.addonRouter.requestSendResponse();
     }
 }

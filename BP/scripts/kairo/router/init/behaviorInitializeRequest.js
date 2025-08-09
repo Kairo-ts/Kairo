@@ -8,10 +8,16 @@ import { ConsoleManager } from "../../../utils/consoleManager";
  * Each addon must prepare BehaviorInitializeReceive
  */
 export class BehaviorInitializeRequest {
-    static handleWorldLoad(ev) {
+    constructor(addonRouter) {
+        this.addonRouter = addonRouter;
+    }
+    static create(addonRouter) {
+        return new BehaviorInitializeRequest(addonRouter);
+    }
+    handleWorldLoad(ev) {
         this.sendRequest();
     }
-    static sendRequest() {
+    sendRequest() {
         /**
          * アドオンの数を数えるためのscoreboardを用意しておく
          * Prepare a scoreboard to count the number of addons
@@ -22,6 +28,6 @@ export class BehaviorInitializeRequest {
          * Send a scriptEvent to request registration from each addon
          */
         ConsoleManager.log("World loaded. Sending core initialization request...");
-        system.sendScriptEvent("router:initializeRequest", "");
+        system.sendScriptEvent("kairo:initializeRequest", "");
     }
 }

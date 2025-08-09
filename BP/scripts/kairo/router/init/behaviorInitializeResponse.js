@@ -1,5 +1,4 @@
 import { system } from "@minecraft/server";
-import { AddonPropertyManager } from "../AddonProperty";
 /**
  * アドオンの properties を参照して、ルーターに応答するためのクラス
  * propertiesの必要な部分を抜粋して、JSON.stringifyで送信します
@@ -8,7 +7,13 @@ import { AddonPropertyManager } from "../AddonProperty";
  * Extracts the necessary parts of the properties and sends them using JSON.stringify
  */
 export class BehaviorInitializeResponse {
-    static sendResponse() {
-        system.sendScriptEvent("router:initializeResponse", JSON.stringify(AddonPropertyManager.getSelfAddonProperty()));
+    constructor(addonRouter) {
+        this.addonRouter = addonRouter;
+    }
+    static create(addonRouter) {
+        return new BehaviorInitializeResponse(addonRouter);
+    }
+    sendResponse(addonProperty) {
+        system.sendScriptEvent("router:initializeResponse", JSON.stringify(addonProperty));
     }
 }

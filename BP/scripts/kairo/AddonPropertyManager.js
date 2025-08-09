@@ -1,6 +1,8 @@
-import { properties } from "../../properties";
+import { properties } from "../properties";
 export class AddonPropertyManager {
-    static setSelfAddonProperty() {
+    constructor(kairo) {
+        this.kairo = kairo;
+        this.charset = [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'];
         this.self = {
             name: properties.header.name,
             sessionId: this.generateRandomId(8),
@@ -9,14 +11,16 @@ export class AddonPropertyManager {
             requiredAddons: properties.requiredAddons
         };
     }
-    static getSelfAddonProperty() {
+    static create(kairo) {
+        return new AddonPropertyManager(kairo);
+    }
+    getSelfAddonProperty() {
         return this.self;
     }
-    static refreshSessionId() {
+    refreshSessionId() {
         this.self.sessionId = this.generateRandomId(8);
     }
-    static generateRandomId(length = 8) {
+    generateRandomId(length = 8) {
         return Array.from({ length }, () => this.charset[Math.floor(Math.random() * this.charset.length)]).join('');
     }
 }
-AddonPropertyManager.charset = [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'];
