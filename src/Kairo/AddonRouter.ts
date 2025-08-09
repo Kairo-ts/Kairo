@@ -1,4 +1,4 @@
-import { ScriptEventCommandMessageAfterEvent, system, world, WorldLoadAfterEvent } from "@minecraft/server";
+import { system, world } from "@minecraft/server";
 import { BehaviorInitializePending } from "./router/init/behaviorInitializePending";
 import { BehaviorInitializeReceive } from "./router/init/behaviorInitializeReceive";
 import { BehaviorInitializeRegister } from "./router/init/behaviorInitializeRegister";
