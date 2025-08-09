@@ -50,7 +50,7 @@ export class AddonRouter {
     }
 
     /**
-     * WolrdLoadとScriptEventReceiveに、BehaviorInitializeのハンドルを追加する
+     * WorldLoadとScriptEventReceiveに、BehaviorInitializeのハンドルを追加する
      * Add BehaviorInitialize handles to WorldLoad and ScriptEventReceive
      */
     public startRouting() {
