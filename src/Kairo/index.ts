@@ -3,6 +3,7 @@ import { AddonRouter } from "./AddonRouter";
 
 export class Kairo {
     private static instance: Kairo;
+    private initialized = false;
 
     private readonly addonPropertyManager: AddonPropertyManager;
     private readonly addonRouter: AddonRouter;
@@ -20,7 +21,11 @@ export class Kairo {
     }
 
     public static init(): void {
-        this.getInstance().addonRouter.clientInitialize();
+        const inst = this.getInstance();
+        if (inst.initialized) return;
+
+        inst.initialized = true;
+        inst.addonRouter.installHooks();
     }
 
     public static initialize(): void {
