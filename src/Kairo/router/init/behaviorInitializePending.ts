@@ -1,6 +1,6 @@
 import { system, world, type ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
-import type { AddonProperty } from "../../AddonProperty";
-import type { AddonRouter } from "../AddonRouter";
+import type { AddonProperty } from "../../AddonPropertyManager";
+import type { AddonRouter } from "../../AddonRouter";
 
 /**
  * BehaviorInitializeRequestの要求に対して、BehaviorInitializeResponseで応答したアドオンを
@@ -25,7 +25,7 @@ export class BehaviorInitializePending {
     public handleScriptEventReceive(ev: ScriptEventCommandMessageAfterEvent): void {
         const { id, message } = ev;
 
-        if (id !== "router:initializeResponse") return;
+        if (id !== "kairo:initializeResponse") return;
         this.add(message);
 
         const addonCount: number = world.scoreboard.getObjective("AddonCounter")?.getScore("AddonCounter") ?? 0;
@@ -44,7 +44,7 @@ export class BehaviorInitializePending {
          * If the ID is duplicated, request a new ID again
          */
         if (this.pendingAddons.has(addonProperties.sessionId)) {
-            system.sendScriptEvent("router:requestReseedId", addonProperties.sessionId);
+            system.sendScriptEvent("kairo:requestReseedId", addonProperties.sessionId);
             return;
         }
         this.pendingAddons.set(addonProperties.sessionId, addonProperties);

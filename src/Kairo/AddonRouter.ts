@@ -5,6 +5,7 @@ import { BehaviorInitializeRegister } from "./router/init/behaviorInitializeRegi
 import { BehaviorInitializeRequest } from "./router/init/behaviorInitializeRequest";
 import { BehaviorInitializeResponse } from "./router/init/behaviorInitializeResponse";
 import type { Kairo } from ".";
+import type { AddonProperty } from "./AddonPropertyManager";
 
 /**
  * Werewolf-AddonRouterの中枢となるクラス
@@ -31,12 +32,21 @@ export class AddonRouter {
 
     public clientInitialize() {
         system.afterEvents.scriptEventReceive.subscribe((ev: ScriptEventCommandMessageAfterEvent) => {
-            this.receiveHandleScriptEvent(ev);
+            this.receive.handleScriptEvent(ev);
         });
     }
 
-    private receiveHandleScriptEvent(ev: ScriptEventCommandMessageAfterEvent): void {
+    public requestGetSelfAddonProperty(): AddonProperty {
+        return this.kairo.getSelfAddonProperty();
+    }
 
+    public requestRefreshSessionId(): void {
+        return this.kairo.refreshSessionId();
+    }
+
+    public requestSendResponse(): void {
+        const selfAddonProperty = this.requestGetSelfAddonProperty();
+        this.response.sendResponse(selfAddonProperty);
     }
 
     /**
@@ -45,23 +55,23 @@ export class AddonRouter {
      */
     public initialize() {
         world.afterEvents.worldLoad.subscribe((ev: WorldLoadAfterEvent) => {
-            this.requestHandleWorldLoad(ev);
+            this.request.handleWorldLoad(ev);
         });
 
         system.afterEvents.scriptEventReceive.subscribe((ev: ScriptEventCommandMessageAfterEvent) => {
-            this.pendingHandleScriptEventReceive(ev);
+            this.pending.handleScriptEventReceive(ev);
         });
     }
 
-    private requestHandleWorldLoad(ev: WorldLoadAfterEvent): void {
-
+    public requestGetAllPendingAddons(): AddonProperty[] {
+        return this.pending.getAll();
     }
 
-    private pendingHandleScriptEventReceive(ev: ScriptEventCommandMessageAfterEvent): void {
-
+    public getPendingReady(): Promise<void> {
+        return this.pending.ready;
     }
-    //public initialize() {
-    //    world.afterEvents.worldLoad.subscribe((ev) => BehaviorInitializeRequest.handleWorldLoad(ev));
-    //    system.afterEvents.scriptEventReceive.subscribe((ev) => BehaviorInitializePending.handleScriptEventReceive(ev));
-    //}
+
+    public requestRegisterAddon(): void {
+        this.register.registerAddon();
+    }
 }

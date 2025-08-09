@@ -1,5 +1,4 @@
-import type { AddonRouter } from "../AddonRouter";
-import { BehaviorInitializePending } from "./behaviorInitializePending";
+import type { AddonRouter } from "../../AddonRouter";
 
 /**
  * 応答したアドオンを登録するためのクラス
@@ -12,12 +11,12 @@ import { BehaviorInitializePending } from "./behaviorInitializePending";
  */
 export class BehaviorInitializeRegister {
     private constructor(private readonly addonRouter: AddonRouter) {}
-    
+
     public static create(addonRouter: AddonRouter): BehaviorInitializeRegister {
         return new BehaviorInitializeRegister(addonRouter);
     }
 
     public registerAddon(): void {
-        console.log(BehaviorInitializePending.getAll().map(addon => addon.sessionId).join(", "));
+        console.log(this.addonRouter.requestGetAllPendingAddons().map(addon => addon.sessionId).join(", "));
     }
 }

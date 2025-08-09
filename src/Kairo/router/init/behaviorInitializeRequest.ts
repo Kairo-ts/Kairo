@@ -1,6 +1,6 @@
 import { system, world, WorldLoadAfterEvent } from "@minecraft/server";
 import { ConsoleManager } from "../../../utils/consoleManager";
-import type { AddonRouter } from "../AddonRouter";
+import type { AddonRouter } from "../../AddonRouter";
 
 /**
  * ルーターが各アドオンに登録要求を送るためのクラス
@@ -11,7 +11,7 @@ import type { AddonRouter } from "../AddonRouter";
  */
 export class BehaviorInitializeRequest {
     private constructor(private readonly addonRouter: AddonRouter) {}
-    
+
     public static create(addonRouter: AddonRouter): BehaviorInitializeRequest {
         return new BehaviorInitializeRequest(addonRouter);
     }
@@ -32,6 +32,6 @@ export class BehaviorInitializeRequest {
          * Send a scriptEvent to request registration from each addon
          */
         ConsoleManager.log("World loaded. Sending core initialization request...");
-        system.sendScriptEvent("router:initializeRequest", "");
+        system.sendScriptEvent("kairo:initializeRequest", "");
     }
 }

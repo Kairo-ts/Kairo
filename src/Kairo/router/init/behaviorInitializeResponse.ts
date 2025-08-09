@@ -1,6 +1,6 @@
 import { system } from "@minecraft/server";
-import type { AddonProperty } from "../../AddonProperty";
-import type { AddonRouter } from "../AddonRouter";
+import type { AddonProperty } from "../../AddonPropertyManager";
+import type { AddonRouter } from "../../AddonRouter";
 
 /**
  * アドオンの properties を参照して、ルーターに応答するためのクラス
@@ -11,12 +11,12 @@ import type { AddonRouter } from "../AddonRouter";
  */
 export class BehaviorInitializeResponse {
     private constructor(private readonly addonRouter: AddonRouter) {}
-    
+
     public static create(addonRouter: AddonRouter): BehaviorInitializeResponse {
         return new BehaviorInitializeResponse(addonRouter);
     }
 
-    sendResponse(addonProperty: AddonProperty): void {
+    public sendResponse(addonProperty: AddonProperty): void {
         system.sendScriptEvent("router:initializeResponse", JSON.stringify(addonProperty));
     }
 }

@@ -1,7 +1,5 @@
 import { world, type ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
-import { BehaviorInitializeResponse } from "./behaviorInitializeResponse";
-import { AddonPropertyManager } from "../../AddonProperty";
-import type { AddonRouter } from "../AddonRouter";
+import type { AddonRouter } from "../../AddonRouter";
 
 /**
  * 各アドオンが、ルーターからのリクエストを受け取るためのクラス
@@ -17,29 +15,29 @@ export class BehaviorInitializeReceive {
         return new BehaviorInitializeReceive(addonRouter);
     }
 
-    public handleScriptEventReceive(ev: ScriptEventCommandMessageAfterEvent): void {
+    public handleScriptEvent(ev: ScriptEventCommandMessageAfterEvent): void {
         const { id, message } = ev;
 
-        if (id === "router:requestReseedId") {
-            this.handleReseedRequest(message);
-            return;
+        switch (id) {
+            case "kairo:initializeRequest":
+                this.handleInitializeRequest();
+                break;
+            case "kairo:requestReseedId":
+                this.handleRequestReseedId(message);
+                break;
         }
-
-        if (id === "router:initializeRequest") {
-            this.handleInitializeRequest();
-            return;
-        }
-    }
-
-    private handleReseedRequest(message: string): void {
-        if (message !== AddonPropertyManager.getSelfAddonProperty().sessionId) return;
-
-        AddonPropertyManager.refreshSessionId();
-        BehaviorInitializeResponse.sendResponse();
     }
 
     private handleInitializeRequest(): void {
         world.scoreboard.getObjective("AddonCounter")?.addScore("AddonCounter", 1);
-        BehaviorInitializeResponse.sendResponse();
+        this.addonRouter.requestSendResponse();
+    }
+
+    private handleRequestReseedId(message: string): void {
+        const selfSessionId = this.addonRouter.requestGetSelfAddonProperty().sessionId;
+        if (message !== selfSessionId) return;
+
+        this.addonRouter.requestRefreshSessionId();
+        this.addonRouter.requestSendResponse();
     }
 }
