@@ -2,6 +2,7 @@ import { system, world, type ScriptEventCommandMessageAfterEvent } from "@minecr
 import type { AddonProperty } from "../../AddonPropertyManager";
 import type { AddonRouter } from "../../AddonRouter";
 import { SCRIPT_EVENT_IDS } from "../../constants";
+import { ConsoleManager } from "../../../utils/consoleManager";
 
 /**
  * 応答したアドオンを登録するためのクラス
@@ -46,6 +47,7 @@ export class BehaviorInitializeRegister {
             system.sendScriptEvent(SCRIPT_EVENT_IDS.REQUEST_RESEED_SESSION_ID, registrationNum.toString());
             return;
         }
+        ConsoleManager.log(`Registering addon: ${addonProperties.name} - ver.${addonProperties.version.join(".")}`);
         this.registeredAddons.set(addonProperties.sessionId, addonProperties);
     }
 
