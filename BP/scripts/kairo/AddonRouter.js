@@ -1,5 +1,4 @@
 import { system, world } from "@minecraft/server";
-import { BehaviorInitializePending } from "./router/init/behaviorInitializePending";
 import { BehaviorInitializeReceive } from "./router/init/behaviorInitializeReceive";
 import { BehaviorInitializeRegister } from "./router/init/behaviorInitializeRegister";
 import { BehaviorInitializeRequest } from "./router/init/behaviorInitializeRequest";
@@ -12,7 +11,6 @@ export class AddonRouter {
     constructor(kairo) {
         this.kairo = kairo;
         this.registrationNum = 0;
-        this.pending = BehaviorInitializePending.create(this);
         this.receive = BehaviorInitializeReceive.create(this);
         this.register = BehaviorInitializeRegister.create(this);
         this.request = BehaviorInitializeRequest.create(this);
@@ -49,19 +47,16 @@ export class AddonRouter {
      */
     subscribeCoreHooks() {
         world.afterEvents.worldLoad.subscribe(this.request.handleWorldLoad);
-        system.afterEvents.scriptEventReceive.subscribe(this.pending.handleScriptEventReceive);
+        system.afterEvents.scriptEventReceive.subscribe(this.register.handleScriptEventReceive);
     }
     unsubscribeCoreHooks() {
         world.afterEvents.worldLoad.unsubscribe(this.request.handleWorldLoad);
-        system.afterEvents.scriptEventReceive.unsubscribe(this.pending.handleScriptEventReceive);
+        system.afterEvents.scriptEventReceive.unsubscribe(this.register.handleScriptEventReceive);
     }
     getAllPendingAddons() {
-        return this.pending.getAll();
+        return this.register.getAll();
     }
-    getPendingReady() {
-        return this.pending.ready;
-    }
-    registerAddon() {
-        this.register.registerAddon();
+    awaitRegistration() {
+        return this.register.ready;
     }
 }
