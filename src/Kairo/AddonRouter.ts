@@ -1,4 +1,5 @@
 import { system, world } from "@minecraft/server";
+import { BehaviorInitializeActivator } from "./router/init/behaviorInitializeActivator";
 import { BehaviorInitializeReceive } from "./router/init/behaviorInitializeReceive";
 import { BehaviorInitializeRegister } from "./router/init/behaviorInitializeRegister";
 import { BehaviorInitializeRequest } from "./router/init/behaviorInitializeRequest";
@@ -13,12 +14,14 @@ import type { AddonProperty } from "./AddonPropertyManager";
 export class AddonRouter {
     private registrationNum: number = 0;
 
+    private readonly activator: BehaviorInitializeActivator;
     private readonly receive: BehaviorInitializeReceive;
     private readonly register: BehaviorInitializeRegister;
     private readonly request: BehaviorInitializeRequest;
     private readonly response: BehaviorInitializeResponse;
 
     private constructor(private readonly kairo: Kairo) {
+        this.activator = BehaviorInitializeActivator.create(this);
         this.receive = BehaviorInitializeReceive.create(this);
         this.register = BehaviorInitializeRegister.create(this);
         this.request = BehaviorInitializeRequest.create(this);
