@@ -25,7 +25,7 @@ export class BehaviorInitializeRequest {
          * アドオンの数を数えるためのscoreboardを用意しておく
          * Prepare a scoreboard to count the number of addons
          */
-        world.scoreboard.addObjective("AddonCounter").setScore("AddonCounter", 0);
+        this.setAddonCounter();
         
         /**
          * scriptEventを送信して、各アドオンに登録要求を送る
@@ -33,5 +33,15 @@ export class BehaviorInitializeRequest {
          */
         ConsoleManager.log("World loaded. Sending core initialization request...");
         system.sendScriptEvent("kairo:initializeRequest", "");
+    }
+
+    private setAddonCounter(): void {
+        let addonCounter = world.scoreboard.getObjective("AddonCounter");
+
+        if (!addonCounter) {
+            addonCounter = world.scoreboard.addObjective("AddonCounter");
+        }
+
+        addonCounter.setScore("AddonCounter", 0);
     }
 }
