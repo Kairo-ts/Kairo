@@ -1,3 +1,4 @@
+import type { AddonProperty } from "../../AddonPropertyManager";
 import type { AddonRouter } from "../../AddonRouter";
 
 /**
@@ -9,5 +10,9 @@ export class BehaviorInitializeActivator {
     private constructor(private readonly addonRouter: AddonRouter) {}
     public static create(addonRouter: AddonRouter): BehaviorInitializeActivator {
         return new BehaviorInitializeActivator(addonRouter);
+    }
+
+    public activateAddons(addons: AddonProperty[]): void {
+
     }
 }

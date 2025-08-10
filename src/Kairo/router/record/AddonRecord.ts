@@ -1,3 +1,4 @@
+import type { AddonProperty } from "../../AddonPropertyManager";
 import type { AddonRouter } from "../../AddonRouter";
 
 export class AddonRecord {
@@ -5,5 +6,9 @@ export class AddonRecord {
 
     public static create(addonRouter: AddonRouter): AddonRecord {
         return new AddonRecord(addonRouter);
+    }
+
+    public saveAddons(addons: AddonProperty[]): void {
+        
     }
 }

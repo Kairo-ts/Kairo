@@ -33,6 +33,10 @@ export class BehaviorInitializeRegister {
             this._resolveReady?.();
             this._resolveReady = null;
             world.scoreboard.removeObjective("AddonCounter");
+
+            const registeredAddons = Array.from(this.registeredAddons.values());
+            this.addonRouter.saveAddons(registeredAddons);
+            this.addonRouter.activateAddons(registeredAddons);
         }
     }
 

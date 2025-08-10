@@ -4,6 +4,7 @@ import { BehaviorInitializeReceive } from "./router/init/behaviorInitializeRecei
 import { BehaviorInitializeRegister } from "./router/init/behaviorInitializeRegister";
 import { BehaviorInitializeRequest } from "./router/init/behaviorInitializeRequest";
 import { BehaviorInitializeResponse } from "./router/init/behaviorInitializeResponse";
+import { AddonRecord } from "./router/record/AddonRecord";
 import type { Kairo } from ".";
 import type { AddonProperty } from "./AddonPropertyManager";
 
@@ -19,6 +20,7 @@ export class AddonRouter {
     private readonly register: BehaviorInitializeRegister;
     private readonly request: BehaviorInitializeRequest;
     private readonly response: BehaviorInitializeResponse;
+    private readonly record: AddonRecord;
 
     private constructor(private readonly kairo: Kairo) {
         this.activator = BehaviorInitializeActivator.create(this);
@@ -26,6 +28,7 @@ export class AddonRouter {
         this.register = BehaviorInitializeRegister.create(this);
         this.request = BehaviorInitializeRequest.create(this);
         this.response = BehaviorInitializeResponse.create(this);
+        this.record = AddonRecord.create(this);
     }
 
     public static create(kairo: Kairo): AddonRouter {
@@ -81,5 +84,13 @@ export class AddonRouter {
 
     public awaitRegistration(): Promise<void> {
         return this.register.ready;
+    }
+
+    public saveAddons(addons: AddonProperty[]): void {
+        this.record.saveAddons(addons);
+    }
+
+    public activateAddons(addons: AddonProperty[]): void {
+        this.activator.activateAddons(addons);
     }
 }
