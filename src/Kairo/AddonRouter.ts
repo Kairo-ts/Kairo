@@ -12,6 +12,8 @@ import type { AddonProperty } from "./AddonPropertyManager";
  * The core class of Werewolf-AddonRouter
  */
 export class AddonRouter {
+    private registrationNum: number = 0;
+
     private readonly pending: BehaviorInitializePending;
     private readonly receive: BehaviorInitializeReceive;
     private readonly register: BehaviorInitializeRegister;
@@ -49,6 +51,14 @@ export class AddonRouter {
     public sendResponse(): void {
         const selfAddonProperty = this.getSelfAddonProperty();
         this.response.sendResponse(selfAddonProperty);
+    }
+
+    public setRegistrationNum(num: number): void {
+        this.registrationNum = num;
+    }
+
+    public getRegistrationNum(): number {
+        return this.registrationNum;
     }
 
     /**
