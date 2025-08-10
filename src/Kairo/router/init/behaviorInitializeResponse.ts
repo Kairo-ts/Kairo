@@ -1,6 +1,7 @@
 import { system } from "@minecraft/server";
 import type { AddonProperty } from "../../AddonPropertyManager";
 import type { AddonRouter } from "../../AddonRouter";
+import { SCRIPT_EVENT_IDS } from "../../constants";
 
 /**
  * アドオンの properties を参照して、ルーターに応答するためのクラス
@@ -17,6 +18,6 @@ export class BehaviorInitializeResponse {
     }
 
     public sendResponse(addonProperty: AddonProperty): void {
-        system.sendScriptEvent("kairo:initializeResponse", JSON.stringify(addonProperty));
+        system.sendScriptEvent(SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZE_RESPONSE, JSON.stringify(addonProperty));
     }
 }

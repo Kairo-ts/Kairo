@@ -1,5 +1,6 @@
 import { system } from "@minecraft/server";
 import type { AddonRouter } from "../../AddonRouter";
+import { SCRIPT_EVENT_IDS } from "../../constants";
 
 /**
  * 応答したアドオンを登録するためのクラス
@@ -20,6 +21,6 @@ export class BehaviorInitializeRegister {
     public registerAddon(): void {
         console.log(this.addonRouter.getAllPendingAddons().map(addon => addon.sessionId).join(", "));
         this.addonRouter.unsubscribeCoreHooks();
-        system.sendScriptEvent("kairo:unsubscribeInitialize", "");
+        system.sendScriptEvent(SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE, "");
     }
 }
