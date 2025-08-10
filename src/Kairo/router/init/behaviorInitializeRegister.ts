@@ -4,14 +4,12 @@ import type { AddonRouter } from "../../AddonRouter";
 import { SCRIPT_EVENT_IDS } from "../../constants";
 
 /**
- * BehaviorInitializeRequestの要求に対して、BehaviorInitializeResponseで応答したアドオンを
- * 登録するために一時的に保存しておくためのクラス
+ * 応答したアドオンを登録するためのクラス
  * 
- * A class for temporarily storing addons that responded with BehaviorInitializeResponse
- * to a BehaviorInitializeRequest, in order to register them later.
+ * A class responsible for registering addons that have responded.
  */
-export class BehaviorInitializePending {
-    private readonly pendingAddons: Map<string, AddonProperty> = new Map();
+export class BehaviorInitializeRegister {
+    private readonly registeredAddons: Map<string, AddonProperty> = new Map();
 
     private _resolveReady: (() => void) | null = null;
     public readonly ready: Promise<void> = new Promise(resolve => {
@@ -19,8 +17,8 @@ export class BehaviorInitializePending {
     });
 
     private constructor(private readonly addonRouter: AddonRouter) {}
-    public static create(addonRouter: AddonRouter): BehaviorInitializePending {
-        return new BehaviorInitializePending(addonRouter);
+    public static create(addonRouter: AddonRouter): BehaviorInitializeRegister {
+        return new BehaviorInitializeRegister(addonRouter);
     }
 
     public handleScriptEventReceive = (ev: ScriptEventCommandMessageAfterEvent): void => {
@@ -30,7 +28,7 @@ export class BehaviorInitializePending {
         this.add(message);
 
         const addonCount: number = world.scoreboard.getObjective("AddonCounter")?.getScore("AddonCounter") ?? 0;
-        if (addonCount === this.pendingAddons.size) {
+        if (addonCount === this.registeredAddons.size) {
             this._resolveReady?.();
             this._resolveReady = null;
             world.scoreboard.removeObjective("AddonCounter");
@@ -44,22 +42,22 @@ export class BehaviorInitializePending {
          * Idが重複している場合は、再度IDを要求する
          * If the ID is duplicated, request a new ID again
          */
-        if (this.pendingAddons.has(addonProperties.sessionId)) {
+        if (this.registeredAddons.has(addonProperties.sessionId)) {
             system.sendScriptEvent(SCRIPT_EVENT_IDS.REQUEST_RESEED_SESSION_ID, registrationNum.toString());
             return;
         }
-        this.pendingAddons.set(addonProperties.sessionId, addonProperties);
+        this.registeredAddons.set(addonProperties.sessionId, addonProperties);
     }
 
     public has(sessionId: string): boolean {
-        return this.pendingAddons.has(sessionId);
+        return this.registeredAddons.has(sessionId);
     }
 
     public get(sessionId: string): AddonProperty {
-        return this.pendingAddons.get(sessionId) as AddonProperty;
+        return this.registeredAddons.get(sessionId) as AddonProperty;
     }
 
     public getAll(): AddonProperty[] {
-        return Array.from(this.pendingAddons.values());
+        return Array.from(this.registeredAddons.values());
     }
 }

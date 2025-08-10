@@ -1,5 +1,4 @@
 import { system, world } from "@minecraft/server";
-import { BehaviorInitializePending } from "./router/init/behaviorInitializePending";
 import { BehaviorInitializeReceive } from "./router/init/behaviorInitializeReceive";
 import { BehaviorInitializeRegister } from "./router/init/behaviorInitializeRegister";
 import { BehaviorInitializeRequest } from "./router/init/behaviorInitializeRequest";
@@ -14,14 +13,12 @@ import type { AddonProperty } from "./AddonPropertyManager";
 export class AddonRouter {
     private registrationNum: number = 0;
 
-    private readonly pending: BehaviorInitializePending;
     private readonly receive: BehaviorInitializeReceive;
     private readonly register: BehaviorInitializeRegister;
     private readonly request: BehaviorInitializeRequest;
     private readonly response: BehaviorInitializeResponse;
 
     private constructor(private readonly kairo: Kairo) {
-        this.pending = BehaviorInitializePending.create(this);
         this.receive = BehaviorInitializeReceive.create(this);
         this.register = BehaviorInitializeRegister.create(this);
         this.request = BehaviorInitializeRequest.create(this);
@@ -67,23 +64,19 @@ export class AddonRouter {
      */
     public subscribeCoreHooks() {
         world.afterEvents.worldLoad.subscribe(this.request.handleWorldLoad);
-        system.afterEvents.scriptEventReceive.subscribe(this.pending.handleScriptEventReceive);
+        system.afterEvents.scriptEventReceive.subscribe(this.register.handleScriptEventReceive);
     }
 
     public unsubscribeCoreHooks() {
         world.afterEvents.worldLoad.unsubscribe(this.request.handleWorldLoad);
-        system.afterEvents.scriptEventReceive.unsubscribe(this.pending.handleScriptEventReceive);
+        system.afterEvents.scriptEventReceive.unsubscribe(this.register.handleScriptEventReceive);
     }
 
     public getAllPendingAddons(): AddonProperty[] {
-        return this.pending.getAll();
+        return this.register.getAll();
     }
 
-    public getPendingReady(): Promise<void> {
-        return this.pending.ready;
-    }
-
-    public registerAddon(): void {
-        this.register.registerAddon();
+    public awaitRegistration(): Promise<void> {
+        return this.register.ready;
     }
 }

@@ -4,8 +4,8 @@ async function main(): Promise<void> {
     Kairo.init(); // client
     Kairo.initRouter();
 
-    await Kairo.pendingReady();
-    Kairo.registerAddon();
+    await Kairo.awaitRegistration();
+    Kairo.unsubscribeInitializeHooks();
 }
 
 main();
