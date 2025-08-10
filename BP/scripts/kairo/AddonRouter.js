@@ -11,6 +11,7 @@ import { BehaviorInitializeResponse } from "./router/init/behaviorInitializeResp
 export class AddonRouter {
     constructor(kairo) {
         this.kairo = kairo;
+        this.registrationNum = 0;
         this.pending = BehaviorInitializePending.create(this);
         this.receive = BehaviorInitializeReceive.create(this);
         this.register = BehaviorInitializeRegister.create(this);
@@ -35,6 +36,12 @@ export class AddonRouter {
     sendResponse() {
         const selfAddonProperty = this.getSelfAddonProperty();
         this.response.sendResponse(selfAddonProperty);
+    }
+    setRegistrationNum(num) {
+        this.registrationNum = num;
+    }
+    getRegistrationNum() {
+        return this.registrationNum;
     }
     /**
      * WorldLoadとScriptEventReceiveに、BehaviorInitializeのハンドルを追加する
