@@ -1,4 +1,4 @@
-import { system, world, WorldLoadAfterEvent } from "@minecraft/server";
+import { system, WorldLoadAfterEvent } from "@minecraft/server";
 import { ConsoleManager } from "../../../utils/consoleManager";
 import type { AddonRouter } from "../../AddonRouter";
 import { ScoreboardManager } from "../../../utils/scoreboardManager";
