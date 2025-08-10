@@ -1,4 +1,4 @@
-import { system } from "@minecraft/server";
+import { system, world } from "@minecraft/server";
 import type { AddonProperty } from "../../AddonPropertyManager";
 import type { AddonRouter } from "../../AddonRouter";
 import { SCRIPT_EVENT_IDS } from "../../constants";
@@ -17,7 +17,17 @@ export class BehaviorInitializeResponse {
         return new BehaviorInitializeResponse(addonRouter);
     }
 
+    /**
+     * scoreboard を使って登録用の識別番号も送信しておく
+     * Also send the registration ID using the scoreboard
+     */
     public sendResponse(addonProperty: AddonProperty): void {
-        system.sendScriptEvent(SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZE_RESPONSE, JSON.stringify(addonProperty));
+        system.sendScriptEvent(
+            SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZE_RESPONSE, 
+            JSON.stringify([
+                addonProperty,
+                world.scoreboard.getObjective("AddonCounter")?.getScore("AddonCounter") ?? 0
+            ])
+        );
     }
 }
