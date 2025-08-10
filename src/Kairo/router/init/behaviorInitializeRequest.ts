@@ -1,6 +1,7 @@
 import { system, world, WorldLoadAfterEvent } from "@minecraft/server";
 import { ConsoleManager } from "../../../utils/consoleManager";
 import type { AddonRouter } from "../../AddonRouter";
+import { ScoreboardManager } from "../../../utils/scoreboardManager";
 
 /**
  * ルーターが各アドオンに登録要求を送るためのクラス
@@ -25,23 +26,13 @@ export class BehaviorInitializeRequest {
          * アドオンの数を数えるためのscoreboardを用意しておく
          * Prepare a scoreboard to count the number of addons
          */
-        this.setAddonCounter();
-        
+        ScoreboardManager.ensureObjective("AddonCounter").setScore("AddonCounter", 0);
+
         /**
          * scriptEventを送信して、各アドオンに登録要求を送る
          * Send a scriptEvent to request registration from each addon
          */
         ConsoleManager.log("World loaded. Sending core initialization request...");
         system.sendScriptEvent("kairo:initializeRequest", "");
-    }
-
-    private setAddonCounter(): void {
-        let addonCounter = world.scoreboard.getObjective("AddonCounter");
-
-        if (!addonCounter) {
-            addonCounter = world.scoreboard.addObjective("AddonCounter");
-        }
-
-        addonCounter.setScore("AddonCounter", 0);
     }
 }
