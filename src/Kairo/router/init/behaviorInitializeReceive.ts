@@ -1,6 +1,7 @@
-import { world, type ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
+import type { ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
 import type { AddonRouter } from "../../AddonRouter";
 import { SCRIPT_EVENT_IDS } from "../../constants";
+import { ScoreboardManager } from "../../../utils/scoreboardManager";
 
 /**
  * 各アドオンが、ルーターからのリクエストを受け取るためのクラス
@@ -33,13 +34,16 @@ export class BehaviorInitializeReceive {
     }
 
     private handleInitializeRequest(): void {
-        world.scoreboard.getObjective("AddonCounter")?.addScore("AddonCounter", 1);
+        const addonCounter = ScoreboardManager.ensureObjective("AddonCounter");
+        addonCounter.addScore("AddonCounter", 1);
+        this.addonRouter.setRegistrationNum(addonCounter.getScore("AddonCounter") ?? 0);
+
         this.addonRouter.sendResponse();
     }
 
     private handleRequestReseedId(message: string): void {
-        const selfSessionId = this.addonRouter.getSelfAddonProperty().sessionId;
-        if (message !== selfSessionId) return;
+        const registrationNum = this.addonRouter.getRegistrationNum();
+        if (message !== registrationNum.toString()) return;
 
         this.addonRouter.refreshSessionId();
         this.addonRouter.sendResponse();

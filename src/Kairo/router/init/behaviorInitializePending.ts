@@ -38,14 +38,14 @@ export class BehaviorInitializePending {
     }
 
     private add(message: string): void {
-        let addonProperties: AddonProperty = JSON.parse(message) as AddonProperty;
+        const [addonProperties, registrationNum]: [AddonProperty, number] = JSON.parse(message);
 
         /**
          * Idが重複している場合は、再度IDを要求する
          * If the ID is duplicated, request a new ID again
          */
         if (this.pendingAddons.has(addonProperties.sessionId)) {
-            system.sendScriptEvent(SCRIPT_EVENT_IDS.REQUEST_RESEED_SESSION_ID, addonProperties.sessionId);
+            system.sendScriptEvent(SCRIPT_EVENT_IDS.REQUEST_RESEED_SESSION_ID, registrationNum.toString());
             return;
         }
         this.pendingAddons.set(addonProperties.sessionId, addonProperties);
