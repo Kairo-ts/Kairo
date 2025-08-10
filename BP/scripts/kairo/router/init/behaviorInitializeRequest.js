@@ -1,5 +1,6 @@
 import { system, world, WorldLoadAfterEvent } from "@minecraft/server";
 import { ConsoleManager } from "../../../utils/consoleManager";
+import { ScoreboardManager } from "../../../utils/scoreboardManager";
 /**
  * ルーターが各アドオンに登録要求を送るためのクラス
  * 各アドオンが BehaviorInitializeReceive を準備しておく必要があります
@@ -22,7 +23,7 @@ export class BehaviorInitializeRequest {
          * アドオンの数を数えるためのscoreboardを用意しておく
          * Prepare a scoreboard to count the number of addons
          */
-        world.scoreboard.addObjective("AddonCounter").setScore("AddonCounter", 0);
+        ScoreboardManager.ensureObjective("AddonCounter").setScore("AddonCounter", 0);
         /**
          * scriptEventを送信して、各アドオンに登録要求を送る
          * Send a scriptEvent to request registration from each addon
