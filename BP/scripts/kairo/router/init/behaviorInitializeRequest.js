@@ -1,6 +1,7 @@
-import { system, world, WorldLoadAfterEvent } from "@minecraft/server";
+import { system, WorldLoadAfterEvent } from "@minecraft/server";
 import { ConsoleManager } from "../../../utils/consoleManager";
 import { ScoreboardManager } from "../../../utils/scoreboardManager";
+import { SCRIPT_EVENT_IDS } from "../../constants";
 /**
  * ルーターが各アドオンに登録要求を送るためのクラス
  * 各アドオンが BehaviorInitializeReceive を準備しておく必要があります
@@ -29,6 +30,6 @@ export class BehaviorInitializeRequest {
          * Send a scriptEvent to request registration from each addon
          */
         ConsoleManager.log("World loaded. Sending core initialization request...");
-        system.sendScriptEvent("kairo:initializeRequest", "");
+        system.sendScriptEvent(SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZE_REQUEST, "");
     }
 }

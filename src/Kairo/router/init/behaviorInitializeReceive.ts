@@ -1,5 +1,6 @@
 import { world, type ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
 import type { AddonRouter } from "../../AddonRouter";
+import { SCRIPT_EVENT_IDS } from "../../constants";
 
 /**
  * 各アドオンが、ルーターからのリクエストを受け取るためのクラス
@@ -19,13 +20,13 @@ export class BehaviorInitializeReceive {
         const { id, message } = ev;
 
         switch (id) {
-            case "kairo:initializeRequest":
+            case SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZE_REQUEST:
                 this.handleInitializeRequest();
                 break;
-            case "kairo:requestReseedId":
+            case SCRIPT_EVENT_IDS.REQUEST_RESEED_SESSION_ID:
                 this.handleRequestReseedId(message);
                 break;
-            case "kairo:unsubscribeInitialize":
+            case SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE:
                 this.addonRouter.unsubscribeClientHooks();
                 break;
         }

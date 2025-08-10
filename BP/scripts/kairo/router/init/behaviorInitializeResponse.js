@@ -1,4 +1,5 @@
 import { system } from "@minecraft/server";
+import { SCRIPT_EVENT_IDS } from "../../constants";
 /**
  * アドオンの properties を参照して、ルーターに応答するためのクラス
  * propertiesの必要な部分を抜粋して、JSON.stringifyで送信します
@@ -14,6 +15,6 @@ export class BehaviorInitializeResponse {
         return new BehaviorInitializeResponse(addonRouter);
     }
     sendResponse(addonProperty) {
-        system.sendScriptEvent("kairo:initializeResponse", JSON.stringify(addonProperty));
+        system.sendScriptEvent(SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZE_RESPONSE, JSON.stringify(addonProperty));
     }
 }

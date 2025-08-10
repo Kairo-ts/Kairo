@@ -1,4 +1,5 @@
 import { system, world } from "@minecraft/server";
+import { SCRIPT_EVENT_IDS } from "../../constants";
 /**
  * BehaviorInitializeRequestの要求に対して、BehaviorInitializeResponseで応答したアドオンを
  * 登録するために一時的に保存しておくためのクラス
@@ -16,7 +17,7 @@ export class BehaviorInitializePending {
         });
         this.handleScriptEventReceive = (ev) => {
             const { id, message } = ev;
-            if (id !== "kairo:initializeResponse")
+            if (id !== SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZE_RESPONSE)
                 return;
             this.add(message);
             const addonCount = world.scoreboard.getObjective("AddonCounter")?.getScore("AddonCounter") ?? 0;
@@ -37,7 +38,7 @@ export class BehaviorInitializePending {
          * If the ID is duplicated, request a new ID again
          */
         if (this.pendingAddons.has(addonProperties.sessionId)) {
-            system.sendScriptEvent("kairo:requestReseedId", addonProperties.sessionId);
+            system.sendScriptEvent(SCRIPT_EVENT_IDS.REQUEST_RESEED_SESSION_ID, addonProperties.sessionId);
             return;
         }
         this.pendingAddons.set(addonProperties.sessionId, addonProperties);
