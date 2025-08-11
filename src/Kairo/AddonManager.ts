@@ -1,4 +1,5 @@
 import type { Kairo } from ".";
+import type { AddonProperty } from "./AddonPropertyManager";
 
 export interface AddonData {
     name: string;
@@ -39,5 +40,9 @@ export class AddonManager {
             };
         });
         this.addonsData.set(name, addonData);
+    }
+
+    public registerAddonData(addon: AddonProperty): void {
+        
     }
 }

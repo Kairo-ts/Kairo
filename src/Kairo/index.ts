@@ -57,4 +57,8 @@ export class Kairo {
     public initAddonData(name: string, selectedVersion: string, versions: string[]): void {
         this.addonManager.initAddonData(name, selectedVersion, versions);
     }
+
+    public registerAddonData(addon: AddonProperty): void {
+        this.addonManager.registerAddonData(addon);
+    }
 }

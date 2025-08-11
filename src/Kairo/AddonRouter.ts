@@ -101,4 +101,8 @@ export class AddonRouter {
     public initAddonData(name: string, selectedVersion: string, versions: string[]): void {
         this.kairo.initAddonData(name, selectedVersion, versions);
     }
+
+    public registerAddonData(addon: AddonProperty): void {
+        this.kairo.registerAddonData(addon);
+    }
 }
