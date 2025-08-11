@@ -1,24 +1,58 @@
-import { system } from "@minecraft/server";
+import { system, world } from "@minecraft/server";
 import { SCRIPT_EVENT_IDS } from "../../constants";
+import { ConsoleManager } from "../../../utils/consoleManager";
 /**
  * 応答したアドオンを登録するためのクラス
- * 前提アドオンの有無などを調べて、追加するかどうかの判定もする
- * ※現在は応答を受け取る機能のみ実装
  *
  * A class responsible for registering addons that have responded.
- * It checks for the presence of required addons and determines whether to add them.
- * *Currently, only the functionality for receiving responses is implemented.*
  */
 export class BehaviorInitializeRegister {
     constructor(addonRouter) {
         this.addonRouter = addonRouter;
+        this.registeredAddons = new Map();
+        this._resolveReady = null;
+        this.ready = new Promise(resolve => {
+            this._resolveReady = resolve;
+        });
+        this.handleScriptEventReceive = (ev) => {
+            const { id, message } = ev;
+            if (id !== SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZE_RESPONSE)
+                return;
+            this.add(message);
+            const addonCount = world.scoreboard.getObjective("AddonCounter")?.getScore("AddonCounter") ?? 0;
+            if (addonCount === this.registeredAddons.size) {
+                this._resolveReady?.();
+                this._resolveReady = null;
+                world.scoreboard.removeObjective("AddonCounter");
+                const registeredAddons = Array.from(this.registeredAddons.values());
+                this.addonRouter.saveAddons(registeredAddons);
+                this.addonRouter.activateAddons(registeredAddons);
+            }
+        };
     }
     static create(addonRouter) {
         return new BehaviorInitializeRegister(addonRouter);
     }
-    registerAddon() {
-        console.log(this.addonRouter.getAllPendingAddons().map(addon => addon.sessionId).join(", "));
-        this.addonRouter.unsubscribeCoreHooks();
-        system.sendScriptEvent(SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE, "");
+    add(message) {
+        const [addonProperties, registrationNum] = JSON.parse(message);
+        /**
+         * Idが重複している場合は、再度IDを要求する
+         * If the ID is duplicated, request a new ID again
+         */
+        if (this.registeredAddons.has(addonProperties.sessionId)) {
+            system.sendScriptEvent(SCRIPT_EVENT_IDS.REQUEST_RESEED_SESSION_ID, registrationNum.toString());
+            return;
+        }
+        ConsoleManager.log(`Registering addon: ${addonProperties.name} - ver.${addonProperties.version.major}.${addonProperties.version.minor}.${addonProperties.version.patch}`);
+        this.registeredAddons.set(addonProperties.sessionId, addonProperties);
+    }
+    has(sessionId) {
+        return this.registeredAddons.has(sessionId);
+    }
+    get(sessionId) {
+        return this.registeredAddons.get(sessionId);
+    }
+    getAll() {
+        return Array.from(this.registeredAddons.values());
     }
 }

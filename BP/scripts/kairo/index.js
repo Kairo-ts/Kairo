@@ -1,5 +1,7 @@
+import { system } from "@minecraft/server";
 import { AddonPropertyManager } from "./AddonPropertyManager";
 import { AddonRouter } from "./AddonRouter";
+import { SCRIPT_EVENT_IDS } from "./constants";
 export class Kairo {
     constructor() {
         this.initialized = false;
@@ -28,10 +30,11 @@ export class Kairo {
     refreshSessionId() {
         this.addonPropertyManager.refreshSessionId();
     }
-    static pendingReady() {
-        return this.getInstance().addonRouter.getPendingReady();
+    static awaitRegistration() {
+        return this.getInstance().addonRouter.awaitRegistration();
     }
-    static registerAddon() {
-        return this.getInstance().addonRouter.registerAddon();
+    static unsubscribeInitializeHooks() {
+        this.getInstance().addonRouter.unsubscribeClientHooks();
+        system.sendScriptEvent(SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE, "");
     }
 }

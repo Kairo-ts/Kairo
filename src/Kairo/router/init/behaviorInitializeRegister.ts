@@ -1,26 +1,69 @@
-import { system } from "@minecraft/server";
+import { system, world, type ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
+import type { AddonProperty } from "../../AddonPropertyManager";
 import type { AddonRouter } from "../../AddonRouter";
 import { SCRIPT_EVENT_IDS } from "../../constants";
+import { ConsoleManager } from "../../../utils/consoleManager";
 
 /**
  * 応答したアドオンを登録するためのクラス
- * 前提アドオンの有無などを調べて、追加するかどうかの判定もする
- * ※現在は応答を受け取る機能のみ実装
  * 
  * A class responsible for registering addons that have responded.
- * It checks for the presence of required addons and determines whether to add them.
- * *Currently, only the functionality for receiving responses is implemented.*
  */
 export class BehaviorInitializeRegister {
-    private constructor(private readonly addonRouter: AddonRouter) {}
+    private readonly registeredAddons: Map<string, AddonProperty> = new Map();
 
+    private _resolveReady: (() => void) | null = null;
+    public readonly ready: Promise<void> = new Promise(resolve => {
+        this._resolveReady = resolve;
+    });
+
+    private constructor(private readonly addonRouter: AddonRouter) {}
     public static create(addonRouter: AddonRouter): BehaviorInitializeRegister {
         return new BehaviorInitializeRegister(addonRouter);
     }
 
-    public registerAddon(): void {
-        console.log(this.addonRouter.getAllPendingAddons().map(addon => addon.sessionId).join(", "));
-        this.addonRouter.unsubscribeCoreHooks();
-        system.sendScriptEvent(SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE, "");
+    public handleScriptEventReceive = (ev: ScriptEventCommandMessageAfterEvent): void => {
+        const { id, message } = ev;
+
+        if (id !== SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZE_RESPONSE) return;
+        this.add(message);
+
+        const addonCount: number = world.scoreboard.getObjective("AddonCounter")?.getScore("AddonCounter") ?? 0;
+        if (addonCount === this.registeredAddons.size) {
+            this._resolveReady?.();
+            this._resolveReady = null;
+            world.scoreboard.removeObjective("AddonCounter");
+
+            const registeredAddons = Array.from(this.registeredAddons.values());
+            this.addonRouter.saveAddons(registeredAddons);
+            this.addonRouter.activateAddons(registeredAddons);
+        }
+    }
+
+    private add(message: string): void {
+        const [addonProperties, registrationNum]: [AddonProperty, number] = JSON.parse(message);
+
+        /**
+         * Idが重複している場合は、再度IDを要求する
+         * If the ID is duplicated, request a new ID again
+         */
+        if (this.registeredAddons.has(addonProperties.sessionId)) {
+            system.sendScriptEvent(SCRIPT_EVENT_IDS.REQUEST_RESEED_SESSION_ID, registrationNum.toString());
+            return;
+        }
+        ConsoleManager.log(`Registering addon: ${addonProperties.name} - ver.${addonProperties.version.major}.${addonProperties.version.minor}.${addonProperties.version.patch}`);
+        this.registeredAddons.set(addonProperties.sessionId, addonProperties);
+    }
+
+    public has(sessionId: string): boolean {
+        return this.registeredAddons.has(sessionId);
+    }
+
+    public get(sessionId: string): AddonProperty {
+        return this.registeredAddons.get(sessionId) as AddonProperty;
+    }
+
+    public getAll(): AddonProperty[] {
+        return Array.from(this.registeredAddons.values());
     }
 }

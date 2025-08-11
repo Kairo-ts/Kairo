@@ -3,6 +3,12 @@
  * propertiesは、アドオン間通信においても、識別などに利用する
  */
 
+export type SemVer = {
+    major: number; minor: number; patch: number;
+    prerelease?: string | undefined; // "preview.3" / "rc.1"
+    build?: string | undefined;      // "abc123" (commit)
+};
+
 export const properties = {
     metadata: { 
         /** 製作者の名前 */
@@ -13,8 +19,14 @@ export const properties = {
     header: {
         name: "Kairo",
         description: "Enables communication between multiple behavior packs by leveraging the ScriptAPI as a communication layer.",
-        min_engine_version: [ 1,21,90 ],
-        version: [ 1,0,0 ],
+        version: { 
+            major: 1, 
+            minor: 0, 
+            patch: 0,
+            // prerelease: "preview.3",
+            // build: "abc123",
+        },
+        min_engine_version: [ 1,21,100 ],
         uuid: "45826daa-bf9f-4443-b746-944a0970bfef"
     },
     modules: [
@@ -29,7 +41,7 @@ export const properties = {
     dependencies: [
 		{
 			module_name: "@minecraft/server",
-			version: "2.0.0"
+			version: "2.1.0"
 		},
 		{
 			module_name: "@minecraft/server-ui",
@@ -42,4 +54,8 @@ export const properties = {
          * name: [version]
          */
     },
+    tags: [
+        "official",
+        "stable",
+    ],
 }

@@ -1,9 +1,10 @@
 import { system, world } from "@minecraft/server";
-import { BehaviorInitializePending } from "./router/init/behaviorInitializePending";
+import { BehaviorInitializeActivator } from "./router/init/behaviorInitializeActivator";
 import { BehaviorInitializeReceive } from "./router/init/behaviorInitializeReceive";
 import { BehaviorInitializeRegister } from "./router/init/behaviorInitializeRegister";
 import { BehaviorInitializeRequest } from "./router/init/behaviorInitializeRequest";
 import { BehaviorInitializeResponse } from "./router/init/behaviorInitializeResponse";
+import { AddonRecord } from "./router/record/AddonRecord";
 import type { Kairo } from ".";
 import type { AddonProperty } from "./AddonPropertyManager";
 
@@ -14,18 +15,20 @@ import type { AddonProperty } from "./AddonPropertyManager";
 export class AddonRouter {
     private registrationNum: number = 0;
 
-    private readonly pending: BehaviorInitializePending;
+    private readonly activator: BehaviorInitializeActivator;
     private readonly receive: BehaviorInitializeReceive;
     private readonly register: BehaviorInitializeRegister;
     private readonly request: BehaviorInitializeRequest;
     private readonly response: BehaviorInitializeResponse;
+    private readonly record: AddonRecord;
 
     private constructor(private readonly kairo: Kairo) {
-        this.pending = BehaviorInitializePending.create(this);
+        this.activator = BehaviorInitializeActivator.create(this);
         this.receive = BehaviorInitializeReceive.create(this);
         this.register = BehaviorInitializeRegister.create(this);
         this.request = BehaviorInitializeRequest.create(this);
         this.response = BehaviorInitializeResponse.create(this);
+        this.record = AddonRecord.create(this);
     }
 
     public static create(kairo: Kairo): AddonRouter {
@@ -67,23 +70,27 @@ export class AddonRouter {
      */
     public subscribeCoreHooks() {
         world.afterEvents.worldLoad.subscribe(this.request.handleWorldLoad);
-        system.afterEvents.scriptEventReceive.subscribe(this.pending.handleScriptEventReceive);
+        system.afterEvents.scriptEventReceive.subscribe(this.register.handleScriptEventReceive);
     }
 
     public unsubscribeCoreHooks() {
         world.afterEvents.worldLoad.unsubscribe(this.request.handleWorldLoad);
-        system.afterEvents.scriptEventReceive.unsubscribe(this.pending.handleScriptEventReceive);
+        system.afterEvents.scriptEventReceive.unsubscribe(this.register.handleScriptEventReceive);
     }
 
     public getAllPendingAddons(): AddonProperty[] {
-        return this.pending.getAll();
+        return this.register.getAll();
     }
 
-    public getPendingReady(): Promise<void> {
-        return this.pending.ready;
+    public awaitRegistration(): Promise<void> {
+        return this.register.ready;
     }
 
-    public registerAddon(): void {
-        this.register.registerAddon();
+    public saveAddons(addons: AddonProperty[]): void {
+        this.record.saveAddons(addons);
+    }
+
+    public activateAddons(addons: AddonProperty[]): void {
+        this.activator.activateAddons(addons);
     }
 }
