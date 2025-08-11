@@ -5,6 +5,7 @@ import { VersionManager } from "../../../utils/versionManager";
 
 interface AddonRecords {
     [name: string]: {
+        selectedVersion: string;
         versions: {
             [version: string]: string[];
         }
@@ -26,7 +27,7 @@ export class AddonRecord {
             const vStr = VersionManager.toVersionString(version);
 
             if (!addonRecords[name]) {
-                addonRecords[name] = { versions: {} };
+                addonRecords[name] = { selectedVersion: "latest version", versions: {} };
             }
             addonRecords[name].versions[vStr] = tags;
         });
