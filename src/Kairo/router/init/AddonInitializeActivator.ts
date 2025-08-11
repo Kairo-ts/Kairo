@@ -18,5 +18,9 @@ export class AddonInitializeActivator {
         Object.entries(addonRecords).forEach(([name, record]) => {
             this.addonRouter.initAddonData(name, record.selectedVersion, record.versions);
         });
+
+        addons.forEach(addon => {
+            this.addonRouter.registerAddonData(addon);
+        });
     }
 }
