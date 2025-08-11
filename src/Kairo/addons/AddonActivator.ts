@@ -21,10 +21,7 @@ export class AddonActivator {
         });
 
         this.addonManager.getAddonsData().forEach((data, name) => {
-            if (data.selectedVersion === "latest version") {
-                this.activateLatestVersion(name);
-            }
-            else this.activateSelectedVersion(name);
+            this.activateSelectedVersion(name);
         });
     }
 
@@ -78,7 +75,14 @@ export class AddonActivator {
         const addonData = this.addonManager.getAddonsData().get(name);
         if (!addonData) return;
 
-        const selectedVersion = Object.keys(addonData.versions).find(v => v === addonData.selectedVersion);
+        if (addonData.selectedVersion === "latest version") {
+            this.activateLatestVersion(name);
+            return;
+        }
+
+        const selectedVersion = Object.keys(addonData.versions)
+            .find(v => v === addonData.selectedVersion && addonData.versions[v]?.isRegistered);
+
         if (!selectedVersion) {
             addonData.selectedVersion = "latest version";
             this.activateLatestVersion(name);
