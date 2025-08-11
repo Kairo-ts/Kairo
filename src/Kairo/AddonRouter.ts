@@ -1,9 +1,9 @@
 import { system, world } from "@minecraft/server";
-import { BehaviorInitializeActivator } from "./router/init/behaviorInitializeActivator";
-import { BehaviorInitializeReceive } from "./router/init/behaviorInitializeReceive";
-import { BehaviorInitializeRegister } from "./router/init/behaviorInitializeRegister";
-import { BehaviorInitializeRequest } from "./router/init/behaviorInitializeRequest";
-import { BehaviorInitializeResponse } from "./router/init/behaviorInitializeResponse";
+import { AddonInitializeActivator } from "./router/init/addonInitializeActivator";
+import { AddonInitializeReceive } from "./router/init/addonInitializeReceive";
+import { AddonInitializeRegister } from "./router/init/addonInitializeRegister";
+import { AddonInitializeRequest } from "./router/init/addonInitializeRequest";
+import { AddonInitializeResponse } from "./router/init/addonInitializeResponse";
 import { AddonRecord } from "./router/record/AddonRecord";
 import type { Kairo } from ".";
 import type { AddonProperty } from "./AddonPropertyManager";
@@ -15,19 +15,19 @@ import type { AddonProperty } from "./AddonPropertyManager";
 export class AddonRouter {
     private registrationNum: number = 0;
 
-    private readonly activator: BehaviorInitializeActivator;
-    private readonly receive: BehaviorInitializeReceive;
-    private readonly register: BehaviorInitializeRegister;
-    private readonly request: BehaviorInitializeRequest;
-    private readonly response: BehaviorInitializeResponse;
+    private readonly activator: AddonInitializeActivator;
+    private readonly receive: AddonInitializeReceive;
+    private readonly register: AddonInitializeRegister;
+    private readonly request: AddonInitializeRequest;
+    private readonly response: AddonInitializeResponse;
     private readonly record: AddonRecord;
 
     private constructor(private readonly kairo: Kairo) {
-        this.activator = BehaviorInitializeActivator.create(this);
-        this.receive = BehaviorInitializeReceive.create(this);
-        this.register = BehaviorInitializeRegister.create(this);
-        this.request = BehaviorInitializeRequest.create(this);
-        this.response = BehaviorInitializeResponse.create(this);
+        this.activator = AddonInitializeActivator.create(this);
+        this.receive = AddonInitializeReceive.create(this);
+        this.register = AddonInitializeRegister.create(this);
+        this.request = AddonInitializeRequest.create(this);
+        this.response = AddonInitializeResponse.create(this);
         this.record = AddonRecord.create(this);
     }
 

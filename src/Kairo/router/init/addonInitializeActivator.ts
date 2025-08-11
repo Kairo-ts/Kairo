@@ -6,10 +6,10 @@ import type { AddonRouter } from "../../AddonRouter";
  * 
  * A class that selects, from the registered addons, those that should be enabled at initialization and enables them
  */
-export class BehaviorInitializeActivator {
+export class AddonInitializeActivator {
     private constructor(private readonly addonRouter: AddonRouter) {}
-    public static create(addonRouter: AddonRouter): BehaviorInitializeActivator {
-        return new BehaviorInitializeActivator(addonRouter);
+    public static create(addonRouter: AddonRouter): AddonInitializeActivator {
+        return new AddonInitializeActivator(addonRouter);
     }
 
     public activateAddons(addons: AddonProperty[]): void {
