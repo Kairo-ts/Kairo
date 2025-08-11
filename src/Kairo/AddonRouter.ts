@@ -93,4 +93,8 @@ export class AddonRouter {
     public activateAddons(addons: AddonProperty[]): void {
         this.activator.activateAddons(addons);
     }
+
+    public getAddonRecords(): Record<string, { selectedVersion: string; versions: string[] }> {
+        return this.record.loadAddons();
+    }
 }
