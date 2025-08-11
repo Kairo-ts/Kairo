@@ -3,6 +3,7 @@ import { AddonPropertyManager, type AddonProperty } from "./AddonPropertyManager
 import { AddonRouter } from "./AddonRouter";
 import { SCRIPT_EVENT_IDS } from "./constants";
 import { AddonManager } from "./AddonManager";
+import type { AddonRecords } from "./router/record/AddonRecord";
 
 export class Kairo {
     private static instance: Kairo;
@@ -61,5 +62,9 @@ export class Kairo {
     public static initActivateAddons(): void {
         const inst = this.getInstance();
         inst.addonManager.activateAddons(inst.addonRouter.getRegisteredAddons());
+    }
+
+    public getAddonRecords(): AddonRecords {
+        return this.addonRouter.getAddonRecords();
     }
 }
