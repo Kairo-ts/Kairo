@@ -2,15 +2,18 @@ import { system } from "@minecraft/server";
 import { AddonPropertyManager, type AddonProperty } from "./AddonPropertyManager";
 import { AddonRouter } from "./AddonRouter";
 import { SCRIPT_EVENT_IDS } from "./constants";
+import { AddonManager } from "./AddonManager";
 
 export class Kairo {
     private static instance: Kairo;
     private initialized = false;
 
+    private readonly addonManager: AddonManager;
     private readonly addonPropertyManager: AddonPropertyManager;
     private readonly addonRouter: AddonRouter;
 
     private constructor() {
+        this.addonManager = AddonManager.create(this);
         this.addonPropertyManager = AddonPropertyManager.create(this);
         this.addonRouter = AddonRouter.create(this);
     }
