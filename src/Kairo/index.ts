@@ -54,11 +54,12 @@ export class Kairo {
         system.sendScriptEvent(SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE, "");
     }
 
-    public initAddonData(name: string, selectedVersion: string, versions: string[]): void {
-        this.addonManager.initAddonData(name, selectedVersion, versions);
+    public static initSaveAddons(): void {
+        this.getInstance().addonRouter.saveAddons();
     }
 
-    public registerAddonData(addon: AddonProperty): void {
-        this.addonManager.registerAddonData(addon);
+    public static initActivateAddons(): void {
+        const inst = this.getInstance();
+        inst.addonManager.activateAddons(inst.addonRouter.getRegisteredAddons());
     }
 }

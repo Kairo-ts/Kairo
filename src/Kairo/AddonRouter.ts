@@ -1,5 +1,4 @@
 import { system, world } from "@minecraft/server";
-import { AddonInitializeActivator } from "./router/init/AddonInitializeActivator";
 import { AddonInitializeReceive } from "./router/init/AddonInitializeReceive";
 import { AddonInitializeRegister } from "./router/init/AddonInitializeRegister";
 import { AddonInitializeRequest } from "./router/init/AddonInitializeRequest";
@@ -15,7 +14,6 @@ import type { AddonProperty } from "./AddonPropertyManager";
 export class AddonRouter {
     private registrationNum: number = 0;
 
-    private readonly activator: AddonInitializeActivator;
     private readonly receive: AddonInitializeReceive;
     private readonly register: AddonInitializeRegister;
     private readonly request: AddonInitializeRequest;
@@ -23,7 +21,6 @@ export class AddonRouter {
     private readonly record: AddonRecord;
 
     private constructor(private readonly kairo: Kairo) {
-        this.activator = AddonInitializeActivator.create(this);
         this.receive = AddonInitializeReceive.create(this);
         this.register = AddonInitializeRegister.create(this);
         this.request = AddonInitializeRequest.create(this);
@@ -86,23 +83,15 @@ export class AddonRouter {
         return this.register.ready;
     }
 
-    public saveAddons(addons: AddonProperty[]): void {
-        this.record.saveAddons(addons);
-    }
-
-    public activateAddons(addons: AddonProperty[]): void {
-        this.activator.activateAddons(addons);
+    public saveAddons(): void {
+        this.record.saveAddons(this.register.getAll());
     }
 
     public getAddonRecords(): Record<string, { selectedVersion: string; versions: string[] }> {
         return this.record.loadAddons();
     }
 
-    public initAddonData(name: string, selectedVersion: string, versions: string[]): void {
-        this.kairo.initAddonData(name, selectedVersion, versions);
-    }
-
-    public registerAddonData(addon: AddonProperty): void {
-        this.kairo.registerAddonData(addon);
+    public getRegisteredAddons(): AddonProperty[] {
+        return this.register.getAll();
     }
 }
