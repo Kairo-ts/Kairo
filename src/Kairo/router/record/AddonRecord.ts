@@ -1,5 +1,15 @@
+import { world } from "@minecraft/server";
 import type { AddonProperty } from "../../AddonPropertyManager";
 import type { AddonRouter } from "../../AddonRouter";
+import { VersionManager } from "../../../utils/versionManager";
+
+interface AddonRecords {
+    [name: string]: {
+        versions: {
+            [version: string]: string[];
+        }
+    };
+}
 
 export class AddonRecord {
     private constructor(private readonly addonRouter: AddonRouter) {}
@@ -9,6 +19,22 @@ export class AddonRecord {
     }
 
     public saveAddons(addons: AddonProperty[]): void {
-        
+        const addonRecords: AddonRecords = this.loadAddons();
+
+        addons.forEach(addon => {
+            const { name, version, tags } = addon;
+            const vStr = VersionManager.toVersionString(version);
+
+            if (!addonRecords[name]) {
+                addonRecords[name] = { versions: {} };
+            }
+            addonRecords[name].versions[vStr] = tags;
+        });
+
+        world.setDynamicProperty("AddonRecords", JSON.stringify(addonRecords));
+    }
+
+    public loadAddons(): AddonRecords {
+        return JSON.parse(world.getDynamicProperty("AddonRecords") as string || "{}") as AddonRecords;
     }
 }
