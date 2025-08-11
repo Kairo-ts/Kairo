@@ -36,8 +36,6 @@ export class AddonInitializeRegister {
             world.scoreboard.removeObjective("AddonCounter");
 
             const registeredAddons = Array.from(this.registeredAddons.values());
-            this.addonRouter.saveAddons(registeredAddons);
-            this.addonRouter.activateAddons(registeredAddons);
         }
     }
 
