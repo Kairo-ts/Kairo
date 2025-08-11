@@ -51,7 +51,7 @@ export class BehaviorInitializeRegister {
             system.sendScriptEvent(SCRIPT_EVENT_IDS.REQUEST_RESEED_SESSION_ID, registrationNum.toString());
             return;
         }
-        ConsoleManager.log(`Registering addon: ${addonProperties.name} - ver.${addonProperties.version.join(".")}`);
+        ConsoleManager.log(`Registering addon: ${addonProperties.name} - ver.${addonProperties.version.major}.${addonProperties.version.minor}.${addonProperties.version.patch}`);
         this.registeredAddons.set(addonProperties.sessionId, addonProperties);
     }
 

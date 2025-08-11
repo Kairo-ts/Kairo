@@ -1,10 +1,10 @@
 import type { Kairo } from ".";
-import { properties } from "../properties";
+import { properties, type SemVer } from "../properties";
 
 export interface AddonProperty {
     name: string;
     sessionId: string;
-    version: number[];
+    version: SemVer;
     dependencies: {
         module_name: string;
         version: string;

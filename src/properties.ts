@@ -3,10 +3,10 @@
  * propertiesは、アドオン間通信においても、識別などに利用する
  */
 
-type SemVer = {
+export type SemVer = {
     major: number; minor: number; patch: number;
-    prerelease?: string;        // "preview.3" / "rc.1"
-    build?: string;             // "abc123" (commit)
+    prerelease?: string; // "preview.3" / "rc.1"
+    build?: string;      // "abc123" (commit)
 };
 
 export const properties = {
@@ -22,7 +22,7 @@ export const properties = {
         version: { 
             major: 1, 
             minor: 0, 
-            patch: 0 
+            patch: 0,
         } as SemVer,
         min_engine_version: [ 1,21,100 ] as [number,number,number],
         uuid: "45826daa-bf9f-4443-b746-944a0970bfef"
