@@ -46,8 +46,7 @@ export class AddonManager {
     }
 
     private initAddonData(name: string, selectedVersion: string, versions: string[]): void {
-        const sortedVersions = Object.keys(versions)
-            .sort((a, b) => VersionManager.compare(b, a));
+        const sortedVersions = versions.sort((a, b) => VersionManager.compare(b, a));
 
         const addonData: AddonData = {
             name,
