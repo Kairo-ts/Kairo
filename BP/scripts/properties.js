@@ -16,6 +16,8 @@ export const properties = {
             major: 1,
             minor: 0,
             patch: 0,
+            // prerelease: "preview.3",
+            // build: "abc123",
         },
         min_engine_version: [1, 21, 100],
         uuid: "45826daa-bf9f-4443-b746-944a0970bfef"

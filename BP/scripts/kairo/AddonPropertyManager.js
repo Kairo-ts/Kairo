@@ -8,7 +8,8 @@ export class AddonPropertyManager {
             sessionId: this.generateRandomId(8),
             version: properties.header.version,
             dependencies: properties.dependencies,
-            requiredAddons: properties.requiredAddons
+            requiredAddons: properties.requiredAddons,
+            tags: properties.tags
         };
     }
     static create(kairo) {

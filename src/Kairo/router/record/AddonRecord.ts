@@ -1,7 +1,7 @@
-import { world } from "@minecraft/server";
 import type { AddonProperty } from "../../AddonPropertyManager";
 import type { AddonRouter } from "../../AddonRouter";
 import { VersionManager } from "../../../utils/versionManager";
+import { DynamicPropertyStorage } from "./DynamicPropertyStorage";
 
 interface AddonRecords {
     [name: string]: {
@@ -32,10 +32,10 @@ export class AddonRecord {
             addonRecords[name].versions[vStr] = tags;
         });
 
-        world.setDynamicProperty("AddonRecords", JSON.stringify(addonRecords));
+        DynamicPropertyStorage.save("AddonRecords", addonRecords);
     }
 
     public loadAddons(): AddonRecords {
-        return JSON.parse(world.getDynamicProperty("AddonRecords") as string || "{}") as AddonRecords;
+        return DynamicPropertyStorage.load("AddonRecords") as AddonRecords;
     }
 }
