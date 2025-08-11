@@ -97,4 +97,8 @@ export class AddonRouter {
     public getAddonRecords(): Record<string, { selectedVersion: string; versions: string[] }> {
         return this.record.loadAddons();
     }
+
+    public initAddonData(name: string, selectedVersion: string, versions: string[]): void {
+        this.kairo.initAddonData(name, selectedVersion, versions);
+    }
 }

@@ -53,4 +53,8 @@ export class Kairo {
         this.getInstance().addonRouter.unsubscribeClientHooks();
         system.sendScriptEvent(SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE, "");
     }
+
+    public initAddonData(name: string, selectedVersion: string, versions: string[]): void {
+        this.addonManager.initAddonData(name, selectedVersion, versions);
+    }
 }
