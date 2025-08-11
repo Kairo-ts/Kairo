@@ -13,6 +13,10 @@ export class AddonInitializeActivator {
     }
 
     public activateAddons(addons: AddonProperty[]): void {
+        const addonRecords = this.addonRouter.getAddonRecords();
 
+        Object.entries(addonRecords).forEach(([name, record]) => {
+            this.addonRouter.initAddonData(name, record.selectedVersion, record.versions);
+        });
     }
 }
