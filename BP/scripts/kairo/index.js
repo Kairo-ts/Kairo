@@ -8,7 +8,7 @@ export class Kairo {
         this.initialized = false;
         this.addonManager = AddonManager.create(this);
         this.addonPropertyManager = AddonPropertyManager.create(this);
-        this.addonRouter = AddonInitializer.create(this);
+        this.addonInitializer = AddonInitializer.create(this);
     }
     static getInstance() {
         if (!this.instance) {
@@ -21,10 +21,10 @@ export class Kairo {
         if (inst.initialized)
             return;
         inst.initialized = true;
-        inst.addonRouter.subscribeClientHooks();
+        inst.addonInitializer.subscribeClientHooks();
     }
     static initRouter() {
-        this.getInstance().addonRouter.subscribeCoreHooks();
+        this.getInstance().addonInitializer.subscribeCoreHooks();
     }
     getSelfAddonProperty() {
         return this.addonPropertyManager.getSelfAddonProperty();
@@ -33,20 +33,20 @@ export class Kairo {
         this.addonPropertyManager.refreshSessionId();
     }
     static awaitRegistration() {
-        return this.getInstance().addonRouter.awaitRegistration();
+        return this.getInstance().addonInitializer.awaitRegistration();
     }
     static unsubscribeInitializeHooks() {
-        this.getInstance().addonRouter.unsubscribeClientHooks();
+        this.getInstance().addonInitializer.unsubscribeClientHooks();
         system.sendScriptEvent(SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE, "");
     }
     static initSaveAddons() {
-        this.getInstance().addonRouter.saveAddons();
+        this.getInstance().addonInitializer.saveAddons();
     }
     static initActivateAddons() {
         const inst = this.getInstance();
-        inst.addonManager.activateAddons(inst.addonRouter.getRegisteredAddons());
+        inst.addonManager.activateAddons(inst.addonInitializer.getRegisteredAddons());
     }
     getAddonRecords() {
-        return this.addonRouter.getAddonRecords();
+        return this.addonInitializer.getAddonRecords();
     }
 }

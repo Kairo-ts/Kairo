@@ -16,7 +16,6 @@ export class VersionManager {
         if (!m || !m.groups) {
             throw new Error(`Invalid semver: ${ver}`);
         }
-        // groups はここで非 undefined に絞られている
         const g = m.groups;
         return {
             major: parseInt(g.major, 10),
