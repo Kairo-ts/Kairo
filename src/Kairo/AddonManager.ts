@@ -33,10 +33,7 @@ export class AddonManager {
         const addonRecords = this.kairo.getAddonRecords();
 
         Object.entries(addonRecords).forEach(([name, record]) => {
-            const sortedVersions = Object.keys(record.versions)
-                .sort((a, b) => VersionManager.compare(b, a));
-
-            this.initAddonData(name, record.selectedVersion, sortedVersions);
+            this.initAddonData(name, record.selectedVersion, record.versions);
         });
 
         addons.forEach(addon => {
@@ -49,12 +46,15 @@ export class AddonManager {
     }
 
     private initAddonData(name: string, selectedVersion: string, versions: string[]): void {
+        const sortedVersions = Object.keys(versions)
+            .sort((a, b) => VersionManager.compare(b, a));
+
         const addonData: AddonData = {
             name,
             selectedVersion,
             versions: {}
         };
-        versions.forEach(version => {
+        sortedVersions.forEach(version => {
             addonData.versions[version] = {
                 isAvailable: false
             };
