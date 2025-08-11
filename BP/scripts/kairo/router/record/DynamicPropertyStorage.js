@@ -18,7 +18,7 @@ export class DynamicPropertyStorage {
     static load(keyPrefix) {
         const count = world.getDynamicProperty(`${keyPrefix}_count`);
         if (!count || count <= 0)
-            return null;
+            return {};
         let json = "";
         for (let i = 0; i < count; i++) {
             json += world.getDynamicProperty(`${keyPrefix}_${i}`) || "";

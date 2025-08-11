@@ -21,13 +21,13 @@ export class DynamicPropertyStorage {
     /**
      * DynamicPropertyからオブジェクトを読み込み
      */
-    public static load<T>(keyPrefix: string): T | null {
+    public static load<T>(keyPrefix: string): T {
         const count = world.getDynamicProperty(`${keyPrefix}_count`) as number;
-        if (!count || count <= 0) return null;
+        if (!count || count <= 0) return {} as T;
 
         let json = "";
         for (let i = 0; i < count; i++) {
-            json += world.getDynamicProperty(`${keyPrefix}_${i}`) as string || "";
+            json += (world.getDynamicProperty(`${keyPrefix}_${i}`) as string) || "";
         }
 
         return JSON.parse(json) as T;
