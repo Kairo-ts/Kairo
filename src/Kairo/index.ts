@@ -1,8 +1,8 @@
 import { system } from "@minecraft/server";
-import { AddonPropertyManager, type AddonProperty } from "./AddonPropertyManager";
-import { AddonRouter } from "./AddonRouter";
+import { AddonPropertyManager, type AddonProperty } from "./addons/AddonPropertyManager";
+import { AddonInitializer } from "./addons/init/AddonInitializer";
 import { SCRIPT_EVENT_IDS } from "./constants";
-import { AddonManager } from "./AddonManager";
+import { AddonManager } from "./addons/AddonManager";
 import type { AddonRecords } from "./addons/record/AddonRecord";
 
 export class Kairo {
@@ -11,12 +11,12 @@ export class Kairo {
 
     private readonly addonManager: AddonManager;
     private readonly addonPropertyManager: AddonPropertyManager;
-    private readonly addonRouter: AddonRouter;
+    private readonly addonRouter: AddonInitializer;
 
     private constructor() {
         this.addonManager = AddonManager.create(this);
         this.addonPropertyManager = AddonPropertyManager.create(this);
-        this.addonRouter = AddonRouter.create(this);
+        this.addonRouter = AddonInitializer.create(this);
     }
 
     private static getInstance(): Kairo {
