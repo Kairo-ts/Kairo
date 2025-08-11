@@ -12,8 +12,12 @@ export const properties = {
     header: {
         name: "Kairo",
         description: "Enables communication between multiple behavior packs by leveraging the ScriptAPI as a communication layer.",
-        min_engine_version: [1, 21, 90],
-        version: [1, 0, 0],
+        version: {
+            major: 1,
+            minor: 0,
+            patch: 0,
+        },
+        min_engine_version: [1, 21, 100],
         uuid: "45826daa-bf9f-4443-b746-944a0970bfef"
     },
     modules: [
@@ -41,4 +45,8 @@ export const properties = {
      * name: [version]
      */
     },
+    tags: [
+        "official",
+        "stable",
+    ],
 };

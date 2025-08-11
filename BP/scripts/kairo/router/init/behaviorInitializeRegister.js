@@ -24,6 +24,9 @@ export class BehaviorInitializeRegister {
                 this._resolveReady?.();
                 this._resolveReady = null;
                 world.scoreboard.removeObjective("AddonCounter");
+                const registeredAddons = Array.from(this.registeredAddons.values());
+                this.addonRouter.saveAddons(registeredAddons);
+                this.addonRouter.activateAddons(registeredAddons);
             }
         };
     }
@@ -40,7 +43,7 @@ export class BehaviorInitializeRegister {
             system.sendScriptEvent(SCRIPT_EVENT_IDS.REQUEST_RESEED_SESSION_ID, registrationNum.toString());
             return;
         }
-        ConsoleManager.log(`Registering addon: ${addonProperties.name} - ver.${addonProperties.version.join(".")}`);
+        ConsoleManager.log(`Registering addon: ${addonProperties.name} - ver.${addonProperties.version.major}.${addonProperties.version.minor}.${addonProperties.version.patch}`);
         this.registeredAddons.set(addonProperties.sessionId, addonProperties);
     }
     has(sessionId) {
