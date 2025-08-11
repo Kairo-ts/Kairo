@@ -3,7 +3,7 @@ import type { AddonRouter } from "../../AddonRouter";
 import { VersionManager } from "../../../utils/versionManager";
 import { DynamicPropertyStorage } from "./DynamicPropertyStorage";
 
-interface AddonRecords {
+export interface AddonRecords {
     [name: string]: {
         selectedVersion: string;
         versions: string[]
