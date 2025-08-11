@@ -6,9 +6,7 @@ import { DynamicPropertyStorage } from "./DynamicPropertyStorage";
 interface AddonRecords {
     [name: string]: {
         selectedVersion: string;
-        versions: {
-            [version: string]: string[];
-        }
+        versions: string[]
     };
 }
 
@@ -27,9 +25,9 @@ export class AddonRecord {
             const vStr = VersionManager.toVersionString(version);
 
             if (!addonRecords[name]) {
-                addonRecords[name] = { selectedVersion: "latest version", versions: {} };
+                addonRecords[name] = { selectedVersion: "latest version", versions: [] };
             }
-            addonRecords[name].versions[vStr] = tags;
+            addonRecords[name].versions.push(vStr);
         });
 
         DynamicPropertyStorage.save("AddonRecords", addonRecords);
