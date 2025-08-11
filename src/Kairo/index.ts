@@ -11,12 +11,12 @@ export class Kairo {
 
     private readonly addonManager: AddonManager;
     private readonly addonPropertyManager: AddonPropertyManager;
-    private readonly addonRouter: AddonInitializer;
+    private readonly addonInitializer: AddonInitializer;
 
     private constructor() {
         this.addonManager = AddonManager.create(this);
         this.addonPropertyManager = AddonPropertyManager.create(this);
-        this.addonRouter = AddonInitializer.create(this);
+        this.addonInitializer = AddonInitializer.create(this);
     }
 
     private static getInstance(): Kairo {
@@ -31,11 +31,11 @@ export class Kairo {
         if (inst.initialized) return;
 
         inst.initialized = true;
-        inst.addonRouter.subscribeClientHooks();
+        inst.addonInitializer.subscribeClientHooks();
     }
 
     public static initRouter(): void {
-        this.getInstance().addonRouter.subscribeCoreHooks();
+        this.getInstance().addonInitializer.subscribeCoreHooks();
     }
 
     public getSelfAddonProperty(): AddonProperty {
@@ -47,24 +47,24 @@ export class Kairo {
     }
 
     public static awaitRegistration(): Promise<void> {
-        return this.getInstance().addonRouter.awaitRegistration();
+        return this.getInstance().addonInitializer.awaitRegistration();
     }
 
     public static unsubscribeInitializeHooks(): void {
-        this.getInstance().addonRouter.unsubscribeClientHooks();
+        this.getInstance().addonInitializer.unsubscribeClientHooks();
         system.sendScriptEvent(SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE, "");
     }
 
     public static initSaveAddons(): void {
-        this.getInstance().addonRouter.saveAddons();
+        this.getInstance().addonInitializer.saveAddons();
     }
 
     public static initActivateAddons(): void {
         const inst = this.getInstance();
-        inst.addonManager.activateAddons(inst.addonRouter.getRegisteredAddons());
+        inst.addonManager.activateAddons(inst.addonInitializer.getRegisteredAddons());
     }
 
     public getAddonRecords(): AddonRecords {
-        return this.addonRouter.getAddonRecords();
+        return this.addonInitializer.getAddonRecords();
     }
 }
