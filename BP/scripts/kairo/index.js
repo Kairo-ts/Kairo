@@ -1,12 +1,14 @@
 import { system } from "@minecraft/server";
-import { AddonPropertyManager } from "./AddonPropertyManager";
-import { AddonRouter } from "./AddonRouter";
+import { AddonPropertyManager } from "./addons/AddonPropertyManager";
+import { AddonInitializer } from "./addons/init/AddonInitializer";
 import { SCRIPT_EVENT_IDS } from "./constants";
+import { AddonManager } from "./addons/AddonManager";
 export class Kairo {
     constructor() {
         this.initialized = false;
+        this.addonManager = AddonManager.create(this);
         this.addonPropertyManager = AddonPropertyManager.create(this);
-        this.addonRouter = AddonRouter.create(this);
+        this.addonRouter = AddonInitializer.create(this);
     }
     static getInstance() {
         if (!this.instance) {
@@ -36,5 +38,15 @@ export class Kairo {
     static unsubscribeInitializeHooks() {
         this.getInstance().addonRouter.unsubscribeClientHooks();
         system.sendScriptEvent(SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE, "");
+    }
+    static initSaveAddons() {
+        this.getInstance().addonRouter.saveAddons();
+    }
+    static initActivateAddons() {
+        const inst = this.getInstance();
+        inst.addonManager.activateAddons(inst.addonRouter.getRegisteredAddons());
+    }
+    getAddonRecords() {
+        return this.addonRouter.getAddonRecords();
     }
 }

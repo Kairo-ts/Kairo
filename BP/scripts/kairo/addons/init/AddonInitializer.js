@@ -1,27 +1,21 @@
 import { system, world } from "@minecraft/server";
-import { BehaviorInitializeActivator } from "./router/init/behaviorInitializeActivator";
-import { BehaviorInitializeReceive } from "./router/init/behaviorInitializeReceive";
-import { BehaviorInitializeRegister } from "./router/init/behaviorInitializeRegister";
-import { BehaviorInitializeRequest } from "./router/init/behaviorInitializeRequest";
-import { BehaviorInitializeResponse } from "./router/init/behaviorInitializeResponse";
-import { AddonRecord } from "./router/record/AddonRecord";
-/**
- * Werewolf-AddonRouterの中枢となるクラス
- * The core class of Werewolf-AddonRouter
- */
-export class AddonRouter {
+import { AddonInitializeReceive } from "./AddonInitializeReceive";
+import { AddonInitializeRegister } from "./AddonInitializeRegister";
+import { AddonInitializeRequest } from "./AddonInitializeRequest";
+import { AddonInitializeResponse } from "./AddonInitializeResponse";
+import { AddonRecord } from "../record/AddonRecord";
+export class AddonInitializer {
     constructor(kairo) {
         this.kairo = kairo;
         this.registrationNum = 0;
-        this.activator = BehaviorInitializeActivator.create(this);
-        this.receive = BehaviorInitializeReceive.create(this);
-        this.register = BehaviorInitializeRegister.create(this);
-        this.request = BehaviorInitializeRequest.create(this);
-        this.response = BehaviorInitializeResponse.create(this);
+        this.receive = AddonInitializeReceive.create(this);
+        this.register = AddonInitializeRegister.create(this);
+        this.request = AddonInitializeRequest.create(this);
+        this.response = AddonInitializeResponse.create(this);
         this.record = AddonRecord.create(this);
     }
     static create(kairo) {
-        return new AddonRouter(kairo);
+        return new AddonInitializer(kairo);
     }
     subscribeClientHooks() {
         system.afterEvents.scriptEventReceive.subscribe(this.receive.handleScriptEvent);
@@ -63,10 +57,13 @@ export class AddonRouter {
     awaitRegistration() {
         return this.register.ready;
     }
-    saveAddons(addons) {
-        this.record.saveAddons(addons);
+    saveAddons() {
+        this.record.saveAddons(this.register.getAll());
     }
-    activateAddons(addons) {
-        this.activator.activateAddons(addons);
+    getAddonRecords() {
+        return this.record.loadAddons();
+    }
+    getRegisteredAddons() {
+        return this.register.getAll();
     }
 }

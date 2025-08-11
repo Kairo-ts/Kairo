@@ -2,14 +2,14 @@ import { SCRIPT_EVENT_IDS } from "../../constants";
 import { ScoreboardManager } from "../../../utils/scoreboardManager";
 /**
  * 各アドオンが、ルーターからのリクエストを受け取るためのクラス
- * 受け取った initializeRequest を、そのまま BehaviorInitializeResponseへ流します
+ * 受け取った initializeRequest を、そのまま AddonInitializeResponseへ流します
  *
  * A class responsible for receiving requests from the router in each addon.
- * Forwards the received initializeRequest directly to BehaviorInitializeResponse.
+ * Forwards the received initializeRequest directly to AddonInitializeResponse.
  */
-export class BehaviorInitializeReceive {
-    constructor(addonRouter) {
-        this.addonRouter = addonRouter;
+export class AddonInitializeReceive {
+    constructor(addonInitializer) {
+        this.addonInitializer = addonInitializer;
         this.handleScriptEvent = (ev) => {
             const { id, message } = ev;
             switch (id) {
@@ -20,25 +20,25 @@ export class BehaviorInitializeReceive {
                     this.handleRequestReseedId(message);
                     break;
                 case SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE:
-                    this.addonRouter.unsubscribeClientHooks();
+                    this.addonInitializer.unsubscribeClientHooks();
                     break;
             }
         };
     }
-    static create(addonRouter) {
-        return new BehaviorInitializeReceive(addonRouter);
+    static create(addonInitializer) {
+        return new AddonInitializeReceive(addonInitializer);
     }
     handleInitializeRequest() {
         const addonCounter = ScoreboardManager.ensureObjective("AddonCounter");
         addonCounter.addScore("AddonCounter", 1);
-        this.addonRouter.setRegistrationNum(addonCounter.getScore("AddonCounter") ?? 0);
-        this.addonRouter.sendResponse();
+        this.addonInitializer.setRegistrationNum(addonCounter.getScore("AddonCounter") ?? 0);
+        this.addonInitializer.sendResponse();
     }
     handleRequestReseedId(message) {
-        const registrationNum = this.addonRouter.getRegistrationNum();
+        const registrationNum = this.addonInitializer.getRegistrationNum();
         if (message !== registrationNum.toString())
             return;
-        this.addonRouter.refreshSessionId();
-        this.addonRouter.sendResponse();
+        this.addonInitializer.refreshSessionId();
+        this.addonInitializer.sendResponse();
     }
 }

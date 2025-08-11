@@ -7,9 +7,9 @@ import { VersionManager } from "../../../utils/versionManager";
  *
  * A class responsible for registering addons that have responded.
  */
-export class BehaviorInitializeRegister {
-    constructor(addonRouter) {
-        this.addonRouter = addonRouter;
+export class AddonInitializeRegister {
+    constructor(addonInitializer) {
+        this.addonInitializer = addonInitializer;
         this.registeredAddons = new Map();
         this._resolveReady = null;
         this.ready = new Promise(resolve => {
@@ -26,13 +26,11 @@ export class BehaviorInitializeRegister {
                 this._resolveReady = null;
                 world.scoreboard.removeObjective("AddonCounter");
                 const registeredAddons = Array.from(this.registeredAddons.values());
-                this.addonRouter.saveAddons(registeredAddons);
-                this.addonRouter.activateAddons(registeredAddons);
             }
         };
     }
-    static create(addonRouter) {
-        return new BehaviorInitializeRegister(addonRouter);
+    static create(addonInitializer) {
+        return new AddonInitializeRegister(addonInitializer);
     }
     add(message) {
         const [addonProperties, registrationNum] = JSON.parse(message);
@@ -54,6 +52,7 @@ export class BehaviorInitializeRegister {
         return this.registeredAddons.get(sessionId);
     }
     getAll() {
+        
         return Array.from(this.registeredAddons.values());
     }
 }

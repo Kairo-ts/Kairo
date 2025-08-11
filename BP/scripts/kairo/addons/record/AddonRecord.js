@@ -1,11 +1,11 @@
 import { VersionManager } from "../../../utils/versionManager";
 import { DynamicPropertyStorage } from "./DynamicPropertyStorage";
 export class AddonRecord {
-    constructor(addonRouter) {
-        this.addonRouter = addonRouter;
+    constructor(addonInitializer) {
+        this.addonInitializer = addonInitializer;
     }
-    static create(addonRouter) {
-        return new AddonRecord(addonRouter);
+    static create(addonInitializer) {
+        return new AddonRecord(addonInitializer);
     }
     saveAddons(addons) {
         const addonRecords = this.loadAddons();
@@ -13,9 +13,9 @@ export class AddonRecord {
             const { name, version, tags } = addon;
             const vStr = VersionManager.toVersionString(version);
             if (!addonRecords[name]) {
-                addonRecords[name] = { selectedVersion: "latest version", versions: {} };
+                addonRecords[name] = { selectedVersion: "latest version", versions: [] };
             }
-            addonRecords[name].versions[vStr] = tags;
+            addonRecords[name].versions.push(vStr);
         });
         DynamicPropertyStorage.save("AddonRecords", addonRecords);
     }

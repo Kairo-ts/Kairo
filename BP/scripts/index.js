@@ -4,5 +4,7 @@ async function main() {
     Kairo.initRouter();
     await Kairo.awaitRegistration();
     Kairo.unsubscribeInitializeHooks();
+    Kairo.initSaveAddons();
+    Kairo.initActivateAddons();
 }
 main();
