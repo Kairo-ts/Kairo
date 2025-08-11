@@ -35,4 +35,21 @@ export class VersionManager {
             build: g.build,           // string | undefined でOK
         };
     }
+
+    public static compare(a: string, b: string): number {
+        const va = this.fromString(a);
+        const vb = this.fromString(b);
+
+        if (va.major !== vb.major) return va.major - vb.major;
+        if (va.minor !== vb.minor) return va.minor - vb.minor;
+        if (va.patch !== vb.patch) return va.patch - vb.patch;
+
+        if (va.prerelease && !vb.prerelease) return -1;
+        if (!va.prerelease && vb.prerelease) return 1;
+        if (va.prerelease && vb.prerelease) {
+            return va.prerelease.localeCompare(vb.prerelease, undefined, { numeric: true });
+        }
+
+        return 0;
+    }
 }
