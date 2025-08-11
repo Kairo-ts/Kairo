@@ -1,6 +1,6 @@
 import { system, world } from "@minecraft/server";
-import type { AddonProperty } from "../../AddonPropertyManager";
-import type { AddonRouter } from "../../AddonRouter";
+import type { AddonProperty } from "../AddonPropertyManager";
+import type { AddonInitializer } from "./AddonInitializer";
 import { SCRIPT_EVENT_IDS } from "../../constants";
 
 /**
@@ -11,10 +11,10 @@ import { SCRIPT_EVENT_IDS } from "../../constants";
  * Extracts the necessary parts of the properties and sends them using JSON.stringify
  */
 export class AddonInitializeResponse {
-    private constructor(private readonly addonRouter: AddonRouter) {}
+    private constructor(private readonly addonInitializer: AddonInitializer) {}
 
-    public static create(addonRouter: AddonRouter): AddonInitializeResponse {
-        return new AddonInitializeResponse(addonRouter);
+    public static create(addonInitializer: AddonInitializer): AddonInitializeResponse {
+        return new AddonInitializeResponse(addonInitializer);
     }
 
     /**

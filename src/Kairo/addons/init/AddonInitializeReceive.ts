@@ -1,5 +1,5 @@
 import type { ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
-import type { AddonRouter } from "../../AddonRouter";
+import type { AddonInitializer } from "./AddonInitializer";
 import { SCRIPT_EVENT_IDS } from "../../constants";
 import { ScoreboardManager } from "../../../utils/scoreboardManager";
 
@@ -11,10 +11,10 @@ import { ScoreboardManager } from "../../../utils/scoreboardManager";
  * Forwards the received initializeRequest directly to AddonInitializeResponse.
  */
 export class AddonInitializeReceive {
-    private constructor(private readonly addonRouter: AddonRouter) {}
+    private constructor(private readonly addonInitializer: AddonInitializer) {}
 
-    public static create(addonRouter: AddonRouter): AddonInitializeReceive {
-        return new AddonInitializeReceive(addonRouter);
+    public static create(addonInitializer: AddonInitializer): AddonInitializeReceive {
+        return new AddonInitializeReceive(addonInitializer);
     }
 
     public handleScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
@@ -28,7 +28,7 @@ export class AddonInitializeReceive {
                 this.handleRequestReseedId(message);
                 break;
             case SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE:
-                this.addonRouter.unsubscribeClientHooks();
+                this.addonInitializer.unsubscribeClientHooks();
                 break;
         }
     }
@@ -36,16 +36,16 @@ export class AddonInitializeReceive {
     private handleInitializeRequest(): void {
         const addonCounter = ScoreboardManager.ensureObjective("AddonCounter");
         addonCounter.addScore("AddonCounter", 1);
-        this.addonRouter.setRegistrationNum(addonCounter.getScore("AddonCounter") ?? 0);
+        this.addonInitializer.setRegistrationNum(addonCounter.getScore("AddonCounter") ?? 0);
 
-        this.addonRouter.sendResponse();
+        this.addonInitializer.sendResponse();
     }
 
     private handleRequestReseedId(message: string): void {
-        const registrationNum = this.addonRouter.getRegistrationNum();
+        const registrationNum = this.addonInitializer.getRegistrationNum();
         if (message !== registrationNum.toString()) return;
 
-        this.addonRouter.refreshSessionId();
-        this.addonRouter.sendResponse();
+        this.addonInitializer.refreshSessionId();
+        this.addonInitializer.sendResponse();
     }
 }

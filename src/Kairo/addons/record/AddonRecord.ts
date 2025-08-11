@@ -1,5 +1,5 @@
-import type { AddonProperty } from "../../AddonPropertyManager";
-import type { AddonRouter } from "../../AddonRouter";
+import type { AddonProperty } from "../AddonPropertyManager";
+import type { AddonInitializer } from "../init/AddonInitializer";
 import { VersionManager } from "../../../utils/versionManager";
 import { DynamicPropertyStorage } from "./DynamicPropertyStorage";
 
@@ -11,10 +11,10 @@ export interface AddonRecords {
 }
 
 export class AddonRecord {
-    private constructor(private readonly addonRouter: AddonRouter) {}
+    private constructor(private readonly addonInitializer: AddonInitializer) {}
 
-    public static create(addonRouter: AddonRouter): AddonRecord {
-        return new AddonRecord(addonRouter);
+    public static create(addonInitializer: AddonInitializer): AddonRecord {
+        return new AddonRecord(addonInitializer);
     }
 
     public saveAddons(addons: AddonProperty[]): void {

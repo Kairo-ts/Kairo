@@ -1,6 +1,6 @@
 import { system, world, type ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
-import type { AddonProperty } from "../../AddonPropertyManager";
-import type { AddonRouter } from "../../AddonRouter";
+import type { AddonProperty } from "../AddonPropertyManager";
+import type { AddonInitializer } from "./AddonInitializer";
 import { SCRIPT_EVENT_IDS } from "../../constants";
 import { ConsoleManager } from "../../../utils/consoleManager";
 import { VersionManager } from "../../../utils/versionManager";
@@ -18,9 +18,9 @@ export class AddonInitializeRegister {
         this._resolveReady = resolve;
     });
 
-    private constructor(private readonly addonRouter: AddonRouter) {}
-    public static create(addonRouter: AddonRouter): AddonInitializeRegister {
-        return new AddonInitializeRegister(addonRouter);
+    private constructor(private readonly addonInitializer: AddonInitializer) {}
+    public static create(addonInitializer: AddonInitializer): AddonInitializeRegister {
+        return new AddonInitializeRegister(addonInitializer);
     }
 
     public handleScriptEventReceive = (ev: ScriptEventCommandMessageAfterEvent): void => {
