@@ -5,8 +5,8 @@
 
 export type SemVer = {
     major: number; minor: number; patch: number;
-    prerelease?: string; // "preview.3" / "rc.1"
-    build?: string;      // "abc123" (commit)
+    prerelease?: string | undefined; // "preview.3" / "rc.1"
+    build?: string | undefined;      // "abc123" (commit)
 };
 
 export const properties = {
