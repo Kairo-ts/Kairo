@@ -2,6 +2,8 @@ import type { Kairo } from "..";
 import type { AddonProperty } from "./AddonPropertyManager";
 import { AddonActivator } from "./AddonActivator";
 import type { AddonRecords } from "./record/AddonRecord";
+import type { Player } from "@minecraft/server";
+import { AddonList } from "./ui/AddonList";
 
 export interface AddonData {
     name: string;
@@ -26,10 +28,12 @@ export interface AddonData {
 
 export class AddonManager {
     private readonly activator: AddonActivator;
+    private readonly addonList: AddonList;
     private readonly addonsData: Map<string, AddonData> = new Map();
 
     private constructor(private readonly kairo: Kairo) {
         this.activator = AddonActivator.create(this);
+        this.addonList = AddonList.create(this);
     }
     public static create(kairo: Kairo): AddonManager {
         return new AddonManager(kairo);
@@ -45,5 +49,9 @@ export class AddonManager {
 
     public getAddonRecords(): AddonRecords {
         return this.kairo.getAddonRecords();
+    }
+
+    public showAddonList(player: Player): void {
+        this.addonList.showAddonList(player);
     }
 }
