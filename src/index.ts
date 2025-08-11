@@ -6,6 +6,9 @@ async function main(): Promise<void> {
 
     await Kairo.awaitRegistration();
     Kairo.unsubscribeInitializeHooks();
+
+    Kairo.initSaveAddons();
+    Kairo.initActivateAddons();
 }
 
 main();
