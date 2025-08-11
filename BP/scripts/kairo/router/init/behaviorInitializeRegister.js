@@ -1,6 +1,7 @@
 import { system, world } from "@minecraft/server";
 import { SCRIPT_EVENT_IDS } from "../../constants";
 import { ConsoleManager } from "../../../utils/consoleManager";
+import { VersionManager } from "../../../utils/versionManager";
 /**
  * 応答したアドオンを登録するためのクラス
  *
@@ -43,7 +44,7 @@ export class BehaviorInitializeRegister {
             system.sendScriptEvent(SCRIPT_EVENT_IDS.REQUEST_RESEED_SESSION_ID, registrationNum.toString());
             return;
         }
-        ConsoleManager.log(`Registering addon: ${addonProperties.name} - ver.${addonProperties.version.major}.${addonProperties.version.minor}.${addonProperties.version.patch}`);
+        ConsoleManager.log(`Registering addon: ${addonProperties.name} - ver.${VersionManager.toVersionString(addonProperties.version)}`);
         this.registeredAddons.set(addonProperties.sessionId, addonProperties);
     }
     has(sessionId) {
