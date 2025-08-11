@@ -10,7 +10,7 @@ import { VersionManager } from "../../../utils/versionManager";
  * 
  * A class responsible for registering addons that have responded.
  */
-export class BehaviorInitializeRegister {
+export class AddonInitializeRegister {
     private readonly registeredAddons: Map<string, AddonProperty> = new Map();
 
     private _resolveReady: (() => void) | null = null;
@@ -19,8 +19,8 @@ export class BehaviorInitializeRegister {
     });
 
     private constructor(private readonly addonRouter: AddonRouter) {}
-    public static create(addonRouter: AddonRouter): BehaviorInitializeRegister {
-        return new BehaviorInitializeRegister(addonRouter);
+    public static create(addonRouter: AddonRouter): AddonInitializeRegister {
+        return new AddonInitializeRegister(addonRouter);
     }
 
     public handleScriptEventReceive = (ev: ScriptEventCommandMessageAfterEvent): void => {

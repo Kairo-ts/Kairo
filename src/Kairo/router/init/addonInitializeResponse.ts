@@ -10,11 +10,11 @@ import { SCRIPT_EVENT_IDS } from "../../constants";
  * A class that responds to the router by referencing the addon's properties
  * Extracts the necessary parts of the properties and sends them using JSON.stringify
  */
-export class BehaviorInitializeResponse {
+export class AddonInitializeResponse {
     private constructor(private readonly addonRouter: AddonRouter) {}
 
-    public static create(addonRouter: AddonRouter): BehaviorInitializeResponse {
-        return new BehaviorInitializeResponse(addonRouter);
+    public static create(addonRouter: AddonRouter): AddonInitializeResponse {
+        return new AddonInitializeResponse(addonRouter);
     }
 
     /**

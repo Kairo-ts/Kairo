@@ -6,16 +6,16 @@ import { SCRIPT_EVENT_IDS } from "../../constants";
 
 /**
  * ルーターが各アドオンに登録要求を送るためのクラス
- * 各アドオンが BehaviorInitializeReceive を準備しておく必要があります
+ * 各アドオンが AddonInitializeReceive を準備しておく必要があります
  * 
  * A class that sends registration requests from the router to each addon
- * Each addon must prepare BehaviorInitializeReceive
+ * Each addon must prepare AddonInitializeReceive
  */
-export class BehaviorInitializeRequest {
+export class AddonInitializeRequest {
     private constructor(private readonly addonRouter: AddonRouter) {}
 
-    public static create(addonRouter: AddonRouter): BehaviorInitializeRequest {
-        return new BehaviorInitializeRequest(addonRouter);
+    public static create(addonRouter: AddonRouter): AddonInitializeRequest {
+        return new AddonInitializeRequest(addonRouter);
     }
 
     public handleWorldLoad = (ev: WorldLoadAfterEvent): void => {

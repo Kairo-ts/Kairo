@@ -5,16 +5,16 @@ import { ScoreboardManager } from "../../../utils/scoreboardManager";
 
 /**
  * 各アドオンが、ルーターからのリクエストを受け取るためのクラス
- * 受け取った initializeRequest を、そのまま BehaviorInitializeResponseへ流します
+ * 受け取った initializeRequest を、そのまま AddonInitializeResponseへ流します
  * 
  * A class responsible for receiving requests from the router in each addon.
- * Forwards the received initializeRequest directly to BehaviorInitializeResponse.
+ * Forwards the received initializeRequest directly to AddonInitializeResponse.
  */
-export class BehaviorInitializeReceive {
+export class AddonInitializeReceive {
     private constructor(private readonly addonRouter: AddonRouter) {}
 
-    public static create(addonRouter: AddonRouter): BehaviorInitializeReceive {
-        return new BehaviorInitializeReceive(addonRouter);
+    public static create(addonRouter: AddonRouter): AddonInitializeReceive {
+        return new AddonInitializeReceive(addonRouter);
     }
 
     public handleScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
