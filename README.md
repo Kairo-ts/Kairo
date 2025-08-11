@@ -13,7 +13,7 @@ Kairoは**Node.js**と**TypeScript**を用いて開発されていますが、�
 
 ## Supported Minecraft Script API
 Kairo is built using the stable Script API:
-- `@minecraft/server` - v2.0.0
+- `@minecraft/server` - v2.1.0
 - `@minecraft/server-ui` - v2.0.0
 
 ## Requirements
