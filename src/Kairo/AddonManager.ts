@@ -22,9 +22,17 @@ export interface AddonData {
 export class AddonManager {
     private readonly addonsData: Map<string, AddonData> = new Map();
 
-
     private constructor(private readonly kairo: Kairo) {}
     public static create(kairo: Kairo): AddonManager {
         return new AddonManager(kairo);
+    }
+
+    public initAddonData(name: string, selectedVersion: string): void {
+        const addonData: AddonData = {
+            name,
+            selectedVersion,
+            versions: {}
+        };
+        this.addonsData.set(name, addonData);
     }
 }
