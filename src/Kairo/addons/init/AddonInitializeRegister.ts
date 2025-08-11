@@ -34,8 +34,6 @@ export class AddonInitializeRegister {
             this._resolveReady?.();
             this._resolveReady = null;
             world.scoreboard.removeObjective("AddonCounter");
-
-            const registeredAddons = Array.from(this.registeredAddons.values());
         }
     }
 
