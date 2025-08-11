@@ -27,12 +27,17 @@ export class AddonManager {
         return new AddonManager(kairo);
     }
 
-    public initAddonData(name: string, selectedVersion: string): void {
+    public initAddonData(name: string, selectedVersion: string, versions: string[]): void {
         const addonData: AddonData = {
             name,
             selectedVersion,
             versions: {}
         };
+        versions.forEach(version => {
+            addonData.versions[version] = {
+                isAvailable: false
+            };
+        });
         this.addonsData.set(name, addonData);
     }
 }
