@@ -12,6 +12,7 @@ export interface AddonProperty {
     requiredAddons: {
         [name: string]: number[];
     };
+    tags: string[];
 }
 
 export class AddonPropertyManager {
@@ -24,7 +25,8 @@ export class AddonPropertyManager {
             sessionId: this.generateRandomId(8),
             version: properties.header.version,
             dependencies: properties.dependencies,
-            requiredAddons: properties.requiredAddons
+            requiredAddons: properties.requiredAddons,
+            tags: properties.tags
         }
     }
 
