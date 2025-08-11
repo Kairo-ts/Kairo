@@ -1,4 +1,4 @@
-import { properties } from "../properties";
+import { properties } from "../../properties";
 export class AddonPropertyManager {
     constructor(kairo) {
         this.kairo = kairo;

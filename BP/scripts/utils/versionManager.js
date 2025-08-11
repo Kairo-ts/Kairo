@@ -16,7 +16,6 @@ export class VersionManager {
         if (!m || !m.groups) {
             throw new Error(`Invalid semver: ${ver}`);
         }
-        // groups はここで非 undefined に絞られている
         const g = m.groups;
         return {
             major: parseInt(g.major, 10),
@@ -25,5 +24,23 @@ export class VersionManager {
             prerelease: g.prerelease, // string | undefined でOK
             build: g.build, // string | undefined でOK
         };
+    }
+    static compare(a, b) {
+        const va = this.fromString(a);
+        const vb = this.fromString(b);
+        if (va.major !== vb.major)
+            return va.major - vb.major;
+        if (va.minor !== vb.minor)
+            return va.minor - vb.minor;
+        if (va.patch !== vb.patch)
+            return va.patch - vb.patch;
+        if (va.prerelease && !vb.prerelease)
+            return -1;
+        if (!va.prerelease && vb.prerelease)
+            return 1;
+        if (va.prerelease && vb.prerelease) {
+            return va.prerelease.localeCompare(vb.prerelease, undefined, { numeric: true });
+        }
+        return 0;
     }
 }

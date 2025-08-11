@@ -1,21 +1,15 @@
 import { system, world } from "@minecraft/server";
-import { AddonInitializeActivator } from "./router/init/addonInitializeActivator";
-import { AddonInitializeReceive } from "./router/init/addonInitializeReceive";
-import { AddonInitializeRegister } from "./router/init/addonInitializeRegister";
-import { AddonInitializeRequest } from "./router/init/addonInitializeRequest";
-import { AddonInitializeResponse } from "./router/init/addonInitializeResponse";
-import { AddonRecord } from "./router/record/AddonRecord";
-import type { Kairo } from ".";
-import type { AddonProperty } from "./AddonPropertyManager";
+import { AddonInitializeReceive } from "./AddonInitializeReceive";
+import { AddonInitializeRegister } from "./AddonInitializeRegister";
+import { AddonInitializeRequest } from "./AddonInitializeRequest";
+import { AddonInitializeResponse } from "./AddonInitializeResponse";
+import { AddonRecord } from "../record/AddonRecord";
+import type { Kairo } from "../..";
+import type { AddonProperty } from "../AddonPropertyManager";
 
-/**
- * Werewolf-AddonRouterの中枢となるクラス
- * The core class of Werewolf-AddonRouter
- */
-export class AddonRouter {
+export class AddonInitializer {
     private registrationNum: number = 0;
 
-    private readonly activator: AddonInitializeActivator;
     private readonly receive: AddonInitializeReceive;
     private readonly register: AddonInitializeRegister;
     private readonly request: AddonInitializeRequest;
@@ -23,7 +17,6 @@ export class AddonRouter {
     private readonly record: AddonRecord;
 
     private constructor(private readonly kairo: Kairo) {
-        this.activator = AddonInitializeActivator.create(this);
         this.receive = AddonInitializeReceive.create(this);
         this.register = AddonInitializeRegister.create(this);
         this.request = AddonInitializeRequest.create(this);
@@ -31,8 +24,8 @@ export class AddonRouter {
         this.record = AddonRecord.create(this);
     }
 
-    public static create(kairo: Kairo): AddonRouter {
-        return new AddonRouter(kairo);
+    public static create(kairo: Kairo): AddonInitializer {
+        return new AddonInitializer(kairo);
     }
 
     public subscribeClientHooks() {
@@ -86,11 +79,15 @@ export class AddonRouter {
         return this.register.ready;
     }
 
-    public saveAddons(addons: AddonProperty[]): void {
-        this.record.saveAddons(addons);
+    public saveAddons(): void {
+        this.record.saveAddons(this.register.getAll());
     }
 
-    public activateAddons(addons: AddonProperty[]): void {
-        this.activator.activateAddons(addons);
+    public getAddonRecords(): Record<string, { selectedVersion: string; versions: string[] }> {
+        return this.record.loadAddons();
+    }
+
+    public getRegisteredAddons(): AddonProperty[] {
+        return this.register.getAll();
     }
 }

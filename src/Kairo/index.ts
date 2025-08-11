@@ -1,8 +1,9 @@
 import { system } from "@minecraft/server";
-import { AddonPropertyManager, type AddonProperty } from "./AddonPropertyManager";
-import { AddonRouter } from "./AddonRouter";
+import { AddonPropertyManager, type AddonProperty } from "./addons/AddonPropertyManager";
+import { AddonInitializer } from "./addons/init/AddonInitializer";
 import { SCRIPT_EVENT_IDS } from "./constants";
-import { AddonManager } from "./AddonManager";
+import { AddonManager } from "./addons/AddonManager";
+import type { AddonRecords } from "./addons/record/AddonRecord";
 
 export class Kairo {
     private static instance: Kairo;
@@ -10,12 +11,12 @@ export class Kairo {
 
     private readonly addonManager: AddonManager;
     private readonly addonPropertyManager: AddonPropertyManager;
-    private readonly addonRouter: AddonRouter;
+    private readonly addonInitializer: AddonInitializer;
 
     private constructor() {
         this.addonManager = AddonManager.create(this);
         this.addonPropertyManager = AddonPropertyManager.create(this);
-        this.addonRouter = AddonRouter.create(this);
+        this.addonInitializer = AddonInitializer.create(this);
     }
 
     private static getInstance(): Kairo {
@@ -30,11 +31,11 @@ export class Kairo {
         if (inst.initialized) return;
 
         inst.initialized = true;
-        inst.addonRouter.subscribeClientHooks();
+        inst.addonInitializer.subscribeClientHooks();
     }
 
     public static initRouter(): void {
-        this.getInstance().addonRouter.subscribeCoreHooks();
+        this.getInstance().addonInitializer.subscribeCoreHooks();
     }
 
     public getSelfAddonProperty(): AddonProperty {
@@ -46,11 +47,24 @@ export class Kairo {
     }
 
     public static awaitRegistration(): Promise<void> {
-        return this.getInstance().addonRouter.awaitRegistration();
+        return this.getInstance().addonInitializer.awaitRegistration();
     }
 
     public static unsubscribeInitializeHooks(): void {
-        this.getInstance().addonRouter.unsubscribeClientHooks();
+        this.getInstance().addonInitializer.unsubscribeClientHooks();
         system.sendScriptEvent(SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE, "");
+    }
+
+    public static initSaveAddons(): void {
+        this.getInstance().addonInitializer.saveAddons();
+    }
+
+    public static initActivateAddons(): void {
+        const inst = this.getInstance();
+        inst.addonManager.activateAddons(inst.addonInitializer.getRegisteredAddons());
+    }
+
+    public getAddonRecords(): AddonRecords {
+        return this.addonInitializer.getAddonRecords();
     }
 }

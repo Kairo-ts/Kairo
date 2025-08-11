@@ -7,12 +7,12 @@ import { SCRIPT_EVENT_IDS } from "../../constants";
  * A class that responds to the router by referencing the addon's properties
  * Extracts the necessary parts of the properties and sends them using JSON.stringify
  */
-export class BehaviorInitializeResponse {
-    constructor(addonRouter) {
-        this.addonRouter = addonRouter;
+export class AddonInitializeResponse {
+    constructor(addonInitializer) {
+        this.addonInitializer = addonInitializer;
     }
-    static create(addonRouter) {
-        return new BehaviorInitializeResponse(addonRouter);
+    static create(addonInitializer) {
+        return new AddonInitializeResponse(addonInitializer);
     }
     /**
      * scoreboard を使って登録用の識別番号も送信しておく

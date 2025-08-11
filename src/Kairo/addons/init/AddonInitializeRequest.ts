@@ -1,6 +1,6 @@
 import { system, WorldLoadAfterEvent } from "@minecraft/server";
 import { ConsoleManager } from "../../../utils/consoleManager";
-import type { AddonRouter } from "../../AddonRouter";
+import type { AddonInitializer } from "./AddonInitializer";
 import { ScoreboardManager } from "../../../utils/scoreboardManager";
 import { SCRIPT_EVENT_IDS } from "../../constants";
 
@@ -12,10 +12,10 @@ import { SCRIPT_EVENT_IDS } from "../../constants";
  * Each addon must prepare AddonInitializeReceive
  */
 export class AddonInitializeRequest {
-    private constructor(private readonly addonRouter: AddonRouter) {}
+    private constructor(private readonly addonInitializer: AddonInitializer) {}
 
-    public static create(addonRouter: AddonRouter): AddonInitializeRequest {
-        return new AddonInitializeRequest(addonRouter);
+    public static create(addonInitializer: AddonInitializer): AddonInitializeRequest {
+        return new AddonInitializeRequest(addonInitializer);
     }
 
     public handleWorldLoad = (ev: WorldLoadAfterEvent): void => {
