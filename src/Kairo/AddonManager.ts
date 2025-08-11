@@ -34,8 +34,8 @@ export class AddonManager {
 
         Object.entries(addonRecords).forEach(([name, record]) => {
             const sortedVersions = Object.keys(record.versions)
-                .sort((a, b) => VersionManager.compare(a, b));
-            
+                .sort((a, b) => VersionManager.compare(b, a));
+
             this.initAddonData(name, record.selectedVersion, sortedVersions);
         });
 
