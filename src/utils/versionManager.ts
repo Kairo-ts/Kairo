@@ -21,7 +21,6 @@ export class VersionManager {
             throw new Error(`Invalid semver: ${ver}`);
         }
     
-        // groups はここで非 undefined に絞られている
         const g = m.groups as {
             major: string; minor: string; patch: string;
             prerelease?: string; build?: string;
