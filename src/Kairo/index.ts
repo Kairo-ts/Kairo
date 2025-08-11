@@ -3,7 +3,7 @@ import { AddonPropertyManager, type AddonProperty } from "./AddonPropertyManager
 import { AddonRouter } from "./AddonRouter";
 import { SCRIPT_EVENT_IDS } from "./constants";
 import { AddonManager } from "./AddonManager";
-import type { AddonRecords } from "./router/record/AddonRecord";
+import type { AddonRecords } from "./addons/record/AddonRecord";
 
 export class Kairo {
     private static instance: Kairo;

@@ -1,9 +1,9 @@
 import { system, world } from "@minecraft/server";
-import { AddonInitializeReceive } from "./router/init/AddonInitializeReceive";
-import { AddonInitializeRegister } from "./router/init/AddonInitializeRegister";
-import { AddonInitializeRequest } from "./router/init/AddonInitializeRequest";
-import { AddonInitializeResponse } from "./router/init/AddonInitializeResponse";
-import { AddonRecord } from "./router/record/AddonRecord";
+import { AddonInitializeReceive } from "./addons/init/AddonInitializeReceive";
+import { AddonInitializeRegister } from "./addons/init/AddonInitializeRegister";
+import { AddonInitializeRequest } from "./addons/init/AddonInitializeRequest";
+import { AddonInitializeResponse } from "./addons/init/AddonInitializeResponse";
+import { AddonRecord } from "./addons/record/AddonRecord";
 import type { Kairo } from ".";
 import type { AddonProperty } from "./AddonPropertyManager";
 
