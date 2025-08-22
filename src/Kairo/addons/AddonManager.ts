@@ -7,6 +7,7 @@ import { AddonList } from "./ui/AddonList";
 
 export interface AddonData {
     name: string;
+    description: [string, string];
     isActive: boolean;
     selectedVersion: string;
     activeVersion: string;
