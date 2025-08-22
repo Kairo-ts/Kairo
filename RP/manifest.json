@@ -3,7 +3,7 @@
   "header": {
     "name": "Kairo",
     "description": "Enables communication between multiple behavior packs by leveraging the ScriptAPI as a communication layer.",
-    "uuid": "45826daa-bf9f-4443-b746-944a0970bfef",
+    "uuid": "5586bc68-ca19-4d34-9b8d-0cf522ff421d",
     "version": [
       1,
       0,
@@ -17,10 +17,8 @@
   },
   "modules": [
     {
-      "type": "script",
-      "language": "javascript",
-      "entry": "scripts/index.js",
-      "uuid": "1d3bfdf2-7456-435b-bacf-c94c0d7b7c64",
+      "type": "resources",
+      "uuid": "f9cf1b9e-5d91-477a-b9d8-b1cc6f64c335",
       "version": [
         1,
         0,
@@ -30,15 +28,7 @@
   ],
   "dependencies": [
     {
-      "module_name": "@minecraft/server",
-      "version": "2.1.0"
-    },
-    {
-      "module_name": "@minecraft/server-ui",
-      "version": "2.0.0"
-    },
-    {
-      "uuid": "5586bc68-ca19-4d34-9b8d-0cf522ff421d",
+      "uuid": "45826daa-bf9f-4443-b746-944a0970bfef",
       "version": [
         1,
         0,
