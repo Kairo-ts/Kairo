@@ -29,7 +29,11 @@ export class AddonList {
         const entries = Object.entries(selectedAddon[1].versions);
         const versionList = entries.map(
             ([version, data]) => {
-                return data.isRegistered ? `§f${version}§r` : `§7${version}§r`;
+                return data.isRegistered
+                    ? version === selectedAddon[1].activeVersion
+                        ? `§f${version}§r` + " §9(§oactive§r§9)§r"
+                        : `§f${version}§r`
+                    : `§7${version} (§ouninstalled§r)`;
             }
         );
 
@@ -41,20 +45,31 @@ export class AddonList {
         ];
         const selectedVersionIndex = selectableVersions.indexOf(selectedAddon[1].selectedVersion);
 
+        const isActive = selectedAddon[1].isActive ? "§l§9有効§r" : "§l§4無効§r";
+        const selectedVersion = selectedAddon[1].selectedVersion === "latest version"
+            ? "latest version" + ` (ver.${selectedAddon[1].activeVersion})`
+            : `ver.${selectedAddon[1].selectedVersion}`;
+
+        const activeVersionTags = selectedAddon[1].versions[selectedAddon[1].activeVersion]?.tags || [];
+
         addonDataForm
             .title(selectedAddon[0])
-            .label("バージョン一覧\n" + versionList.join("\n"))
+            .header(selectedAddon[0])
+            .label(isActive + " §7|§r " + selectedVersion + "\n" + activeVersionTags.join(", "))
+            .divider()
+            .label("§l登録済みバージョン一覧§r\n" + versionList.join("\n"))
+            .divider()
             .dropdown("バージョン選択", selectableVersions, { defaultValueIndex: selectedVersionIndex })
             .toggle("有効化", { defaultValue:selectedAddon[1].isActive });
 
         const { formValues, canceled: dataFormCanceled } = await addonDataForm.show(player);
         if (dataFormCanceled || formValues === undefined) return;
 
-        const versionIndex = Number(formValues[1]);
-        const selectedVersion = selectableVersions[versionIndex];
-        if (selectedVersion === undefined) return;
-        selectedAddon[1].selectedVersion = selectedVersion;
+        const versionIndex = Number(formValues[5]);
+        const newSelectedVersion = selectableVersions[versionIndex];
+        if (newSelectedVersion === undefined) return;
+        selectedAddon[1].selectedVersion = newSelectedVersion;
 
-        selectedAddon[1].isActive = formValues[2] as boolean;
+        selectedAddon[1].isActive = formValues[6] as boolean;
     }
 }
