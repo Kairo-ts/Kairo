@@ -10,26 +10,28 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ---------- UWP デプロイ ----------
-function resolveMinecraftDevBpPath(addonName: string) {
+function resolveMinecraftDevPath(addonName: string, type: "behavior" | "resource") {
     const userHome = os.homedir();
-    const devBpRoot = path.join(userHome, "AppData", "Local", "Packages");
-    if (!fs.existsSync(devBpRoot)) throw new Error("Packages folder not found.");
+    const devRoot = path.join(userHome, "AppData", "Local", "Packages");
+    if (!fs.existsSync(devRoot)) throw new Error("Packages folder not found.");
 
-    const candidates = fs.readdirSync(devBpRoot)
+    const candidates = fs.readdirSync(devRoot)
         .filter((name: string) => name.startsWith("Microsoft.MinecraftUWP"))
-        .map(name => ({ name, mtime: fs.statSync(path.join(devBpRoot, name)).mtimeMs }))
+        .map(name => ({ name, mtime: fs.statSync(path.join(devRoot, name)).mtimeMs }))
         .sort((a, b) => b.mtime - a.mtime);
 
     if (candidates.length === 0) throw new Error("Minecraft UWP folder not found.");
 
     const uwp = candidates[0].name;
     return path.join(
-        devBpRoot,
+        devRoot,
         uwp,
         "LocalState",
         "games",
         "com.mojang",
-        "development_behavior_packs",
+        type === "behavior"
+            ? "development_behavior_packs"
+            : "development_resource_packs",
         addonName
     );
 }
@@ -42,21 +44,34 @@ async function main() {
 
     const rootDir = path.join(__dirname, "..");
     const bpDir = path.join(rootDir, "BP");
+    const rpDir = path.join(rootDir, "RP");
 
+    // manifest.json を BP に生成
     const { manifest, versionString } = writeManifest(bpDir);
 
+    // pack_icon.png を BP/RP にコピー
     writePackIcon(rootDir);
 
     const addonName: string | undefined = manifest.header?.name;
     if (!addonName) throw new Error("Addon name not found in manifest.");
 
-    const dst = resolveMinecraftDevBpPath(addonName);
+    // UWP パス解決
+    const dstBP = resolveMinecraftDevPath(addonName, "behavior");
+    const dstRP = resolveMinecraftDevPath(addonName, "resource");
 
-    fse.ensureDirSync(dst);
-    fse.emptyDirSync(dst);
-    fse.copySync(bpDir, dst, { overwrite: true });
+    // BP デプロイ
+    fse.ensureDirSync(dstBP);
+    fse.emptyDirSync(dstBP);
+    fse.copySync(bpDir, dstBP, { overwrite: true });
 
-    console.log(`[deploy] ${addonName} ${versionString} => ${dst}`);
+    // RP デプロイ
+    fse.ensureDirSync(dstRP);
+    fse.emptyDirSync(dstRP);
+    fse.copySync(rpDir, dstRP, { overwrite: true });
+
+    console.log(`[deploy] BP => ${dstBP}`);
+    console.log(`[deploy] RP => ${dstRP}`);
+    console.log(`[deploy] ${addonName} ${versionString} deployed.`);
 }
 
 main().catch(err => {
