@@ -4,7 +4,7 @@ import path from "path";
 import os from "os";
 import fse from "fs-extra";
 import { fileURLToPath } from "url";
-import { properties } from "./scripts/properties";
+import { properties } from "../scripts/properties";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
