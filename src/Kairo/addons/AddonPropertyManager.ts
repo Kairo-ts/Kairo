@@ -3,6 +3,7 @@ import { properties, type SemVer } from "../../properties";
 
 export interface AddonProperty {
     name: string;
+    description: string;
     sessionId: string;
     version: SemVer;
     dependencies: {
@@ -22,6 +23,7 @@ export class AddonPropertyManager {
     private constructor(private readonly kairo: Kairo) {
         this.self = {
             name: properties.header.name,
+            description: properties.header.description,
             sessionId: this.generateRandomId(8),
             version: properties.header.version,
             dependencies: properties.dependencies,
