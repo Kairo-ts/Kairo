@@ -4,7 +4,7 @@ import path from "path";
 import os from "os";
 import fse from "fs-extra";
 import { fileURLToPath } from "url";
-import { properties } from "./src/properties";
+import { properties } from "./scripts/properties";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,7 +34,7 @@ function resolveVersionRef(ref: any, headerSemver: SemVer): Triple {
         return [a, b, c];
     }
     return toManifestTriple(headerSemver);
-}
+}   
 
 // ---------- manifest 生成 ----------
 function buildManifestFromProperties(props: any) {
