@@ -3,13 +3,13 @@ import os from "os";
 import fs from "fs";
 import fse from "fs-extra";
 import { fileURLToPath } from "url";
-import { writeManifest } from "./generate-manifest";
+import { writeManifests } from "./generate-manifest";
 import { writePackIcon } from "./copy-pack_icon";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ---------- UWP デプロイ ----------
+// ---------- UWP デプロイ先解決 ----------
 function resolveMinecraftDevPath(addonName: string, type: "behavior" | "resource") {
     const userHome = os.homedir();
     const devRoot = path.join(userHome, "AppData", "Local", "Packages");
@@ -46,18 +46,19 @@ async function main() {
     const bpDir = path.join(rootDir, "BP");
     const rpDir = path.join(rootDir, "RP");
 
-    // manifest.json を BP に生成
-    const { manifest, versionString } = writeManifest(bpDir);
+    // BP/RP 両方の manifest.json を生成
+    const { bpManifest, rpManifest, versionString } = writeManifests(rootDir);
 
     // pack_icon.png を BP/RP にコピー
     writePackIcon(rootDir);
 
-    const addonName: string | undefined = manifest.header?.name;
-    if (!addonName) throw new Error("Addon name not found in manifest.");
+    const bpName: string | undefined = bpManifest.header?.name;
+    const rpName: string | undefined = rpManifest.header?.name;
+    if (!bpName || !rpName) throw new Error("Addon name not found in manifest.");
 
     // UWP パス解決
-    const dstBP = resolveMinecraftDevPath(addonName, "behavior");
-    const dstRP = resolveMinecraftDevPath(addonName, "resource");
+    const dstBP = resolveMinecraftDevPath(bpName, "behavior");
+    const dstRP = resolveMinecraftDevPath(rpName, "resource");
 
     // BP デプロイ
     fse.ensureDirSync(dstBP);
@@ -71,7 +72,7 @@ async function main() {
 
     console.log(`[deploy] BP => ${dstBP}`);
     console.log(`[deploy] RP => ${dstRP}`);
-    console.log(`[deploy] ${addonName} ${versionString} deployed.`);
+    console.log(`[deploy] ${bpName}/${rpName} ${versionString} deployed.`);
 }
 
 main().catch(err => {

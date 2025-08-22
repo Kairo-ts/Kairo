@@ -29,6 +29,12 @@ export const properties = {
         min_engine_version: [ 1,21,100 ],
         uuid: "45826daa-bf9f-4443-b746-944a0970bfef"
     },
+    resourcepack: {
+        name: "Use BP Name",
+        description: "Use BP Description",
+        uuid: "5586bc68-ca19-4d34-9b8d-0cf522ff421d",
+        module_uuid: "f9cf1b9e-5d91-477a-b9d8-b1cc6f64c335",
+    },
     modules: [
         {
             type: "script",
