@@ -3,7 +3,7 @@ import { AddonInitializeReceive } from "./AddonInitializeReceive";
 import { AddonInitializeRegister } from "./AddonInitializeRegister";
 import { AddonInitializeRequest } from "./AddonInitializeRequest";
 import { AddonInitializeResponse } from "./AddonInitializeResponse";
-import { AddonRecord } from "../record/AddonRecord";
+import { AddonRecord, type AddonRecords } from "../record/AddonRecord";
 import type { Kairo } from "../..";
 import type { AddonProperty } from "../AddonPropertyManager";
 
@@ -83,7 +83,7 @@ export class AddonInitializer {
         this.record.saveAddons(this.register.getAll());
     }
 
-    public getAddonRecords(): Record<string, { selectedVersion: string; versions: string[] }> {
+    public getAddonRecords(): AddonRecords {
         return this.record.loadAddons();
     }
 
