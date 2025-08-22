@@ -5,6 +5,7 @@ export class AddonPropertyManager {
         this.charset = [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'];
         this.self = {
             name: properties.header.name,
+            description: properties.header.description,
             sessionId: this.generateRandomId(8),
             version: properties.header.version,
             dependencies: properties.dependencies,

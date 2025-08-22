@@ -22,6 +22,7 @@ export class AddonActivator {
         const sortedVersions = versions.sort((a, b) => VersionManager.compare(b, a));
         const addonData = {
             name,
+            description: ["0.0.0", ""],
             isActive: false,
             selectedVersion,
             activeVersion: "",
@@ -38,7 +39,12 @@ export class AddonActivator {
         const addonData = this.addonManager.getAddonsData().get(addon.name);
         if (!addonData)
             return;
-        addonData.versions[VersionManager.toVersionString(addon.version)] = {
+        const version = VersionManager.toVersionString(addon.version);
+        if (VersionManager.compare(addonData.description[0], version) === -1) {
+            addonData.description[0] = version;
+            addonData.description[1] = addon.description;
+        }
+        addonData.versions[version] = {
             isRegistered: true,
             sessionId: addon.sessionId,
             tags: addon.tags,

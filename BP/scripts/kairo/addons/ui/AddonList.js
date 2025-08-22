@@ -44,6 +44,7 @@ export class AddonList {
         addonDataForm
             .title(selectedAddon[0])
             .header(selectedAddon[0])
+            .label(`${selectedAddon[1].description[1]}`)
             .label(isActive + " §7|§r " + selectedVersion + "\n" + activeVersionTags.join(", "))
             .divider()
             .label("§l登録済みバージョン一覧§r\n" + versionList.join("\n"))
@@ -53,11 +54,11 @@ export class AddonList {
         const { formValues, canceled: dataFormCanceled } = await addonDataForm.show(player);
         if (dataFormCanceled || formValues === undefined)
             return;
-        const versionIndex = Number(formValues[5]);
+        const versionIndex = Number(formValues[6]);
         const newSelectedVersion = selectableVersions[versionIndex];
         if (newSelectedVersion === undefined)
             return;
         selectedAddon[1].selectedVersion = newSelectedVersion;
-        selectedAddon[1].isActive = formValues[6];
+        selectedAddon[1].isActive = formValues[7];
     }
 }
