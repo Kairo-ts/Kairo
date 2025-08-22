@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { properties } from "./src/properties";
+import { properties } from "../scripts/properties";
 
 function resolve(value: any, context: any): any {
     if (typeof value === "string" && value === "header.version") {
