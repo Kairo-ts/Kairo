@@ -25,9 +25,30 @@ export class AddonList {
         if (!selectedAddon)
             return;
         const addonDataForm = new ModalFormData();
-        addonDataForm.title(selectedAddon[0]);
+        const entries = Object.entries(selectedAddon[1].versions);
+        const versionList = entries.map(([version, data]) => {
+            return data.isRegistered ? `§f${version}§r` : `§7${version}§r`;
+        });
+        const selectableVersions = [
+            "latest version",
+            ...entries
+                .filter(([version, data]) => data.isRegistered)
+                .map(([version]) => version)
+        ];
+        const selectedVersionIndex = selectableVersions.indexOf(selectedAddon[1].selectedVersion);
+        addonDataForm
+            .title(selectedAddon[0])
+            .label("バージョン一覧\n" + versionList.join("\n"))
+            .dropdown("バージョン選択", selectableVersions, { defaultValueIndex: selectedVersionIndex })
+            .toggle("有効化", { defaultValue: selectedAddon[1].isActive });
         const { formValues, canceled: dataFormCanceled } = await addonDataForm.show(player);
-        if (dataFormCanceled)
+        if (dataFormCanceled || formValues === undefined)
             return;
+        const versionIndex = Number(formValues[1]);
+        const selectedVersion = selectableVersions[versionIndex];
+        if (selectedVersion === undefined)
+            return;
+        selectedAddon[1].selectedVersion = selectedVersion;
+        selectedAddon[1].isActive = formValues[2];
     }
 }
