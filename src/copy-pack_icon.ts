@@ -15,6 +15,5 @@ export function writePackIcon(rootDir: string) {
     [bpIcon, rpIcon, rpTexturesIcon].forEach(dst => {
         fse.ensureDirSync(path.dirname(dst));
         fse.copyFileSync(srcIcon, dst);
-        console.log(`[pack_icon] copied to ${dst}`);
     });
 }
