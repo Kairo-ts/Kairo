@@ -50,7 +50,8 @@ export class AddonList {
             .label("§l登録済みバージョン一覧§r\n" + versionList.join("\n"))
             .divider()
             .dropdown("バージョン選択", selectableVersions, { defaultValueIndex: selectedVersionIndex })
-            .toggle("有効化", { defaultValue: selectedAddon[1].isActive });
+            .toggle("有効化", { defaultValue: selectedAddon[1].isActive })
+            .submitButton("変更を送信");
         const { formValues, canceled: dataFormCanceled } = await addonDataForm.show(player);
         if (dataFormCanceled || formValues === undefined)
             return;
