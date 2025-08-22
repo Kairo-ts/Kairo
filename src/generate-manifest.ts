@@ -49,7 +49,7 @@ export function buildBPManifest(props: any, rpUUID?: string) {
         version: resolveVersionRef(m.version, v),
     }));
 
-    const dependencies = props.dependencies ?? [];
+    const dependencies = [...(props.dependencies ?? [])];
     if (rpUUID) {
         dependencies.push({
             uuid: rpUUID,
@@ -116,24 +116,38 @@ export function writeManifests(rootDir: string) {
     const bpDir = path.join(rootDir, "BP");
     const rpDir = path.join(rootDir, "RP");
 
-    const { manifest: rpManifest, versionString } = buildRPManifest(
-        properties,
-        properties.header,
-        properties.header.uuid
-    );
-    const { manifest: bpManifest } = buildBPManifest(properties, rpManifest.header.uuid);
+    let rpManifest: any = null;
+    let bpManifest: any;
+    let versionString: string;
+
+    if (properties.resourcepack) {
+        const rpResult = buildRPManifest(
+            properties,
+            properties.header,
+            properties.header.uuid
+        );
+        rpManifest = rpResult.manifest;
+        versionString = rpResult.versionString;
+
+        const bpResult = buildBPManifest(properties, rpManifest.header.uuid);
+        bpManifest = bpResult.manifest;
+
+        fs.mkdirSync(rpDir, { recursive: true });
+        fs.writeFileSync(
+            path.join(rpDir, "manifest.json"),
+            JSON.stringify(rpManifest, null, 2),
+            "utf-8"
+        );
+    } else {
+        const bpResult = buildBPManifest(properties);
+        bpManifest = bpResult.manifest;
+        versionString = bpResult.versionString;
+    }
 
     fs.mkdirSync(bpDir, { recursive: true });
     fs.writeFileSync(
         path.join(bpDir, "manifest.json"),
         JSON.stringify(bpManifest, null, 2),
-        "utf-8"
-    );
-
-    fs.mkdirSync(rpDir, { recursive: true });
-    fs.writeFileSync(
-        path.join(rpDir, "manifest.json"),
-        JSON.stringify(rpManifest, null, 2),
         "utf-8"
     );
 

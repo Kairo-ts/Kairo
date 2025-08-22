@@ -46,33 +46,32 @@ async function main() {
     const bpDir = path.join(rootDir, "BP");
     const rpDir = path.join(rootDir, "RP");
 
-    // BP/RP 両方の manifest.json を生成
     const { bpManifest, rpManifest, versionString } = writeManifests(rootDir);
 
-    // pack_icon.png を BP/RP にコピー
     writePackIcon(rootDir);
 
-    const bpName: string | undefined = bpManifest.header?.name;
-    const rpName: string | undefined = rpManifest.header?.name;
-    if (!bpName || !rpName) throw new Error("Addon name not found in manifest.");
+    const bpName: string | undefined = bpManifest?.header?.name;
+    if (!bpName) throw new Error("BP addon name not found in manifest.");
 
-    // UWP パス解決
     const dstBP = resolveMinecraftDevPath(bpName, "behavior");
-    const dstRP = resolveMinecraftDevPath(rpName, "resource");
-
-    // BP デプロイ
     fse.ensureDirSync(dstBP);
     fse.emptyDirSync(dstBP);
     fse.copySync(bpDir, dstBP, { overwrite: true });
-
-    // RP デプロイ
-    fse.ensureDirSync(dstRP);
-    fse.emptyDirSync(dstRP);
-    fse.copySync(rpDir, dstRP, { overwrite: true });
-
     console.log(`[deploy] BP => ${dstBP}`);
-    console.log(`[deploy] RP => ${dstRP}`);
-    console.log(`[deploy] ${bpName}/${rpName} ${versionString} deployed.`);
+
+    if (rpManifest) {
+        const rpName: string | undefined = rpManifest.header?.name;
+        if (!rpName) throw new Error("RP addon name not found in manifest.");
+
+        const dstRP = resolveMinecraftDevPath(rpName, "resource");
+        fse.ensureDirSync(dstRP);
+        fse.emptyDirSync(dstRP);
+        fse.copySync(rpDir, dstRP, { overwrite: true });
+        console.log(`[deploy] RP => ${dstRP}`);
+        console.log(`[deploy] ${bpName}/${rpName} ${versionString} deployed.`);
+    } else {
+        console.log(`[deploy] ${bpName} ${versionString} deployed (BP only).`);
+    }
 }
 
 main().catch(err => {
