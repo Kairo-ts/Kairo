@@ -40,10 +40,6 @@ export class AddonActivator {
         if (!addonData)
             return;
         const version = VersionManager.toVersionString(addon.version);
-        if (VersionManager.compare(addonData.description[0], version) === -1) {
-            addonData.description[0] = version;
-            addonData.description[1] = addon.description;
-        }
         addonData.versions[version] = {
             isRegistered: true,
             sessionId: addon.sessionId,
