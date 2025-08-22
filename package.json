@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "rimraf BP/scripts && tsc && npm run deploy",
-    "deploy": "tsx generate-manifest.ts && tsx deploy.ts",
+    "deploy": "tsx src/generate-manifest.ts && tsx src/deploy.ts",
     "dev": "concurrently \"tsc --watch\" \"chokidar './BP/scripts/**/*.js' -c 'npm run deploy'\"",
     "predev": "rimraf BP/scripts"
   },
