@@ -15,12 +15,8 @@ export class AddonList {
         addonListForm.title({"rawtext": [{ translate: "kairo.addonList.title" }]});
 
         addonsData.forEach(([name, data]) => {
-            if (data.isActive) {
-                addonListForm.button(`§l§8${name}§r\n§l§9有効`);
-            }
-            else {
-                addonListForm.button(`§l§8${name}§r\n§l§4無効`);
-            }
+            const isActive = data.isActive ? `§l§9有効§r` : `§l§4無効§r`;
+            addonListForm.button(`§l§8${name}§r\n${isActive} §8(${data.selectedVersion})§r`);
         });
 
         const { selection, canceled: listFormCanceled } = await addonListForm.show(player);
