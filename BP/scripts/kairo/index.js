@@ -1,4 +1,4 @@
-import { system } from "@minecraft/server";
+import { Player, system } from "@minecraft/server";
 import { AddonPropertyManager } from "./addons/AddonPropertyManager";
 import { AddonInitializer } from "./addons/init/AddonInitializer";
 import { SCRIPT_EVENT_IDS } from "./constants";
@@ -48,5 +48,8 @@ export class Kairo {
     }
     getAddonRecords() {
         return this.addonInitializer.getAddonRecords();
+    }
+    static showAddonList(player) {
+        this.getInstance().addonManager.showAddonList(player);
     }
 }
