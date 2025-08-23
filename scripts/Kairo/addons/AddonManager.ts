@@ -75,12 +75,8 @@ export class AddonManager {
         this.kairo.inactiveAddon();
     }
 
-    public sendActiveRequest(sessionId: string): void {
-        this.activator.sendActiveRequest(sessionId);
-    }
-
-    public sendInactiveRequest(sessionId: string): void {
-        this.activator.sendInactiveRequest(sessionId);
+    public changeAddonSettings(addonData: AddonData, version: string, isActive: boolean): void {
+        this.activator.changeAddonSettings(addonData, version, isActive);
     }
 
     public handleAddonListScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
