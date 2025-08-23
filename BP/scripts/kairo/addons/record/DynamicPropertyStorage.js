@@ -37,5 +37,11 @@ export class DynamicPropertyStorage {
         }
         world.setDynamicProperty(`${keyPrefix}_count`, undefined);
     }
+    /**
+     * DynamicPropertyからデータをすべて削除
+     */
+    static clear() {
+        world.clearDynamicProperties();
+    }
 }
 DynamicPropertyStorage.CHUNK_SIZE = 30000;
