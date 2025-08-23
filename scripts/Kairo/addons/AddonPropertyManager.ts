@@ -2,6 +2,7 @@ import type { Kairo } from "..";
 import { properties, type SemVer } from "../../properties";
 
 export interface AddonProperty {
+    id: string,
     name: string;
     description: string;
     sessionId: string;
@@ -22,6 +23,7 @@ export class AddonPropertyManager {
 
     private constructor(private readonly kairo: Kairo) {
         this.self = {
+            id: properties.id,
             name: properties.header.name,
             description: properties.header.description,
             sessionId: this.generateRandomId(8),
