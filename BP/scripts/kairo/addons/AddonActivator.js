@@ -90,4 +90,7 @@ export class AddonActivator {
     sendActiveRequest(sessionId) {
         system.sendScriptEvent(`kairo:${sessionId}`, "active request");
     }
+    sendInactiveRequest(sessionId) {
+        system.sendScriptEvent(`kairo:${sessionId}`, "inactive request");
+    }
 }

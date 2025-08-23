@@ -22,6 +22,13 @@ export class Kairo {
          */
         system.afterEvents.scriptEventReceive.subscribe(this.addonManager.handleAddonListScriptEvent);
     }
+    inactiveAddon() {
+        /**
+         * アドオン無効化時に登録解除する処理などをまとめてください。
+         * Consolidate processes such as unregistering when an addon is disabled
+         */
+        system.afterEvents.scriptEventReceive.unsubscribe(this.addonManager.handleAddonListScriptEvent);
+    }
     static getInstance() {
         if (!this.instance) {
             this.instance = new Kairo();
