@@ -13,7 +13,7 @@ export class AddonActivator {
         const addonRecords = this.addonManager.getAddonRecords();
 
         Object.entries(addonRecords).forEach(([name, record]) => {
-            this.initAddonData(name, record.selectedVersion, record.versions);
+            this.initAddonData(name, record.description, record.selectedVersion, record.versions);
         });
 
         addons.forEach(addon => {
@@ -25,12 +25,12 @@ export class AddonActivator {
         });
     }
 
-    private initAddonData(name: string, selectedVersion: string, versions: string[]): void {
+    private initAddonData(name: string, description: [string, string], selectedVersion: string, versions: string[]): void {
         const sortedVersions = versions.sort((a, b) => VersionManager.compare(b, a));
 
         const addonData: AddonData = {
             name,
-            description: ["0.0.0", ""],
+            description,
             isActive: false,
             selectedVersion,
             activeVersion: "",

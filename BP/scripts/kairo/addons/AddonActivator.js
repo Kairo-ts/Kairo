@@ -9,7 +9,7 @@ export class AddonActivator {
     activateAddons(addons) {
         const addonRecords = this.addonManager.getAddonRecords();
         Object.entries(addonRecords).forEach(([name, record]) => {
-            this.initAddonData(name, record.selectedVersion, record.versions);
+            this.initAddonData(name, record.description, record.selectedVersion, record.versions);
         });
         addons.forEach(addon => {
             this.registerAddonData(addon);
@@ -18,11 +18,11 @@ export class AddonActivator {
             this.activateSelectedVersion(name);
         });
     }
-    initAddonData(name, selectedVersion, versions) {
+    initAddonData(name, description, selectedVersion, versions) {
         const sortedVersions = versions.sort((a, b) => VersionManager.compare(b, a));
         const addonData = {
             name,
-            description: ["0.0.0", ""],
+            description,
             isActive: false,
             selectedVersion,
             activeVersion: "",
