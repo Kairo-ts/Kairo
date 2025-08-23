@@ -2,7 +2,7 @@ import type { Kairo } from "..";
 import type { AddonProperty } from "./AddonPropertyManager";
 import { AddonActivator } from "./AddonActivator";
 import type { AddonRecords } from "./record/AddonRecord";
-import type { Player } from "@minecraft/server";
+import { system, type Player } from "@minecraft/server";
 import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./AddonReceiver";
 
@@ -61,5 +61,9 @@ export class AddonManager {
 
     public getSelfAddonProperty(): AddonProperty {
         return this.kairo.getSelfAddonProperty();
+    }
+
+    public subscribeReceiverHooks(): void {
+        system.afterEvents.scriptEventReceive.subscribe(this.receiver.handleScriptEvent);
     }
 }
