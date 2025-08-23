@@ -1,3 +1,4 @@
+import { system } from "@minecraft/server";
 import { VersionManager } from "../../utils/versionManager";
 import type { AddonData, AddonManager } from "./AddonManager";
 import type { AddonProperty } from "./AddonPropertyManager";
@@ -22,6 +23,13 @@ export class AddonActivator {
 
         this.addonManager.getAddonsData().forEach((data, name) => {
             this.activateSelectedVersion(name);
+
+            if (data.isActive) {
+                const activeVersionData = data.versions[data.activeVersion];
+                const sessionId = activeVersionData?.sessionId;
+                if (!sessionId) return;
+                this.sendActiveRequest(sessionId);
+            }
         });
     }
 
@@ -93,5 +101,9 @@ export class AddonActivator {
 
         addonData.activeVersion = selectedVersion;
         addonData.isActive = true;
+    }
+
+    private sendActiveRequest(sessionId: string): void {
+        system.sendScriptEvent(`kairo:${sessionId}`, "active request");
     }
 }

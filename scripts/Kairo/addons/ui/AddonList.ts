@@ -1,11 +1,21 @@
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import type { AddonManager } from "../AddonManager";
-import type { Player } from "@minecraft/server";
+import type { Player, ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
 
 export class AddonList {
     private constructor(private readonly addonManager: AddonManager) {}
     public static create(addonManager: AddonManager): AddonList {
         return new AddonList(addonManager);
+    }
+
+    public handleScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
+        const { id, message, sourceEntity } = ev;
+
+        if (sourceEntity?.typeId !== "minecraft:player") return;
+        
+        if (id === "kairo:addonList") {
+            this.showAddonList(sourceEntity as Player);
+        }
     }
 
     public async showAddonList(player: Player): Promise<void> {
@@ -73,5 +83,7 @@ export class AddonList {
         selectedAddon[1].selectedVersion = newSelectedVersion;
 
         selectedAddon[1].isActive = formValues[7] as boolean;
+
+        if (selectedAddon[1].isActive) this.addonManager.activeAddon();
     }
 }
