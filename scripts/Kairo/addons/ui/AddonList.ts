@@ -26,11 +26,11 @@ export class AddonList {
         const addonListForm = new ActionFormData();
         addonListForm.title({ translate: "kairo.addonList.title" });
 
-        addonsData.forEach(([name, data]) => {
+        addonsData.forEach(([id, data]) => {
             const isActive = data.isActive ? { translate: "kairo.addonList.active"} : { translate: "kairo.addonList.inactive" };
             addonListForm.button(
-                { rawtext: [{ text: `§l§8${name}§r\n` }, isActive, { text: ` §8(${data.selectedVersion})§r` }] },
-                `textures/${name}/pack_icon`
+                { rawtext: [{ text: `§l§8${data.name}§r\n` }, isActive, { text: ` §8(${data.selectedVersion})§r` }] },
+                `textures/${id}/pack_icon`
             );
         });
 

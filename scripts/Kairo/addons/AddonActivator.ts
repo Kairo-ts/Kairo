@@ -25,16 +25,16 @@ export class AddonActivator {
     public activateAddons(addons: AddonProperty[]): void {
         const addonRecords = this.addonManager.getAddonRecords();
 
-        Object.entries(addonRecords).forEach(([name, record]) => {
-            this.initAddonData(name, record.description, record.selectedVersion, record.versions);
+        Object.entries(addonRecords).forEach(([id, record]) => {
+            this.initAddonData(id, record.name, record.description, record.selectedVersion, record.versions);
         });
 
         addons.forEach(addon => {
             this.registerAddonData(addon);
         });
 
-        this.addonManager.getAddonsData().forEach((data, name) => {
-            this.activateSelectedVersion(name);
+        this.addonManager.getAddonsData().forEach((data, id) => {
+            this.activateSelectedVersion(id);
 
             if (data.isActive) {
                 const activeVersionData = data.versions[data.activeVersion];
@@ -45,10 +45,11 @@ export class AddonActivator {
         });
     }
 
-    private initAddonData(name: string, description: [string, string], selectedVersion: string, versions: string[]): void {
+    private initAddonData(id: string, name: string, description: [string, string], selectedVersion: string, versions: string[]): void {
         const sortedVersions = versions.sort((a, b) => VersionManager.compare(b, a));
 
         const addonData: AddonData = {
+            id,
             name,
             description,
             isActive: false,
@@ -61,11 +62,11 @@ export class AddonActivator {
                 isRegistered: false
             };
         });
-        this.addonManager.getAddonsData().set(name, addonData);
+        this.addonManager.getAddonsData().set(id, addonData);
     }
 
     private registerAddonData(addon: AddonProperty): void {
-        const addonData = this.addonManager.getAddonsData().get(addon.name);
+        const addonData = this.addonManager.getAddonsData().get(addon.id);
         if (!addonData) return;
 
         const version = VersionManager.toVersionString(addon.version);
@@ -78,8 +79,8 @@ export class AddonActivator {
         };
     }
 
-    private activateLatestVersion(name: string): void {
-        const addonData = this.addonManager.getAddonsData().get(name);
+    private activateLatestVersion(id: string): void {
+        const addonData = this.addonManager.getAddonsData().get(id);
         if (!addonData) return;
 
         const sorted = Object.keys(addonData.versions)
@@ -93,12 +94,12 @@ export class AddonActivator {
         addonData.isActive = true;
     }
 
-    private activateSelectedVersion(name: string): void {
-        const addonData = this.addonManager.getAddonsData().get(name);
+    private activateSelectedVersion(id: string): void {
+        const addonData = this.addonManager.getAddonsData().get(id);
         if (!addonData) return;
 
         if (addonData.selectedVersion === "latest version") {
-            this.activateLatestVersion(name);
+            this.activateLatestVersion(id);
             return;
         }
 
@@ -107,7 +108,7 @@ export class AddonActivator {
 
         if (!selectedVersion) {
             addonData.selectedVersion = "latest version";
-            this.activateLatestVersion(name);
+            this.activateLatestVersion(id);
             return;
         }
 
