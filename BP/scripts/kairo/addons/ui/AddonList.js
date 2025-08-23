@@ -2,6 +2,14 @@ import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 export class AddonList {
     constructor(addonManager) {
         this.addonManager = addonManager;
+        this.handleScriptEvent = (ev) => {
+            const { id, message, sourceEntity } = ev;
+            if (sourceEntity?.typeId !== "minecraft:player")
+                return;
+            if (id === "kairo:addonList") {
+                this.showAddonList(sourceEntity);
+            }
+        };
     }
     static create(addonManager) {
         return new AddonList(addonManager);

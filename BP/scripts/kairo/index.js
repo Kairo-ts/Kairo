@@ -10,6 +10,18 @@ export class Kairo {
         this.addonPropertyManager = AddonPropertyManager.create(this);
         this.addonInitializer = AddonInitializer.create(this);
     }
+    activeAddon() {
+        /**
+         * ここに各アドオンの初期化処理を追加してください。
+         * 例えば、イベントのsubscribeなど
+         * subscribeするメソッドは全て、unsubscribeできるようにし、inactiveAddon()にまとめてください。
+         *
+         * Add the initialization process for each addon here.
+         * For example, subscribing to events
+         * Ensure that all subscribed methods can be unsubscribed, and group them into inactiveAddon()
+         */
+        system.afterEvents.scriptEventReceive.subscribe(this.addonManager.handleAddonListScriptEvent);
+    }
     static getInstance() {
         if (!this.instance) {
             this.instance = new Kairo();

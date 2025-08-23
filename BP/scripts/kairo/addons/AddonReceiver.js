@@ -6,7 +6,11 @@ export class AddonReceiver {
             const addonProperty = this.addonManager.getSelfAddonProperty();
             if (id !== `kairo:${addonProperty.sessionId}`)
                 return;
-            // Handle the event for the specific addon
+            switch (message) {
+                case "active request":
+                    this.addonManager.activeAddon();
+                    break;
+            }
         };
     }
     static create(addonManager) {

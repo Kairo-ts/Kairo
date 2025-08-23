@@ -1,11 +1,14 @@
 import { AddonActivator } from "./AddonActivator";
-import { system } from "@minecraft/server";
+import { ScriptEventCommandMessageAfterEvent, system } from "@minecraft/server";
 import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./AddonReceiver";
 export class AddonManager {
     constructor(kairo) {
         this.kairo = kairo;
         this.addonsData = new Map();
+        this.handleAddonListScriptEvent = (ev) => {
+            this.addonList.handleScriptEvent(ev);
+        };
         this.activator = AddonActivator.create(this);
         this.receiver = AddonReceiver.create(this);
         this.addonList = AddonList.create(this);
@@ -30,5 +33,8 @@ export class AddonManager {
     }
     subscribeReceiverHooks() {
         system.afterEvents.scriptEventReceive.subscribe(this.receiver.handleScriptEvent);
+    }
+    activeAddon() {
+        this.kairo.activeAddon();
     }
 }
