@@ -10,6 +10,7 @@ export type SemVer = {
 };
 
 export const properties = {
+    id: "kairo", // a-z & 0-9
     metadata: { 
         /** 製作者の名前 */
         authors: [
