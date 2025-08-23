@@ -15,6 +15,7 @@ async function main() {
     Kairo.unsubscribeInitializeHooks();
     Kairo.initSaveAddons();
     Kairo.initActivateAddons();
+    // いずれ初期化メソッドにまとめる
     system.afterEvents.scriptEventReceive.subscribe((ev) => {
         const { id, message, sourceEntity } = ev;
         if (sourceEntity?.typeId !== "minecraft:player")
