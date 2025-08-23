@@ -66,3 +66,10 @@ export const properties = {
         "stable",
     ],
 }
+
+export const supportedTags = [
+    "official",
+    "approved",
+    "stable",
+    "experimental"
+]
