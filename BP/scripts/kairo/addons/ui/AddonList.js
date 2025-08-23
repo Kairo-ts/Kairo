@@ -37,8 +37,8 @@ export class AddonList {
         const entries = Object.entries(addonData.versions);
         const isActive = addonData.isActive ? { translate: "kairo.addonList.active" } : { translate: "kairo.addonList.inactive" };
         const selectedVersion = addonData.selectedVersion === "latest version"
-            ? "latest version" + ` (ver.${addonData.activeVersion})`
-            : `ver.${addonData.selectedVersion}`;
+            ? [{ translate: "kairo.addonSetting.latestVersion" }, { text: ` (ver.${addonData.activeVersion})` }]
+            : [{ text: `ver.${addonData.selectedVersion}` }];
         const tags = addonData.versions[addonData.activeVersion]?.tags || [];
         const activeVersionTags = tags.flatMap((tag, index) => {
             const element = supportedTags.includes(tag)
@@ -82,7 +82,7 @@ export class AddonList {
         const addonDataRawtexts = {
             name: { translate: `${properties.id}.name` },
             description: { translate: `${properties.id}.description` },
-            details: { rawtext: [isActive, { text: " §7|§r " + selectedVersion }, { text: "\n§7§o" }, ...activeVersionTags, { text: "§r" }] },
+            details: { rawtext: [isActive, { text: " §7|§r " }, ...selectedVersion, { text: "\n§7§o" }, ...activeVersionTags, { text: "§r" }] },
             required: { rawtext: [requiredAddonsRawtext] },
             versionList: { rawtext: [{ translate: "kairo.addonSetting.registerdAddonList" }, { text: "\n" }, ...versionListRawtext] },
             selectVersion: { translate: "kairo.addonSetting.selectVersion" },
