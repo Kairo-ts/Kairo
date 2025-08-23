@@ -7,6 +7,18 @@ export class AddonActivator {
     static create(addonManager) {
         return new AddonActivator(addonManager);
     }
+    changeAddonSettings(addonData, version, isActive) {
+        addonData.selectedVersion = version;
+        addonData.isActive = isActive;
+        const activeVersionData = addonData.versions[addonData.activeVersion];
+        const sessionId = activeVersionData?.sessionId;
+        if (!sessionId)
+            return;
+        if (addonData.isActive)
+            this.sendActiveRequest(sessionId);
+        else
+            this.sendInactiveRequest(sessionId);
+    }
     activateAddons(addons) {
         const addonRecords = this.addonManager.getAddonRecords();
         Object.entries(addonRecords).forEach(([name, record]) => {
