@@ -66,4 +66,7 @@ export class AddonInitializer {
     getRegisteredAddons() {
         return this.register.getAll();
     }
+    subscribeReceiverHooks() {
+        this.kairo.subscribeReceiverHooks();
+    }
 }

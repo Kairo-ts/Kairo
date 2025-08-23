@@ -20,6 +20,7 @@ async function main(): Promise<void> {
     Kairo.initSaveAddons();
     Kairo.initActivateAddons();
 
+    // いずれ初期化メソッドにまとめる
     system.afterEvents.scriptEventReceive.subscribe((ev: ScriptEventCommandMessageAfterEvent) => {
         const { id, message, sourceEntity } = ev;
 

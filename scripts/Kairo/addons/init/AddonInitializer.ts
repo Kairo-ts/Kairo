@@ -90,4 +90,8 @@ export class AddonInitializer {
     public getRegisteredAddons(): AddonProperty[] {
         return this.register.getAll();
     }
+
+    public subscribeReceiverHooks(): void {
+        this.kairo.subscribeReceiverHooks();
+    }
 }

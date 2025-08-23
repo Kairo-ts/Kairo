@@ -50,6 +50,10 @@ export class Kairo {
         return this.getInstance().addonInitializer.awaitRegistration();
     }
 
+    public subscribeReceiverHooks(): void {
+        this.addonManager.subscribeReceiverHooks();
+    }
+
     public static unsubscribeInitializeHooks(): void {
         this.getInstance().addonInitializer.unsubscribeClientHooks();
         system.sendScriptEvent(SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE, "");

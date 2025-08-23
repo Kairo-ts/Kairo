@@ -50,6 +50,7 @@ export class AddonInitializeRegister {
         }
         ConsoleManager.log(`Registering addon: ${addonProperties.name} - ver.${VersionManager.toVersionString(addonProperties.version)}`);
         this.registeredAddons.set(addonProperties.sessionId, addonProperties);
+        this.addonInitializer.subscribeReceiverHooks();
     }
 
     public has(sessionId: string): boolean {

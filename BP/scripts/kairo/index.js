@@ -35,6 +35,9 @@ export class Kairo {
     static awaitRegistration() {
         return this.getInstance().addonInitializer.awaitRegistration();
     }
+    subscribeReceiverHooks() {
+        this.addonManager.subscribeReceiverHooks();
+    }
     static unsubscribeInitializeHooks() {
         this.getInstance().addonInitializer.unsubscribeClientHooks();
         system.sendScriptEvent(SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE, "");
