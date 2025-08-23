@@ -57,12 +57,17 @@ export class AddonList {
     public async formatAddonDataForDisplay(player: Player, addonData: AddonData): Promise<void> {
         const entries = Object.entries(addonData.versions);
 
+        const isRegistered = addonData.activeVersion !== "unregistered";
+
         const isActive = addonData.isActive ? { translate: "kairo.addonList.active"} : { translate: "kairo.addonList.inactive" };
-        const selectedVersion = addonData.selectedVersion === "latest version"
-            ? [{ translate: "kairo.addonSetting.latestVersion" },{ text: ` (ver.${addonData.activeVersion})` }]
-            : [{ text: `ver.${addonData.selectedVersion}` }];
+        const selectedVersion = isRegistered
+            ? addonData.selectedVersion === "latest version"
+                ? [{ text: " §7|§r " },{ translate: "kairo.addonSetting.latestVersion" },{ text: ` (ver.${addonData.activeVersion})` }]
+                : [{ text: " §7|§r " },{ text: `ver.${addonData.selectedVersion}` }]
+            : [];
 
         const tags = addonData.versions[addonData.activeVersion]?.tags || [];
+        const lineBreak = tags.length > 0 ? [{ text: "\n§7§o" }] : [];
         const activeVersionTags = tags.flatMap((tag, index) => {
             const element = supportedTags.includes(tag)
                 ? { translate: `kairo.tags.${tag}` }
@@ -109,7 +114,7 @@ export class AddonList {
         const addonDataRawtexts: AddonDataRawtexts = {
             name: { translate: `${properties.id}.name` },
             description: { translate: `${properties.id}.description` },
-            details: { rawtext: [ isActive, { text : " §7|§r " }, ...selectedVersion, { text: "\n§7§o" }, ...activeVersionTags, { text: "§r" }] },
+            details: { rawtext: [ isActive, ...selectedVersion, ...lineBreak, ...activeVersionTags, { text: "§r" }] },
             required: { rawtext: [requiredAddonsRawtext ] },
             versionList: { rawtext: [{ translate: "kairo.addonSetting.registerdAddonList" },{ text: "\n" }, ...versionListRawtext] },
             selectVersion: { translate: "kairo.addonSetting.selectVersion" },
@@ -117,7 +122,6 @@ export class AddonList {
             submit: { translate: "kairo.addonSetting.submit" }
         }
 
-        const isRegistered = addonData.activeVersion !== "unregistered";
         if (isRegistered) this.settingAddonDataForm(player, addonData, addonDataRawtexts);
         else this.showAddonDataForm(player, addonDataRawtexts);
     }
