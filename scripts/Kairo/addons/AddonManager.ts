@@ -58,4 +58,8 @@ export class AddonManager {
     public showAddonList(player: Player): void {
         this.addonList.showAddonList(player);
     }
+
+    public getSelfAddonProperty(): AddonProperty {
+        return this.kairo.getSelfAddonProperty();
+    }
 }
