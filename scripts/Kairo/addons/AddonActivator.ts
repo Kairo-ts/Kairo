@@ -103,7 +103,11 @@ export class AddonActivator {
         addonData.isActive = true;
     }
 
-    private sendActiveRequest(sessionId: string): void {
+    public sendActiveRequest(sessionId: string): void {
         system.sendScriptEvent(`kairo:${sessionId}`, "active request");
+    }
+
+    public sendInactiveRequest(sessionId: string): void {
+        system.sendScriptEvent(`kairo:${sessionId}`, "inactive request");
     }
 }
