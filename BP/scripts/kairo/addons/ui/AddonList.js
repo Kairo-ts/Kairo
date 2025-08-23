@@ -20,9 +20,9 @@ export class AddonList {
         const addonsData = Array.from(this.addonManager.getAddonsData());
         const addonListForm = new ActionFormData();
         addonListForm.title({ translate: "kairo.addonList.title" });
-        addonsData.forEach(([name, data]) => {
+        addonsData.forEach(([id, data]) => {
             const isActive = data.isActive ? { translate: "kairo.addonList.active" } : { translate: "kairo.addonList.inactive" };
-            addonListForm.button({ rawtext: [{ text: `§l§8${name}§r\n` }, isActive, { text: ` §8(${data.selectedVersion})§r` }] }, `textures/${name}/pack_icon`);
+            addonListForm.button({ rawtext: [{ text: `§l§8${data.name}§r\n` }, isActive, { text: ` §8(${data.selectedVersion})§r` }] }, `textures/${id}/pack_icon`);
         });
         const { selection, canceled: listFormCanceled } = await addonListForm.show(player);
         if (listFormCanceled || selection === undefined)

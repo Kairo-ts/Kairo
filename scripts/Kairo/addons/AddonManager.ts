@@ -7,6 +7,7 @@ import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./AddonReceiver";
 
 export interface AddonData {
+    id: string;
     name: string;
     description: [string, string];
     isActive: boolean;
