@@ -84,6 +84,11 @@ export class AddonList {
 
         selectedAddon[1].isActive = formValues[7] as boolean;
 
-        if (selectedAddon[1].isActive) this.addonManager.activeAddon();
+        const activeVersionData = selectedAddon[1].versions[selectedAddon[1].activeVersion];
+        const sessionId = activeVersionData?.sessionId;
+        if (!sessionId) return;
+
+        if (selectedAddon[1].isActive) this.addonManager.sendActiveRequest(sessionId);
+        else this.addonManager.sendInactiveRequest(sessionId);
     }
 }
