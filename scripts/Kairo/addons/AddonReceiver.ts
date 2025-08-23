@@ -18,6 +18,9 @@ export class AddonReceiver {
             case "active request":
                 this.addonManager.activeAddon();
                 break;
+            case "inactive request":
+                this.addonManager.inactiveAddon();
+                break;
         }
     }
 }
