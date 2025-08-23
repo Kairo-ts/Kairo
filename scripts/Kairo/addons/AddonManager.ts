@@ -22,7 +22,7 @@ export interface AddonData {
                 version: string;
             }[];
             requiredAddons?: {
-                [name: string]: number[];
+                [name: string]: string;
             };
         }
     }

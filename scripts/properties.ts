@@ -23,7 +23,7 @@ export const properties = {
             major: 1, 
             minor: 0, 
             patch: 0,
-            prerelease: "dev.26",
+            prerelease: "dev.29",
             // build: "abc123",
         },
         min_engine_version: [ 1,21,100 ],
@@ -57,7 +57,7 @@ export const properties = {
     /** 前提アドオン */
     requiredAddons: {
         /**
-         * name: [version]
+         * name: version (string) // "kairo": "1.0.0"
          */
     },
     tags: [
