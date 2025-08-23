@@ -2,7 +2,7 @@ import type { Kairo } from "..";
 import type { AddonProperty } from "./AddonPropertyManager";
 import { AddonActivator } from "./AddonActivator";
 import type { AddonRecords } from "./record/AddonRecord";
-import { system, type Player } from "@minecraft/server";
+import { ScriptEventCommandMessageAfterEvent, system, type Player } from "@minecraft/server";
 import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./AddonReceiver";
 
@@ -69,5 +69,9 @@ export class AddonManager {
 
     public activeAddon(): void {
         this.kairo.activeAddon();
+    }
+
+    public handleAddonListScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
+        this.addonList.handleScriptEvent(ev);
     }
 }

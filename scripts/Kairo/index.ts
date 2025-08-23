@@ -29,6 +29,8 @@ export class Kairo {
          * For example, subscribing to events
          * Ensure that all subscribed methods can be unsubscribed, and group them into inactiveAddon()
          */
+
+        system.afterEvents.scriptEventReceive.subscribe(this.addonManager.handleAddonListScriptEvent);
     }
 
     private static getInstance(): Kairo {
