@@ -66,4 +66,8 @@ export class AddonManager {
     public subscribeReceiverHooks(): void {
         system.afterEvents.scriptEventReceive.subscribe(this.receiver.handleScriptEvent);
     }
+
+    public activeAddon(): void {
+        this.kairo.activeAddon();
+    }
 }
