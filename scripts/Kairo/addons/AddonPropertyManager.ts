@@ -11,7 +11,7 @@ export interface AddonProperty {
         version: string;
     }[];
     requiredAddons: {
-        [name: string]: number[];
+        [name: string]: string;
     };
     tags: string[];
 }
