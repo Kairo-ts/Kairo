@@ -45,4 +45,11 @@ export class DynamicPropertyStorage {
         }
         world.setDynamicProperty(`${keyPrefix}_count`, undefined as any);
     }
+
+    /**
+     * DynamicPropertyからデータをすべて削除
+     */
+    public static clear(): void {
+        world.clearDynamicProperties();
+    }
 }
