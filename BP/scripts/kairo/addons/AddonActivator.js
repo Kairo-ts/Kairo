@@ -76,8 +76,10 @@ export class AddonActivator {
         const sorted = Object.keys(addonData.versions)
             .filter(v => addonData.versions[v]?.isRegistered)
             .sort((a, b) => VersionManager.compare(b, a));
-        if (sorted.length === 0)
+        if (sorted.length === 0) {
+            addonData.activeVersion = "unregistered";
             return;
+        }
         const stable = sorted.find(v => !VersionManager.fromString(v).prerelease);
         addonData.activeVersion = stable ?? sorted[0];
         addonData.isActive = true;
