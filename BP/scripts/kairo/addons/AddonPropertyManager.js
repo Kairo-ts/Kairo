@@ -4,6 +4,7 @@ export class AddonPropertyManager {
         this.kairo = kairo;
         this.charset = [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'];
         this.self = {
+            id: properties.id,
             name: properties.header.name,
             description: properties.header.description,
             sessionId: this.generateRandomId(8),

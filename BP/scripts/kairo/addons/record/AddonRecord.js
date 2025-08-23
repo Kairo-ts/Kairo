@@ -10,20 +10,21 @@ export class AddonRecord {
     saveAddons(addons) {
         const addonRecords = this.loadAddons();
         addons.forEach(addon => {
-            const { name, version } = addon;
+            const { id, name, version } = addon;
             const vStr = VersionManager.toVersionString(version);
-            if (!addonRecords[name]) {
-                addonRecords[name] = {
+            if (!addonRecords[id]) {
+                addonRecords[id] = {
+                    name: name,
                     description: ["0.0.0", ""],
                     selectedVersion: "latest version",
                     versions: []
                 };
             }
-            if (VersionManager.compare(addonRecords[name].description[0], vStr) === -1) {
-                addonRecords[name].description[0] = vStr;
-                addonRecords[name].description[1] = addon.description;
+            if (VersionManager.compare(addonRecords[id].description[0], vStr) === -1) {
+                addonRecords[id].description[0] = vStr;
+                addonRecords[id].description[1] = addon.description;
             }
-            addonRecords[name].versions.push(vStr);
+            addonRecords[id].versions.push(vStr);
         });
         DynamicPropertyStorage.save("AddonRecords", addonRecords);
     }
