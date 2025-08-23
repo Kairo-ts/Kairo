@@ -16,7 +16,7 @@ export function writePackIcon(rootDir: string) {
 
     if (properties.resourcepack) {
         const rpIcon = path.join(rootDir, "RP", "pack_icon.png");
-        const rpTexturesIcon = path.join(rootDir, "RP", "textures", "kairo", "pack_icon.png");
+        const rpTexturesIcon = path.join(rootDir, "RP", "textures", properties.header.name, "pack_icon.png");
 
         [rpIcon, rpTexturesIcon].forEach(dst => {
             fse.ensureDirSync(path.dirname(dst));
