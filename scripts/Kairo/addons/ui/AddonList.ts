@@ -16,7 +16,7 @@ export class AddonList {
 
         addonsData.forEach(([name, data]) => {
             const isActive = data.isActive ? `§l§9有効§r` : `§l§4無効§r`;
-            addonListForm.button(`§l§8${name}§r\n${isActive} §8(${data.selectedVersion})§r`);
+            addonListForm.button(`§l§8${name}§r\n${isActive} §8(${data.selectedVersion})§r`, `textures/${name}/pack_icon`);
         });
 
         const { selection, canceled: listFormCanceled } = await addonListForm.show(player);
