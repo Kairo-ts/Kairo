@@ -40,10 +40,7 @@ export class AddonManager {
     inactiveAddon() {
         this.kairo.inactiveAddon();
     }
-    sendActiveRequest(sessionId) {
-        this.activator.sendActiveRequest(sessionId);
-    }
-    sendInactiveRequest(sessionId) {
-        this.activator.sendInactiveRequest(sessionId);
+    changeAddonSettings(addonData, version, isActive) {
+        this.activator.changeAddonSettings(addonData, version, isActive);
     }
 }

@@ -28,11 +28,14 @@ export class AddonList {
         const selectedAddon = addonsData[selection];
         if (!selectedAddon)
             return;
+        this.settingAddonDataForm(player, selectedAddon[1]);
+    }
+    async settingAddonDataForm(player, addonData) {
         const addonDataForm = new ModalFormData();
-        const entries = Object.entries(selectedAddon[1].versions);
+        const entries = Object.entries(addonData.versions);
         const versionList = entries.map(([version, data]) => {
             return data.isRegistered
-                ? version === selectedAddon[1].activeVersion
+                ? version === addonData.activeVersion
                     ? `§f${version}§r` + " §9(§oactive§r§9)§r"
                     : `§f${version}§r`
                 : `§7${version} (§ouninstalled§r)`;
@@ -43,20 +46,20 @@ export class AddonList {
                 .filter(([version, data]) => data.isRegistered)
                 .map(([version]) => version)
         ];
-        const selectedVersionIndex = selectableVersions.indexOf(selectedAddon[1].selectedVersion);
-        const isActive = selectedAddon[1].isActive ? "§l§9有効§r" : "§l§4無効§r";
-        const selectedVersion = selectedAddon[1].selectedVersion === "latest version"
-            ? "latest version" + ` (ver.${selectedAddon[1].activeVersion})`
-            : `ver.${selectedAddon[1].selectedVersion}`;
-        const activeVersionTags = selectedAddon[1].versions[selectedAddon[1].activeVersion]?.tags || [];
-        const requiredAddons = Object.entries(selectedAddon[1].versions[selectedAddon[1].activeVersion]?.requiredAddons || {});
+        const selectedVersionIndex = selectableVersions.indexOf(addonData.selectedVersion);
+        const isActive = addonData.isActive ? "§l§9有効§r" : "§l§4無効§r";
+        const selectedVersion = addonData.selectedVersion === "latest version"
+            ? "latest version" + ` (ver.${addonData.activeVersion})`
+            : `ver.${addonData.selectedVersion}`;
+        const activeVersionTags = addonData.versions[addonData.activeVersion]?.tags || [];
+        const requiredAddons = Object.entries(addonData.versions[addonData.activeVersion]?.requiredAddons || {});
         const requiredAddonsStr = requiredAddons.length > 0
             ? "§l前提アドオン§r\n" + requiredAddons.map(([name, version]) => `§f${name}§r §7- (ver.${version})§r`).join("\n")
             : "§l前提アドオン§r\n§7§oNo addons required§r";
         addonDataForm
-            .title(selectedAddon[0])
-            .header(selectedAddon[0])
-            .label(`${selectedAddon[1].description[1]}`)
+            .title(addonData.name)
+            .header(addonData.name)
+            .label(`${addonData.description[1]}`)
             .label(isActive + " §7|§r " + selectedVersion + "\n" + activeVersionTags.join(", "))
             .divider()
             .label("§l登録済みバージョン一覧§r\n" + versionList.join("\n"))
@@ -64,7 +67,7 @@ export class AddonList {
             .label(requiredAddonsStr)
             .divider()
             .dropdown("バージョン選択", selectableVersions, { defaultValueIndex: selectedVersionIndex })
-            .toggle("有効化", { defaultValue: selectedAddon[1].isActive })
+            .toggle("有効化", { defaultValue: addonData.isActive })
             .submitButton("変更を送信");
         const { formValues, canceled: dataFormCanceled } = await addonDataForm.show(player);
         if (dataFormCanceled || formValues === undefined)
@@ -73,15 +76,6 @@ export class AddonList {
         const newSelectedVersion = selectableVersions[versionIndex];
         if (newSelectedVersion === undefined)
             return;
-        selectedAddon[1].selectedVersion = newSelectedVersion;
-        selectedAddon[1].isActive = formValues[9];
-        const activeVersionData = selectedAddon[1].versions[selectedAddon[1].activeVersion];
-        const sessionId = activeVersionData?.sessionId;
-        if (!sessionId)
-            return;
-        if (selectedAddon[1].isActive)
-            this.addonManager.sendActiveRequest(sessionId);
-        else
-            this.addonManager.sendInactiveRequest(sessionId);
+        this.addonManager.changeAddonSettings(addonData, newSelectedVersion, formValues[9]);
     }
 }

@@ -10,6 +10,18 @@ export class AddonActivator {
         return new AddonActivator(addonManager);
     }
 
+    public changeAddonSettings(addonData: AddonData, version: string, isActive: boolean): void {
+        addonData.selectedVersion = version;
+        addonData.isActive = isActive;
+
+        const activeVersionData = addonData.versions[addonData.activeVersion];
+        const sessionId = activeVersionData?.sessionId;
+        if (!sessionId) return;
+
+        if (addonData.isActive) this.sendActiveRequest(sessionId);
+        else this.sendInactiveRequest(sessionId);
+    }
+
     public activateAddons(addons: AddonProperty[]): void {
         const addonRecords = this.addonManager.getAddonRecords();
 
@@ -103,11 +115,11 @@ export class AddonActivator {
         addonData.isActive = true;
     }
 
-    public sendActiveRequest(sessionId: string): void {
+    private sendActiveRequest(sessionId: string): void {
         system.sendScriptEvent(`kairo:${sessionId}`, "active request");
     }
 
-    public sendInactiveRequest(sessionId: string): void {
+    private sendInactiveRequest(sessionId: string): void {
         system.sendScriptEvent(`kairo:${sessionId}`, "inactive request");
     }
 }

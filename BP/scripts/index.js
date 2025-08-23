@@ -1,6 +1,4 @@
-import { Player, ScriptEventCommandMessageAfterEvent, system } from "@minecraft/server";
 import { Kairo } from "./Kairo/index";
-import { DynamicPropertyStorage } from "./Kairo/addons/record/DynamicPropertyStorage";
 async function main() {
     /**
      * DynamicPropertyをすべてクリアするメソッド (開発用)
