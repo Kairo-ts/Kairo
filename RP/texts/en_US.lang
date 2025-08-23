@@ -1,0 +1,21 @@
+kairo.name=Kairo
+kairo.description=Enables communication between multiple behavior packs by leveraging the ScriptAPI as a communication layer.
+
+kairo.addonList.title=Addon List
+kairo.addonList.active=§l§9Active§r
+kairo.addonList.inactive=§l§4Inactive§r
+
+kairo.addonSetting.latestVersion=Latest Version
+kairo.addonSetting.active=§9(§oactive§r§9)§r
+kairo.addonSetting.uninstalled=§7(§ouninstalled§r§7)§r
+kairo.addonSetting.registerdAddonList=§lRegistered Version Records§r
+kairo.addonSetting.required=§lRequired Addons§r
+kairo.addonSetting.nonerequired=§7§oNo addons required§r
+kairo.addonSetting.selectVersion=Select Version
+kairo.addonSetting.activate=Disable / Enable
+kairo.addonSetting.submit=Confirm changes
+
+kairo.tags.official=Official
+kairo.tags.approved=Approved
+kairo.tags.stable=Stable
+kairo.tags.experimental=Experimental

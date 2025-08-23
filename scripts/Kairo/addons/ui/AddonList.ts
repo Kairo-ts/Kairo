@@ -2,6 +2,7 @@ import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import type { AddonData, AddonManager } from "../AddonManager";
 import type { Player, ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
 import { SCRIPT_EVENT_IDS } from "../../constants";
+import { properties, supportedTags } from "../../../properties";
 
 export class AddonList {
     private constructor(private readonly addonManager: AddonManager) {}
@@ -23,11 +24,14 @@ export class AddonList {
         const addonsData = Array.from(this.addonManager.getAddonsData());
 
         const addonListForm = new ActionFormData();
-        addonListForm.title({"rawtext": [{ translate: "kairo.addonList.title" }]});
+        addonListForm.title({ translate: "kairo.addonList.title" });
 
         addonsData.forEach(([name, data]) => {
-            const isActive = data.isActive ? `§l§9有効§r` : `§l§4無効§r`;
-            addonListForm.button(`§l§8${name}§r\n${isActive} §8(${data.selectedVersion})§r`, `textures/${name}/pack_icon`);
+            const isActive = data.isActive ? { translate: "kairo.addonList.active"} : { translate: "kairo.addonList.inactive" };
+            addonListForm.button(
+                { rawtext: [{ text: `§l§8${name}§r\n` }, isActive, { text: ` §8(${data.selectedVersion})§r` }] },
+                `textures/${name}/pack_icon`
+            );
         });
 
         const { selection, canceled: listFormCanceled } = await addonListForm.show(player);
@@ -42,48 +46,93 @@ export class AddonList {
     public async settingAddonDataForm(player: Player, addonData: AddonData): Promise<void> {
         const addonDataForm = new ModalFormData();
         const entries = Object.entries(addonData.versions);
-        const versionList = entries.map(
-            ([version, data]) => {
-                return data.isRegistered
-                    ? version === addonData.activeVersion
-                        ? `§f${version}§r` + " §9(§oactive§r§9)§r"
-                        : `§f${version}§r`
-                    : `§7${version} (§ouninstalled§r)`;
-            }
-        );
 
-        const selectableVersions = [
-            "latest version", 
+        const isActive = addonData.isActive ? { translate: "kairo.addonList.active"} : { translate: "kairo.addonList.inactive" };
+        const selectedVersion = addonData.selectedVersion === "latest version"
+            ? [{ translate: "kairo.addonSetting.latestVersion" },{ text: ` (ver.${addonData.activeVersion})` }]
+            : [{ text: `ver.${addonData.selectedVersion}` }];
+
+        const tags = addonData.versions[addonData.activeVersion]?.tags || [];
+        const activeVersionTags = tags.flatMap((tag, index) => {
+            const element = supportedTags.includes(tag)
+                ? { translate: `kairo.tags.${tag}` }
+                : { text: tag };
+
+            if (index < tags.length - 1) {
+                return [element, { text: ", " }];
+            }
+            return [element];
+        });
+
+        const requiredAddons = Object.entries(addonData.versions[addonData.activeVersion]?.requiredAddons || {});
+        const requiredAddonsRawtext = requiredAddons.length > 0
+            ? {
+                rawtext: [
+                    { translate: "kairo.addonSetting.required" },{ text: "\n" },
+                    ...requiredAddons.flatMap(([name, version], i, arr) => {
+                        const elements = [
+                            { text: `§f${name}§r §7- (ver.${version})§r` }
+                        ];
+                        
+                        if (i < arr.length - 1) {
+                            elements.push({ text: "\n" });
+                        }
+                        return elements;
+                    })
+                ]
+            }
+            : { rawtext: [{ translate: "kairo.addonSetting.required" },{ text: "\n" },{ translate: "kairo.addonSetting.nonerequired" }] };
+
+
+        const versionListRawtext = entries.flatMap(([version, data]) => {
+            if (data.isRegistered) {
+                if (version === addonData.activeVersion) {
+                    return [{ text: `§f${version}§r ` },{ translate: "kairo.addonSetting.active" },{ text: "\n" }];
+                } else {
+                    return [{ text: `§f${version}§r` },{ text: "\n" }];
+                }
+            } else {
+                return [{ text: `§7${version}§r ` },{ translate: "kairo.addonSetting.uninstalled"},{ text: "\n" }];
+            }
+        });
+
+        const addonDataRawtexts = {
+            name: { translate: `${properties.id}.name` },
+            description: { translate: `${properties.id}.description` },
+            details: { rawtext: [ isActive, { text : " §7|§r " }, ...selectedVersion, { text: "\n§7§o" }, ...activeVersionTags, { text: "§r" }] },
+            required: { rawtext: [requiredAddonsRawtext ] },
+            versionList: { rawtext: [{ translate: "kairo.addonSetting.registerdAddonList" },{ text: "\n" }, ...versionListRawtext] },
+            selectVersion: { translate: "kairo.addonSetting.selectVersion" },
+            activate: { translate: "kairo.addonSetting.activate" },
+            submit: { translate: "kairo.addonSetting.submit" }
+        }
+
+        const registeredVersions = [
             ...entries
                 .filter(([version, data]) => data.isRegistered)
                 .map(([version]) => version)
         ];
+        const selectableVersions = ["latest version", ...registeredVersions];
         const selectedVersionIndex = selectableVersions.indexOf(addonData.selectedVersion);
 
-        const isActive = addonData.isActive ? "§l§9有効§r" : "§l§4無効§r";
-        const selectedVersion = addonData.selectedVersion === "latest version"
-            ? "latest version" + ` (ver.${addonData.activeVersion})`
-            : `ver.${addonData.selectedVersion}`;
-
-        const activeVersionTags = addonData.versions[addonData.activeVersion]?.tags || [];
-        const requiredAddons = Object.entries(addonData.versions[addonData.activeVersion]?.requiredAddons || {});
-        const requiredAddonsStr = requiredAddons.length > 0
-            ? "§l前提アドオン§r\n" + requiredAddons.map(([name, version]) => `§f${name}§r §7- (ver.${version})§r`).join("\n")
-            : "§l前提アドオン§r\n§7§oNo addons required§r";
+        const selectableVersionsRawtexts = [
+            { translate: "kairo.addonSetting.latestVersion" },
+            ...registeredVersions.map(version => ({ text: version }))
+        ]
 
         addonDataForm
-            .title(addonData.name)
-            .header(addonData.name)
-            .label(`${addonData.description[1]}`)
-            .label(isActive + " §7|§r " + selectedVersion + "\n" + activeVersionTags.join(", "))
+            .title(addonDataRawtexts.name)
+            .header(addonDataRawtexts.name)
+            .label(addonDataRawtexts.description)
+            .label(addonDataRawtexts.details)
             .divider()
-            .label("§l登録済みバージョン一覧§r\n" + versionList.join("\n"))
+            .label(addonDataRawtexts.versionList)
             .divider()
-            .label(requiredAddonsStr)
+            .label(addonDataRawtexts.required)
             .divider()
-            .dropdown("バージョン選択", selectableVersions, { defaultValueIndex: selectedVersionIndex })
-            .toggle("有効化", { defaultValue:addonData.isActive })
-            .submitButton("変更を送信");
+            .dropdown(addonDataRawtexts.selectVersion, selectableVersionsRawtexts, { defaultValueIndex: selectedVersionIndex })
+            .toggle(addonDataRawtexts.activate, { defaultValue: addonData.isActive })
+            .submitButton(addonDataRawtexts.submit);
 
         const { formValues, canceled: dataFormCanceled } = await addonDataForm.show(player);
         if (dataFormCanceled || formValues === undefined) return;

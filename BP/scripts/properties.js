@@ -3,6 +3,7 @@
  * propertiesは、アドオン間通信においても、識別などに利用する
  */
 export const properties = {
+    id: "kairo", // a-z & 0-9
     metadata: {
         /** 製作者の名前 */
         authors: [
@@ -58,3 +59,9 @@ export const properties = {
         "stable",
     ],
 };
+export const supportedTags = [
+    "official",
+    "approved",
+    "stable",
+    "experimental"
+];
