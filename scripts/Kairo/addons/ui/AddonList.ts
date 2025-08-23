@@ -1,6 +1,7 @@
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import type { AddonData, AddonManager } from "../AddonManager";
 import type { Player, ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
+import { SCRIPT_EVENT_IDS } from "../../constants";
 
 export class AddonList {
     private constructor(private readonly addonManager: AddonManager) {}
@@ -13,7 +14,7 @@ export class AddonList {
 
         if (sourceEntity?.typeId !== "minecraft:player") return;
         
-        if (id === "kairo:addonList") {
+        if (id === SCRIPT_EVENT_IDS.SHOW_ADDON_LIST) {
             this.showAddonList(sourceEntity as Player);
         }
     }
