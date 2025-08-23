@@ -1,4 +1,4 @@
-import { world } from "@minecraft/server";
+import { system, world } from "@minecraft/server";
 
 export class DynamicPropertyStorage {
     private static readonly CHUNK_SIZE = 30000;
@@ -50,6 +50,8 @@ export class DynamicPropertyStorage {
      * DynamicPropertyからデータをすべて削除
      */
     public static clear(): void {
-        world.clearDynamicProperties();
+        system.run(() => {
+            world.clearDynamicProperties();
+        });
     }
 }
