@@ -30,16 +30,19 @@ export class AddonList {
         const selectedAddon = addonsData[selection];
         if (!selectedAddon)
             return;
-        this.settingAddonDataForm(player, selectedAddon[1]);
+        this.formatAddonDataForDisplay(player, selectedAddon[1]);
     }
-    async settingAddonDataForm(player, addonData) {
-        const addonDataForm = new ModalFormData();
+    async formatAddonDataForDisplay(player, addonData) {
         const entries = Object.entries(addonData.versions);
+        const isRegistered = addonData.activeVersion !== "unregistered";
         const isActive = addonData.isActive ? { translate: "kairo.addonList.active" } : { translate: "kairo.addonList.inactive" };
-        const selectedVersion = addonData.selectedVersion === "latest version"
-            ? [{ translate: "kairo.addonSetting.latestVersion" }, { text: ` (ver.${addonData.activeVersion})` }]
-            : [{ text: `ver.${addonData.selectedVersion}` }];
+        const selectedVersion = isRegistered
+            ? addonData.selectedVersion === "latest version"
+                ? [{ text: " §7|§r " }, { translate: "kairo.addonSetting.latestVersion" }, { text: ` (ver.${addonData.activeVersion})` }]
+                : [{ text: " §7|§r " }, { text: `ver.${addonData.selectedVersion}` }]
+            : [];
         const tags = addonData.versions[addonData.activeVersion]?.tags || [];
+        const lineBreak = tags.length > 0 ? [{ text: "\n§7§o" }] : [];
         const activeVersionTags = tags.flatMap((tag, index) => {
             const element = supportedTags.includes(tag)
                 ? { translate: `kairo.tags.${tag}` }
@@ -82,13 +85,20 @@ export class AddonList {
         const addonDataRawtexts = {
             name: { translate: `${properties.id}.name` },
             description: { translate: `${properties.id}.description` },
-            details: { rawtext: [isActive, { text: " §7|§r " }, ...selectedVersion, { text: "\n§7§o" }, ...activeVersionTags, { text: "§r" }] },
+            details: { rawtext: [isActive, ...selectedVersion, ...lineBreak, ...activeVersionTags, { text: "§r" }] },
             required: { rawtext: [requiredAddonsRawtext] },
             versionList: { rawtext: [{ translate: "kairo.addonSetting.registerdAddonList" }, { text: "\n" }, ...versionListRawtext] },
             selectVersion: { translate: "kairo.addonSetting.selectVersion" },
             activate: { translate: "kairo.addonSetting.activate" },
             submit: { translate: "kairo.addonSetting.submit" }
         };
+        if (isRegistered)
+            this.settingAddonDataForm(player, addonData, addonDataRawtexts);
+        else
+            this.showAddonDataForm(player, addonDataRawtexts);
+    }
+    async settingAddonDataForm(player, addonData, addonDataRawtexts) {
+        const entries = Object.entries(addonData.versions);
         const registeredVersions = [
             ...entries
                 .filter(([version, data]) => data.isRegistered)
@@ -100,7 +110,7 @@ export class AddonList {
             { translate: "kairo.addonSetting.latestVersion" },
             ...registeredVersions.map(version => ({ text: version }))
         ];
-        addonDataForm
+        const addonDataForm = new ModalFormData()
             .title(addonDataRawtexts.name)
             .header(addonDataRawtexts.name)
             .label(addonDataRawtexts.description)
@@ -113,13 +123,27 @@ export class AddonList {
             .dropdown(addonDataRawtexts.selectVersion, selectableVersionsRawtexts, { defaultValueIndex: selectedVersionIndex })
             .toggle(addonDataRawtexts.activate, { defaultValue: addonData.isActive })
             .submitButton(addonDataRawtexts.submit);
-        const { formValues, canceled: dataFormCanceled } = await addonDataForm.show(player);
-        if (dataFormCanceled || formValues === undefined)
+        const { formValues, canceled } = await addonDataForm.show(player);
+        if (canceled || formValues === undefined)
             return;
         const versionIndex = Number(formValues[8]);
         const newSelectedVersion = selectableVersions[versionIndex];
         if (newSelectedVersion === undefined)
             return;
         this.addonManager.changeAddonSettings(addonData, newSelectedVersion, formValues[9]);
+    }
+    async showAddonDataForm(player, addonDataRawtexts) {
+        const addonDataForm = new ActionFormData()
+            .title(addonDataRawtexts.name)
+            .header(addonDataRawtexts.name)
+            .label(addonDataRawtexts.description)
+            .label(addonDataRawtexts.details)
+            .divider()
+            .label(addonDataRawtexts.versionList)
+            .divider()
+            .label(addonDataRawtexts.required);
+        const { selection, canceled } = await addonDataForm.show(player);
+        if (canceled || selection === undefined)
+            return;
     }
 }
