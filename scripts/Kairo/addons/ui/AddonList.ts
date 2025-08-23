@@ -1,8 +1,19 @@
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import type { AddonData, AddonManager } from "../AddonManager";
-import type { Player, ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
+import type { Player, RawMessage, ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
 import { SCRIPT_EVENT_IDS } from "../../constants";
 import { properties, supportedTags } from "../../../properties";
+
+interface AddonDataRawtexts {
+    name: RawMessage;
+    description: RawMessage;
+    details: RawMessage;
+    required: RawMessage;
+    versionList: RawMessage;
+    selectVersion: RawMessage;
+    activate: RawMessage;
+    submit: RawMessage;
+}
 
 export class AddonList {
     private constructor(private readonly addonManager: AddonManager) {}
@@ -40,11 +51,10 @@ export class AddonList {
         const selectedAddon = addonsData[selection];
         if (!selectedAddon) return;
 
-        this.settingAddonDataForm(player, selectedAddon[1]);
+        this.formatAddonDataForDisplay(player, selectedAddon[1]);
     }
 
-    public async settingAddonDataForm(player: Player, addonData: AddonData): Promise<void> {
-        const addonDataForm = new ModalFormData();
+    public async formatAddonDataForDisplay(player: Player, addonData: AddonData): Promise<void> {
         const entries = Object.entries(addonData.versions);
 
         const isActive = addonData.isActive ? { translate: "kairo.addonList.active"} : { translate: "kairo.addonList.inactive" };
@@ -96,7 +106,7 @@ export class AddonList {
             }
         });
 
-        const addonDataRawtexts = {
+        const addonDataRawtexts: AddonDataRawtexts = {
             name: { translate: `${properties.id}.name` },
             description: { translate: `${properties.id}.description` },
             details: { rawtext: [ isActive, { text : " §7|§r " }, ...selectedVersion, { text: "\n§7§o" }, ...activeVersionTags, { text: "§r" }] },
@@ -107,6 +117,13 @@ export class AddonList {
             submit: { translate: "kairo.addonSetting.submit" }
         }
 
+        const isRegistered = addonData.activeVersion !== "unregistered";
+        if (isRegistered) this.settingAddonDataForm(player, addonData, addonDataRawtexts);
+        else this.showAddonDataForm(player, addonDataRawtexts);
+    }
+
+    private async settingAddonDataForm(player: Player, addonData: AddonData, addonDataRawtexts: AddonDataRawtexts): Promise<void> {
+        const entries = Object.entries(addonData.versions);
         const registeredVersions = [
             ...entries
                 .filter(([version, data]) => data.isRegistered)
@@ -120,7 +137,7 @@ export class AddonList {
             ...registeredVersions.map(version => ({ text: version }))
         ]
 
-        addonDataForm
+        const addonDataForm = new ModalFormData()
             .title(addonDataRawtexts.name)
             .header(addonDataRawtexts.name)
             .label(addonDataRawtexts.description)
@@ -134,12 +151,26 @@ export class AddonList {
             .toggle(addonDataRawtexts.activate, { defaultValue: addonData.isActive })
             .submitButton(addonDataRawtexts.submit);
 
-        const { formValues, canceled: dataFormCanceled } = await addonDataForm.show(player);
-        if (dataFormCanceled || formValues === undefined) return;
-
+        const { formValues, canceled } = await addonDataForm.show(player);
+        if (canceled || formValues === undefined) return;
         const versionIndex = Number(formValues[8]);
         const newSelectedVersion = selectableVersions[versionIndex];
         if (newSelectedVersion === undefined) return;
         this.addonManager.changeAddonSettings(addonData, newSelectedVersion as string, formValues[9] as boolean);
+    }
+
+    private async showAddonDataForm(player: Player, addonDataRawtexts: AddonDataRawtexts): Promise<void> {
+        const addonDataForm = new ActionFormData()
+            .title(addonDataRawtexts.name)
+            .header(addonDataRawtexts.name)
+            .label(addonDataRawtexts.description)
+            .label(addonDataRawtexts.details)
+            .divider()
+            .label(addonDataRawtexts.versionList)
+            .divider()
+            .label(addonDataRawtexts.required);
+        
+        const { selection, canceled } = await addonDataForm.show(player);
+        if (canceled || selection === undefined) return;
     }
 }
