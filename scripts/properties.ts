@@ -67,7 +67,7 @@ export const properties = {
     ],
 }
 
-export const supportedTags = [
+export const supportedTags: string[] = [
     "official",
     "approved",
     "stable",
