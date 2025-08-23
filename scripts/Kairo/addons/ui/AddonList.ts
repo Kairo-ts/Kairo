@@ -83,5 +83,7 @@ export class AddonList {
         selectedAddon[1].selectedVersion = newSelectedVersion;
 
         selectedAddon[1].isActive = formValues[7] as boolean;
+
+        if (selectedAddon[1].isActive) this.addonManager.activeAddon();
     }
 }
