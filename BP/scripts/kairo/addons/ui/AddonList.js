@@ -130,7 +130,7 @@ export class AddonList {
         const newSelectedVersion = selectableVersions[versionIndex];
         if (newSelectedVersion === undefined)
             return;
-        this.addonManager.changeAddonSettings(addonData, newSelectedVersion, formValues[9]);
+        this.addonManager.validateRequiredAddons(player, addonData, newSelectedVersion, formValues[9]);
     }
     async showAddonDataForm(player, addonDataRawtexts) {
         const addonDataForm = new ActionFormData()
