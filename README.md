@@ -36,3 +36,7 @@ Kairo is built using the stable Script API:
 ## Contributions Welcome!
 Feel free to fork this repository and open a pull request.  
 Bug fixes, documentation improvements, and feature suggestions are all appreciated!
+
+## Credits
+- Concept by: [@ucyuta](https://github.com/ucyuta)
+- Development by: [@shizuku86](https://github.com/shizuku86)
