@@ -58,7 +58,7 @@ export const properties = {
     /** 前提アドオン */
     requiredAddons: {
         /**
-         * name: version (string) // "kairo": "1.0.0"
+         * id: version (string) // "kairo": "1.0.0"
          */
     },
     tags: [
