@@ -5,6 +5,7 @@ import type { AddonRecords } from "./record/AddonRecord";
 import { ScriptEventCommandMessageAfterEvent, system, type Player } from "@minecraft/server";
 import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./AddonReceiver";
+import { AddonRequireValidator } from "./AddonRequireValidator";
 
 export interface AddonData {
     id: string;
@@ -32,12 +33,14 @@ export interface AddonData {
 export class AddonManager {
     private readonly activator: AddonActivator;
     private readonly receiver: AddonReceiver;
+    private readonly requireValidator: AddonRequireValidator;
     private readonly addonList: AddonList;
     private readonly addonsData: Map<string, AddonData> = new Map();
 
     private constructor(private readonly kairo: Kairo) {
         this.activator = AddonActivator.create(this);
-        this.receiver = AddonReceiver.create(this); 
+        this.receiver = AddonReceiver.create(this);
+        this.requireValidator = AddonRequireValidator.create(this);
         this.addonList = AddonList.create(this);
     }
     public static create(kairo: Kairo): AddonManager {
@@ -82,5 +85,9 @@ export class AddonManager {
 
     public handleAddonListScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
         this.addonList.handleScriptEvent(ev);
+    }
+
+    public async validateRequiredAddons(player: Player, addonData: AddonData, version: string, isActive: boolean): Promise<void> {
+        this.requireValidator.validateRequiredAddons(player, addonData, version, isActive);
     }
 }
