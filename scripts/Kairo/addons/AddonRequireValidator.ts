@@ -10,8 +10,14 @@ interface QueueAddonData {
     isLatest: boolean;
 }
 
+interface VisitedData {
+    isSelectedLatest: boolean;
+    isCanceledLatest: boolean;
+}
+
 export class AddonRequireValidator {
     private readonly activationQueue: Map<string, QueueAddonData> = new Map();
+    private readonly visited: Map<string, VisitedData> = new Map();
 
     private constructor(private readonly addonManager: AddonManager) {}
     public static create(addonManager: AddonManager): AddonRequireValidator {
@@ -26,13 +32,13 @@ export class AddonRequireValidator {
          */
         if (isActive) {
             this.clearActivationQueue();
-            const isValid = await this.resolveRequiredAddonsForActivation(player, addonData, newVersion);
-            if (!isValid) {
+            const isResolved = await this.resolveRequiredAddonsForActivation(player, addonData, newVersion);
+            if (!isResolved) {
                 this.clearActivationQueue();
                 return;
             }
 
-            for (const [id, {addonData, version}] of this.activationQueue.entries()) {
+            for (const {addonData, version} of this.activationQueue.values()) {
                 this.addonManager.changeAddonSettings(addonData, version, true);
             }
         }
@@ -66,12 +72,22 @@ export class AddonRequireValidator {
                 return false;
             }
 
+            const visitedData: VisitedData = this.visited.get(id) ?? { isSelectedLatest: false, isCanceledLatest: false };
+            this.visited.set(id, visitedData);
+            if (visitedData.isSelectedLatest) continue;
+
             if (!this.isAddonActive(requiredAddon, version)) {
-                const isEnabledLatest = await this.confirmEnableForm(player, "latestVersion", requiredAddon.name);
-                if (isEnabledLatest) {
-                    const isValidLatest = await this.resolveRequiredAddonsForActivation(player, requiredAddon, "latest version");
-                    if (!isValidLatest) return false;
-                    continue;
+                if (!visitedData.isCanceledLatest) {
+                    const isEnabledLatest = await this.confirmEnableForm(player, "latestVersion", requiredAddon.name);
+                    if (isEnabledLatest) {
+                        const isValidLatest = await this.resolveRequiredAddonsForActivation(player, requiredAddon, "latest version");
+                        if (!isValidLatest) {
+                            visitedData.isCanceledLatest = true;
+                            return false;
+                        }
+                        visitedData.isSelectedLatest = true;
+                        continue;
+                    }
                 }
 
                 const isEnabledSpecific = await this.confirmEnableForm(player, "specificVersion", requiredAddon.name, version);
@@ -121,5 +137,6 @@ export class AddonRequireValidator {
 
     private clearActivationQueue() {
         this.activationQueue.clear();
+        this.visited.clear();
     }
 }
