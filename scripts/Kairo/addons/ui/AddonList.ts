@@ -1,8 +1,10 @@
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import type { AddonData, AddonManager } from "../AddonManager";
 import type { Player, RawMessage, ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
-import { KAIRO_TRANSLATE_IDS, SCRIPT_EVENT_IDS, VERSION_KEYWORDS } from "../../constants";
 import { properties, supportedTags } from "../../../properties";
+import { SCRIPT_EVENT_IDS } from "../../../constants/scriptevent";
+import { KAIRO_TRANSLATE_IDS } from "../../../constants/translate";
+import { VERSION_KEYWORDS } from "../../../constants/version_keywords";
 
 interface AddonDataRawtexts {
     name: RawMessage;

@@ -3,8 +3,9 @@ import { VersionManager } from "../../utils/VersionManager";
 import type { AddonData, AddonManager } from "./AddonManager";
 import { MessageFormData } from "@minecraft/server-ui";
 import { ConsoleManager } from "../../utils/ConsoleManager";
-import { KAIRO_TRANSLATE_IDS, VERSION_KEYWORDS } from "../constants";
 import { ErrorManager } from "../../utils/ErrorManager";
+import { KAIRO_TRANSLATE_IDS } from "../../constants/translate";
+import { VERSION_KEYWORDS } from "../../constants/version_keywords";
 
 export class AddonRequireValidator {
     private readonly activationQueue: Map<string, { addonData: AddonData, version: string }> = new Map();

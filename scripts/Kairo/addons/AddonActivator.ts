@@ -2,7 +2,8 @@ import { system } from "@minecraft/server";
 import { VersionManager } from "../../utils/VersionManager";
 import type { AddonData, AddonManager } from "./AddonManager";
 import type { AddonProperty } from "./AddonPropertyManager";
-import { SCRIPT_EVENT_MESSAGES, VERSION_KEYWORDS } from "../constants";
+import { VERSION_KEYWORDS } from "../../constants/version_keywords";
+import { SCRIPT_EVENT_MESSAGES } from "../../constants/scriptevent";
 
 export class AddonActivator {
     private constructor(private readonly addonManager: AddonManager) {}

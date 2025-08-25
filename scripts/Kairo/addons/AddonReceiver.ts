@@ -1,6 +1,6 @@
 import type { ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
 import type { AddonManager } from "./AddonManager";
-import { SCRIPT_EVENT_MESSAGES } from "../constants";
+import { SCRIPT_EVENT_MESSAGES } from "../../constants/scriptevent";
 
 export class AddonReceiver {
     private constructor(private readonly addonManager: AddonManager) {}

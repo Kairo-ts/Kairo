@@ -2,7 +2,7 @@ import type { AddonProperty } from "../AddonPropertyManager";
 import type { AddonInitializer } from "../init/AddonInitializer";
 import { VersionManager } from "../../../utils/VersionManager";
 import { DynamicPropertyStorage } from "./DynamicPropertyStorage";
-import { VERSION_KEYWORDS } from "../../constants";
+import { VERSION_KEYWORDS } from "../../../constants/version_keywords";
 
 export interface AddonRecords {
     [id: string]: {
