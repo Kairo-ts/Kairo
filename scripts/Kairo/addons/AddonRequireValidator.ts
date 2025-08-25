@@ -3,7 +3,7 @@ import { VersionManager } from "../../utils/VersionManager";
 import type { AddonData, AddonManager } from "./AddonManager";
 import { MessageFormData } from "@minecraft/server-ui";
 import { ConsoleManager } from "../../utils/ConsoleManager";
-import { VERSION_KEYWORDS } from "../constants";
+import { KAIRO_TRANSLATE_IDS, VERSION_KEYWORDS } from "../constants";
 import { ErrorManager } from "../../utils/ErrorManager";
 
 export class AddonRequireValidator {
@@ -38,10 +38,10 @@ export class AddonRequireValidator {
                     .map(({ addonData, version }) =>  `${addonData.name} (ver.${version})`)
                     .join("\n");
                 const messageForm = new MessageFormData()
-                    .title({ translate: "kairo.addonSetting.required.title" })
-                    .body({ translate: "kairo.addonSetting.required.body", with: [queueAddonList] })
-                    .button1({ translate: "kairo.addonSetting.required.active" })
-                    .button2({ translate: "kairo.addonSetting.required.cancel" });
+                    .title({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_TITLE })
+                    .body({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_BODY, with: [queueAddonList] })
+                    .button1({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_ACTIVE })
+                    .button2({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_CANCEL });
                 const { selection, canceled } = await messageForm.show(player);
                 if (canceled || selection === undefined || selection === 1) {
                     this.clearActivationQueue();

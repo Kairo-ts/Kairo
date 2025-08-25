@@ -1,5 +1,6 @@
 import type { Player } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
+import { KAIRO_TRANSLATE_IDS } from "../Kairo/constants";
 
 export class ErrorManager {
     public static async showErrorDetails(player: Player, errorId: string): Promise<void> {
@@ -9,8 +10,8 @@ export class ErrorManager {
         }
 
         const errorForm = new ActionFormData()
-            .title({ translate: "kairo.errorForm.title" })
-            .header({ translate: "kairo.errorForm.header" })
+            .title({ translate: KAIRO_TRANSLATE_IDS.ERROR_FORM_TITLE })
+            .header({ translate: KAIRO_TRANSLATE_IDS.ERROR_FORM_HEADER })
             .label({ text: `[ ${errorDetail.errorCode} ]` })
             .divider()
             .label({ rawtext: [
@@ -19,7 +20,7 @@ export class ErrorManager {
                 { translate: errorDetail.errorHintId }
             ]})
             .divider()
-            .label({ translate: "kairo.errorForm.footer", with: [errorDetail.errorCode] });
+            .label({ translate: KAIRO_TRANSLATE_IDS.ERROR_FORM_FOOTER, with: [errorDetail.errorCode] });
         const { selection, canceled } = await errorForm.show(player);
         if (canceled) return;
     }
