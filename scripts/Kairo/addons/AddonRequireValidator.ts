@@ -36,7 +36,7 @@ export class AddonRequireValidator {
                 const rootAddonId = addonData.id;
                 const queueAddonList = Array.from(this.activationQueue.values())
                     .filter(({ addonData }) => addonData.id !== rootAddonId)
-                    .map(({ addonData, version }) =>  `${addonData.name} (ver.${version})`)
+                    .map(({ addonData, version }) =>  `・${addonData.name} (ver.${version})`)
                     .join("\n");
                 const messageForm = new MessageFormData()
                     .title({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_TITLE })
