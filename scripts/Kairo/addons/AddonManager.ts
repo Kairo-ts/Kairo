@@ -6,6 +6,7 @@ import { ScriptEventCommandMessageAfterEvent, system, type Player } from "@minec
 import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./AddonReceiver";
 import { AddonRequireValidator } from "./AddonRequireValidator";
+import { VersionManager } from "../../utils/versionManager";
 
 export interface AddonData {
     id: string;
@@ -89,5 +90,16 @@ export class AddonManager {
 
     public async validateRequiredAddons(player: Player, addonData: AddonData, version: string, isActive: boolean): Promise<void> {
         this.requireValidator.validateRequiredAddons(player, addonData, version, isActive);
+    }
+
+    public getLatestVersion(id: string): string {
+        const addonData = this.addonsData.get(id);
+        if (!addonData) return "unregistered";
+
+        const latestVersion = Object.keys(addonData.versions)
+            .filter(v => addonData.versions[v]?.isRegistered)
+            .sort((a, b) => VersionManager.compare(b, a))[0];
+
+        return latestVersion ?? "unregistered";
     }
 }
