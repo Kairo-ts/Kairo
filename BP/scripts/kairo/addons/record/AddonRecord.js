@@ -1,5 +1,6 @@
-import { VersionManager } from "../../../utils/versionManager";
+import { VersionManager } from "../../../utils/VersionManager";
 import { DynamicPropertyStorage } from "./DynamicPropertyStorage";
+import { VERSION_KEYWORDS } from "../../../constants/version_keywords";
 export class AddonRecord {
     constructor(addonInitializer) {
         this.addonInitializer = addonInitializer;
@@ -16,7 +17,7 @@ export class AddonRecord {
                 addonRecords[id] = {
                     name: name,
                     description: ["0.0.0", ""],
-                    selectedVersion: "latest version",
+                    selectedVersion: VERSION_KEYWORDS.LATEST,
                     versions: []
                 };
             }

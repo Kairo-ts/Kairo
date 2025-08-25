@@ -1,5 +1,7 @@
 import { system } from "@minecraft/server";
-import { VersionManager } from "../../utils/versionManager";
+import { VersionManager } from "../../utils/VersionManager";
+import { VERSION_KEYWORDS } from "../../constants/version_keywords";
+import { SCRIPT_EVENT_MESSAGES } from "../../constants/scriptevent";
 export class AddonActivator {
     constructor(addonManager) {
         this.addonManager = addonManager;
@@ -77,7 +79,7 @@ export class AddonActivator {
             .filter(v => addonData.versions[v]?.isRegistered)
             .sort((a, b) => VersionManager.compare(b, a));
         if (sorted.length === 0) {
-            addonData.activeVersion = "unregistered";
+            addonData.activeVersion = VERSION_KEYWORDS.UNREGISTERED;
             return;
         }
         const stable = sorted.find(v => !VersionManager.fromString(v).prerelease);
@@ -88,14 +90,14 @@ export class AddonActivator {
         const addonData = this.addonManager.getAddonsData().get(id);
         if (!addonData)
             return;
-        if (addonData.selectedVersion === "latest version") {
+        if (addonData.selectedVersion === VERSION_KEYWORDS.LATEST) {
             this.activateLatestVersion(id);
             return;
         }
         const selectedVersion = Object.keys(addonData.versions)
             .find(v => v === addonData.selectedVersion && addonData.versions[v]?.isRegistered);
         if (!selectedVersion) {
-            addonData.selectedVersion = "latest version";
+            addonData.selectedVersion = VERSION_KEYWORDS.LATEST;
             this.activateLatestVersion(id);
             return;
         }
@@ -103,9 +105,9 @@ export class AddonActivator {
         addonData.isActive = true;
     }
     sendActiveRequest(sessionId) {
-        system.sendScriptEvent(`kairo:${sessionId}`, "active request");
+        system.sendScriptEvent(`kairo:${sessionId}`, SCRIPT_EVENT_MESSAGES.ACTIVE_REQUEST);
     }
     sendInactiveRequest(sessionId) {
-        system.sendScriptEvent(`kairo:${sessionId}`, "inactive request");
+        system.sendScriptEvent(`kairo:${sessionId}`, SCRIPT_EVENT_MESSAGES.DEACTIVE_REQUEST);
     }
 }

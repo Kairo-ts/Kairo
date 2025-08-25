@@ -1,7 +1,10 @@
 import {} from "@minecraft/server";
-import { VersionManager } from "../../utils/versionManager";
+import { VersionManager } from "../../utils/VersionManager";
 import { MessageFormData } from "@minecraft/server-ui";
-import { ConsoleManager } from "../../utils/consoleManager";
+import { ConsoleManager } from "../../utils/ConsoleManager";
+import { ErrorManager } from "../../utils/ErrorManager";
+import { KAIRO_TRANSLATE_IDS } from "../../constants/translate";
+import { VERSION_KEYWORDS } from "../../constants/version_keywords";
 export class AddonRequireValidator {
     constructor(addonManager) {
         this.addonManager = addonManager;
@@ -12,7 +15,6 @@ export class AddonRequireValidator {
     static create(addonManager) {
         return new AddonRequireValidator(addonManager);
     }
-    // 有効にするべきアドオンを配列にまとめる必要がある。
     async validateRequiredAddons(player, addonData, newVersion, isActive) {
         /**
          * 有効にする場合は、前提アドオンも有効にする必要がある
@@ -23,20 +25,20 @@ export class AddonRequireValidator {
             const isResolved = this.resolveRequiredAddonsForActivation(addonData, newVersion);
             if (!isResolved) {
                 this.clearActivationQueue();
-                // エラー専用の ActionForm を作って、エラーを表示する
+                ErrorManager.showErrorDetails(player, "kairo_resolve_for_activation_error");
                 return;
             }
             if (this.activationQueue.size > 1) {
                 const rootAddonId = addonData.id;
                 const queueAddonList = Array.from(this.activationQueue.values())
                     .filter(({ addonData }) => addonData.id !== rootAddonId)
-                    .map(({ addonData, version }) => `${addonData.name} (ver.${version})`)
+                    .map(({ addonData, version }) => `・${addonData.name} (ver.${version})`)
                     .join("\n");
                 const messageForm = new MessageFormData()
-                    .title({ translate: "kairo.addonSetting.required.title" })
-                    .body({ translate: "kairo.addonSetting.required.body", with: [queueAddonList] })
-                    .button1({ translate: "kairo.addonSetting.required.active" })
-                    .button2({ translate: "kairo.addonSetting.required.cancel" });
+                    .title({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_TITLE })
+                    .body({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_BODY, with: [queueAddonList] })
+                    .button1({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_ACTIVE })
+                    .button2({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_CANCEL });
                 const { selection, canceled } = await messageForm.show(player);
                 if (canceled || selection === undefined || selection === 1) {
                     this.clearActivationQueue();
@@ -53,7 +55,7 @@ export class AddonRequireValidator {
         }
     }
     resolveRequiredAddonsForActivation(addonData, newVersion) {
-        const newActiveVersion = newVersion === "latest version"
+        const newActiveVersion = newVersion === VERSION_KEYWORDS.LATEST
             ? this.addonManager.getLatestVersion(addonData.id)
             : newVersion;
         if (newActiveVersion === undefined)
@@ -84,16 +86,9 @@ export class AddonRequireValidator {
                     ConsoleManager.error(`Addon data corrupted: parent=${addonData.id}@${newActiveVersion}, missing required=${id}@${version}`);
                     return false;
                 }
-                // latest version を返すutilを作る
                 if (!this.isAddonActive(requiredAddon, version)) {
                     const requireLatestStableVersion = this.addonManager.getLatestStableVersion(id);
                     if (!requireLatestStableVersion) {
-                        /**
-                         * 登録時に前提アドオンが登録されているかどうかで、設定を変更できるかどうかを決めるため、
-                         * ここで前提アドオンが最新バージョンでも対応していないなんてことは普通は起こらない
-                         * At registration, whether required addons are present determines if settings can be changed,
-                         * therefore, it is unusual for a required addon to be unsupported even at its latest version here
-                         */
                         ConsoleManager.error(`Addon data corrupted: missing required=${id}@${version}`);
                         return false;
                     }

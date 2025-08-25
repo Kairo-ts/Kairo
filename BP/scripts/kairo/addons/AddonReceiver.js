@@ -1,3 +1,4 @@
+import { SCRIPT_EVENT_MESSAGES } from "../../constants/scriptevent";
 export class AddonReceiver {
     constructor(addonManager) {
         this.addonManager = addonManager;
@@ -7,10 +8,10 @@ export class AddonReceiver {
             if (id !== `kairo:${addonProperty.sessionId}`)
                 return;
             switch (message) {
-                case "active request":
+                case SCRIPT_EVENT_MESSAGES.ACTIVE_REQUEST:
                     this.addonManager.activeAddon();
                     break;
-                case "inactive request":
+                case SCRIPT_EVENT_MESSAGES.DEACTIVE_REQUEST:
                     this.addonManager.inactiveAddon();
                     break;
             }

@@ -3,7 +3,7 @@ import { ScriptEventCommandMessageAfterEvent, system } from "@minecraft/server";
 import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./AddonReceiver";
 import { AddonRequireValidator } from "./AddonRequireValidator";
-import { VersionManager } from "../../utils/versionManager";
+import { VersionManager } from "../../utils/VersionManager";
 export class AddonManager {
     constructor(kairo) {
         this.kairo = kairo;
