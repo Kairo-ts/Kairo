@@ -9,6 +9,7 @@ import { VERSION_KEYWORDS } from "../../constants/version_keywords";
 
 export class AddonRequireValidator {
     private readonly activationQueue: Map<string, { addonData: AddonData, version: string }> = new Map();
+    private readonly deactivationQueue: Map<string, { addonData: AddonData, version: string }> = new Map();
     private readonly visited: Map<string, string> = new Map();
     private readonly visiting: Set<string> = new Set();
 
@@ -22,8 +23,12 @@ export class AddonRequireValidator {
          * 有効にする場合は、前提アドオンも有効にする必要がある
          * 無効にする場合は、自身が依存されているかどうかを調べ、依存されていれば、そのアドオンも無効化する
          */
-        if (isActive) {
-            this.clearActivationQueue();
+        if (isActive) this.validateRequiredAddonsForActivation(player, addonData, newVersion);
+        else this.validateRequiredAddonsForDeactivation(player, addonData);
+    }
+
+    private async validateRequiredAddonsForActivation(player: Player, addonData: AddonData, newVersion: string): Promise<void> {
+        this.clearActivationQueue();
             const isResolved = this.resolveRequiredAddonsForActivation(addonData, newVersion);
             if (!isResolved) {
                 this.clearActivationQueue();
@@ -50,13 +55,13 @@ export class AddonRequireValidator {
             }
 
             for (const {addonData, version} of this.activationQueue.values()) {
-                this.addonManager.changeAddonSettings(addonData, version, isActive);
+                this.addonManager.changeAddonSettings(addonData, version, true);
             }
             this.clearActivationQueue();
-        }
-        else {
-            // 無効にするパターンも作る
-        }
+    }
+
+    private async validateRequiredAddonsForDeactivation(player: Player, addonData: AddonData): Promise<void> {
+        
     }
 
     private resolveRequiredAddonsForActivation(addonData: AddonData, newVersion: string): boolean {
@@ -142,6 +147,15 @@ export class AddonRequireValidator {
 
     private clearActivationQueue() {
         this.activationQueue.clear();
+        this.clearVisitFlags();
+    }
+
+    private clearDeactivationQueue() {
+        this.deactivationQueue.clear();
+        this.clearVisitFlags();
+    }
+
+    private clearVisitFlags() {
         this.visited.clear();
         this.visiting.clear();
     }
