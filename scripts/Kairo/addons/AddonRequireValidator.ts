@@ -4,7 +4,7 @@ import type { AddonData, AddonManager } from "./AddonManager";
 import { MessageFormData } from "@minecraft/server-ui";
 import { ConsoleManager } from "../../utils/ConsoleManager";
 import { VERSION_KEYWORDS } from "../constants";
-import { ErrorManager } from "../../utils/errorManager";
+import { ErrorManager } from "../../utils/ErrorManager";
 
 export class AddonRequireValidator {
     private readonly activationQueue: Map<string, { addonData: AddonData, version: string }> = new Map();
