@@ -4,6 +4,7 @@ import type { AddonData, AddonManager } from "./AddonManager";
 import { MessageFormData } from "@minecraft/server-ui";
 import { ConsoleManager } from "../../utils/ConsoleManager";
 import { VERSION_KEYWORDS } from "../constants";
+import { ErrorManager } from "../../utils/errorManager";
 
 export class AddonRequireValidator {
     private readonly activationQueue: Map<string, { addonData: AddonData, version: string }> = new Map();
@@ -26,7 +27,7 @@ export class AddonRequireValidator {
             const isResolved = this.resolveRequiredAddonsForActivation(addonData, newVersion);
             if (!isResolved) {
                 this.clearActivationQueue();
-                // エラー専用の ActionForm を作って、エラーを表示する
+                ErrorManager.showErrorDetails(player, "kairo_resolve_for_activation_error");
                 return;
             }
 
