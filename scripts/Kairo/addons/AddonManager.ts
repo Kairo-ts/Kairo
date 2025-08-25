@@ -1,11 +1,11 @@
 import type { Kairo } from "..";
 import type { AddonProperty } from "./AddonPropertyManager";
-import { AddonActivator } from "./AddonActivator";
+import { AddonActivator } from "./router/AddonActivator";
 import type { AddonRecords } from "./record/AddonRecord";
 import { ScriptEventCommandMessageAfterEvent, system, type Player } from "@minecraft/server";
 import { AddonList } from "./ui/AddonList";
-import { AddonReceiver } from "./AddonReceiver";
-import { AddonRequireValidator } from "./AddonRequireValidator";
+import { AddonReceiver } from "./router/AddonReceiver";
+import { AddonRequireValidator } from "./router/AddonRequireValidator";
 import { VersionManager } from "../../utils/VersionManager";
 
 export interface AddonData {
