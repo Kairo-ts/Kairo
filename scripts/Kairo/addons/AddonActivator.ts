@@ -2,7 +2,7 @@ import { system } from "@minecraft/server";
 import { VersionManager } from "../../utils/VersionManager";
 import type { AddonData, AddonManager } from "./AddonManager";
 import type { AddonProperty } from "./AddonPropertyManager";
-import { VERSION_KEYWORDS } from "../constants";
+import { SCRIPT_EVENT_MESSAGES, VERSION_KEYWORDS } from "../constants";
 
 export class AddonActivator {
     private constructor(private readonly addonManager: AddonManager) {}
@@ -121,10 +121,10 @@ export class AddonActivator {
     }
 
     private sendActiveRequest(sessionId: string): void {
-        system.sendScriptEvent(`kairo:${sessionId}`, "active request");
+        system.sendScriptEvent(`kairo:${sessionId}`, SCRIPT_EVENT_MESSAGES.ACTIVE_REQUEST);
     }
 
     private sendInactiveRequest(sessionId: string): void {
-        system.sendScriptEvent(`kairo:${sessionId}`, "inactive request");
+        system.sendScriptEvent(`kairo:${sessionId}`, SCRIPT_EVENT_MESSAGES.DEACTIVE_REQUEST);
     }
 }

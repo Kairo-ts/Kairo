@@ -1,5 +1,6 @@
 import type { ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
 import type { AddonManager } from "./AddonManager";
+import { SCRIPT_EVENT_MESSAGES } from "../constants";
 
 export class AddonReceiver {
     private constructor(private readonly addonManager: AddonManager) {}
@@ -15,10 +16,10 @@ export class AddonReceiver {
         if (id !== `kairo:${addonProperty.sessionId}`) return;
 
         switch (message) {
-            case "active request":
+            case SCRIPT_EVENT_MESSAGES.ACTIVE_REQUEST:
                 this.addonManager.activeAddon();
                 break;
-            case "inactive request":
+            case SCRIPT_EVENT_MESSAGES.DEACTIVE_REQUEST:
                 this.addonManager.inactiveAddon();
                 break;
         }
