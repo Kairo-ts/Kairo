@@ -19,3 +19,12 @@ kairo.tags.official=公式
 kairo.tags.approved=公認
 kairo.tags.stable=安定版
 kairo.tags.experimental=実験的
+
+kairo.errorForm.title=エラーが発生しました
+kairo.errorForm.header=エラー詳細
+kairo.errorForm.footer=§7解決できない場合は、エラー番号[ %s ]を開発者に報告してください。§r
+
+kairo.error.not.found.message=予期せぬ不具合が発生しました。
+kairo.error.not.found.hint=Kairoの開発者にお問い合わせください。
+kairo.error.resolve.for.activation.message=前提アドオンを有効にする過程で、予期せぬ不具合が発生しました。
+kairo.error.resolve.for.activation.hint=前提アドオンが正しくインストールされているか確認してください。
