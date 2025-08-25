@@ -24,7 +24,7 @@ export const properties = {
             major: 1, 
             minor: 0, 
             patch: 0,
-            prerelease: "dev.34",
+            prerelease: "dev.36",
             // build: "abc123",
         },
         min_engine_version: [ 1,21,100 ],
