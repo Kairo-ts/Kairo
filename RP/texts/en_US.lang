@@ -20,6 +20,11 @@ kairo.tags.approved=Approved
 kairo.tags.stable=Stable
 kairo.tags.experimental=Experimental
 
+kairo.addonSetting.required.title=Confirm Changes
+kairo.addonSetting.required.body=The following required addons must be activated. Do you want to activate them with the latest version?\n%s
+kairo.addonSetting.required.active=Activate
+kairo.addonSetting.required.cancel=Cancel
+
 kairo.errorForm.title=An error has occurred
 kairo.errorForm.header=Error Details
 kairo.errorForm.footer=§7If the issue cannot be resolved, please report the error code [ %s ] to the developer.§r

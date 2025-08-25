@@ -20,6 +20,11 @@ kairo.tags.approved=公認
 kairo.tags.stable=安定版
 kairo.tags.experimental=実験的
 
+kairo.addonSetting.required.title=変更確認
+kairo.addonSetting.required.body=以下の前提アドオンを有効化する必要があります。それぞれ最新バージョンで有効化しますか？\n%s
+kairo.addonSetting.required.active=有効化
+kairo.addonSetting.required.cancel=キャンセル
+
 kairo.errorForm.title=エラーが発生しました
 kairo.errorForm.header=エラー詳細
 kairo.errorForm.footer=§7解決できない場合は、エラー番号[ %s ]を開発者に報告してください。§r
