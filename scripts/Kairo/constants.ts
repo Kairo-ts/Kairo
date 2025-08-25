@@ -14,3 +14,7 @@ export const VERSION_KEYWORDS = {
     LATEST: "latest version",
     UNREGISTERED: "unregistered"
 }
+
+export const SCOREBOARD_NAMES = {
+    ADDON_COUNTER: "AddonCounter"
+}
