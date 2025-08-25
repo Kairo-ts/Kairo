@@ -1,6 +1,6 @@
 import type { Player } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
-import { KAIRO_TRANSLATE_IDS } from "../Kairo/constants";
+import { ErrorDetails, KAIRO_TRANSLATE_IDS } from "../Kairo/constants";
 
 export class ErrorManager {
     public static async showErrorDetails(player: Player, errorId: string): Promise<void> {
@@ -23,24 +23,5 @@ export class ErrorManager {
             .label({ translate: KAIRO_TRANSLATE_IDS.ERROR_FORM_FOOTER, with: [errorDetail.errorCode] });
         const { selection, canceled } = await errorForm.show(player);
         if (canceled) return;
-    }
-}
-
-interface ErrorDetail {
-    errorMessageId: string;
-    errorHintId: string;
-    errorCode: string;
-}
-
-const ErrorDetails: Record<string, ErrorDetail> = {
-    "kairo_error_not_found": {
-        errorMessageId: "kairo.error.not.found.message",
-        errorHintId: "kairo.error.not.found.hint",
-        errorCode: "E000001"
-    },
-    "kairo_resolve_for_activation_error": {
-        errorMessageId: "kairo.error.resolve.for.activation.message",
-        errorHintId: "kairo.error.resolve.for.activation.hint",
-        errorCode: "E100001"
     }
 }
