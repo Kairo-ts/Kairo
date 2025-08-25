@@ -1,7 +1,7 @@
 import type { ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
 import type { AddonInitializer } from "./AddonInitializer";
 import { SCRIPT_EVENT_IDS } from "../../constants";
-import { ScoreboardManager } from "../../../utils/scoreboardManager";
+import { ScoreboardManager } from "../../../utils/ScoreboardManager";
 
 /**
  * 各アドオンが、ルーターからのリクエストを受け取るためのクラス

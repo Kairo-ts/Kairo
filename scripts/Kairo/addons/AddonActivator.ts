@@ -1,5 +1,5 @@
 import { system } from "@minecraft/server";
-import { VersionManager } from "../../utils/versionManager";
+import { VersionManager } from "../../utils/VersionManager";
 import type { AddonData, AddonManager } from "./AddonManager";
 import type { AddonProperty } from "./AddonPropertyManager";
 import { VERSION_KEYWORDS } from "../constants";

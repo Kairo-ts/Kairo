@@ -6,7 +6,7 @@ import { ScriptEventCommandMessageAfterEvent, system, type Player } from "@minec
 import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./AddonReceiver";
 import { AddonRequireValidator } from "./AddonRequireValidator";
-import { VersionManager } from "../../utils/versionManager";
+import { VersionManager } from "../../utils/VersionManager";
 
 export interface AddonData {
     id: string;

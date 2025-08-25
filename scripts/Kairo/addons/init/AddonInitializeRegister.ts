@@ -2,8 +2,8 @@ import { system, world, type ScriptEventCommandMessageAfterEvent } from "@minecr
 import type { AddonProperty } from "../AddonPropertyManager";
 import type { AddonInitializer } from "./AddonInitializer";
 import { SCRIPT_EVENT_IDS } from "../../constants";
-import { ConsoleManager } from "../../../utils/consoleManager";
-import { VersionManager } from "../../../utils/versionManager";
+import { ConsoleManager } from "../../../utils/ConsoleManager";
+import { VersionManager } from "../../../utils/VersionManager";
 
 /**
  * 応答したアドオンを登録するためのクラス

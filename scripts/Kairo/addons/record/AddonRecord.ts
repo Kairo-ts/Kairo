@@ -1,6 +1,6 @@
 import type { AddonProperty } from "../AddonPropertyManager";
 import type { AddonInitializer } from "../init/AddonInitializer";
-import { VersionManager } from "../../../utils/versionManager";
+import { VersionManager } from "../../../utils/VersionManager";
 import { DynamicPropertyStorage } from "./DynamicPropertyStorage";
 import { VERSION_KEYWORDS } from "../../constants";
 

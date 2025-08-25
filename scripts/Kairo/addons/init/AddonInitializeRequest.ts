@@ -1,7 +1,7 @@
 import { system, WorldLoadAfterEvent } from "@minecraft/server";
-import { ConsoleManager } from "../../../utils/consoleManager";
+import { ConsoleManager } from "../../../utils/ConsoleManager";
 import type { AddonInitializer } from "./AddonInitializer";
-import { ScoreboardManager } from "../../../utils/scoreboardManager";
+import { ScoreboardManager } from "../../../utils/ScoreboardManager";
 import { SCRIPT_EVENT_IDS } from "../../constants";
 
 /**

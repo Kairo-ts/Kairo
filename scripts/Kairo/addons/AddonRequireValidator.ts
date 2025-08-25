@@ -1,8 +1,8 @@
 import { type Player } from "@minecraft/server";
-import { VersionManager } from "../../utils/versionManager";
+import { VersionManager } from "../../utils/VersionManager";
 import type { AddonData, AddonManager } from "./AddonManager";
 import { MessageFormData } from "@minecraft/server-ui";
-import { ConsoleManager } from "../../utils/consoleManager";
+import { ConsoleManager } from "../../utils/ConsoleManager";
 import { VERSION_KEYWORDS } from "../constants";
 
 export class AddonRequireValidator {
