@@ -2,6 +2,7 @@ import { system } from "@minecraft/server";
 import { VersionManager } from "../../utils/versionManager";
 import type { AddonData, AddonManager } from "./AddonManager";
 import type { AddonProperty } from "./AddonPropertyManager";
+import { VERSION_KEYWORDS } from "../constants";
 
 export class AddonActivator {
     private constructor(private readonly addonManager: AddonManager) {}
@@ -88,7 +89,7 @@ export class AddonActivator {
             .sort((a, b) => VersionManager.compare(b, a));
 
         if (sorted.length === 0) {
-            addonData.activeVersion = "unregistered";
+            addonData.activeVersion = VERSION_KEYWORDS.UNREGISTERED;
             return;
         }
 
@@ -101,7 +102,7 @@ export class AddonActivator {
         const addonData = this.addonManager.getAddonsData().get(id);
         if (!addonData) return;
 
-        if (addonData.selectedVersion === "latest version") {
+        if (addonData.selectedVersion === VERSION_KEYWORDS.LATEST) {
             this.activateLatestVersion(id);
             return;
         }
@@ -110,7 +111,7 @@ export class AddonActivator {
             .find(v => v === addonData.selectedVersion && addonData.versions[v]?.isRegistered);
 
         if (!selectedVersion) {
-            addonData.selectedVersion = "latest version";
+            addonData.selectedVersion = VERSION_KEYWORDS.LATEST;
             this.activateLatestVersion(id);
             return;
         }

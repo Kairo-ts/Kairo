@@ -3,6 +3,7 @@ import { VersionManager } from "../../utils/versionManager";
 import type { AddonData, AddonManager } from "./AddonManager";
 import { MessageFormData } from "@minecraft/server-ui";
 import { ConsoleManager } from "../../utils/consoleManager";
+import { VERSION_KEYWORDS } from "../constants";
 
 export class AddonRequireValidator {
     private readonly activationQueue: Map<string, { addonData: AddonData, version: string }> = new Map();
@@ -58,7 +59,7 @@ export class AddonRequireValidator {
     }
 
     private resolveRequiredAddonsForActivation(addonData: AddonData, newVersion: string): boolean {
-        const newActiveVersion = newVersion === "latest version"
+        const newActiveVersion = newVersion === VERSION_KEYWORDS.LATEST
             ? this.addonManager.getLatestVersion(addonData.id)
             : newVersion;
         if (newActiveVersion === undefined) return false;

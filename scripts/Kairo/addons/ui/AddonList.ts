@@ -1,7 +1,7 @@
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import type { AddonData, AddonManager } from "../AddonManager";
 import type { Player, RawMessage, ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
-import { SCRIPT_EVENT_IDS } from "../../constants";
+import { SCRIPT_EVENT_IDS, VERSION_KEYWORDS } from "../../constants";
 import { properties, supportedTags } from "../../../properties";
 
 interface AddonDataRawtexts {
@@ -57,11 +57,11 @@ export class AddonList {
     public async formatAddonDataForDisplay(player: Player, addonData: AddonData): Promise<void> {
         const entries = Object.entries(addonData.versions);
 
-        const isRegistered = addonData.activeVersion !== "unregistered";
+        const isRegistered = addonData.activeVersion !== VERSION_KEYWORDS.UNREGISTERED;
 
         const isActive = addonData.isActive ? { translate: "kairo.addonList.active"} : { translate: "kairo.addonList.inactive" };
         const selectedVersion = isRegistered
-            ? addonData.selectedVersion === "latest version"
+            ? addonData.selectedVersion === VERSION_KEYWORDS.LATEST
                 ? [{ text: " §7|§r " },{ translate: "kairo.addonSetting.latestVersion" },{ text: ` (ver.${addonData.activeVersion})` }]
                 : [{ text: " §7|§r " },{ text: `ver.${addonData.selectedVersion}` }]
             : [];
@@ -133,7 +133,7 @@ export class AddonList {
                 .filter(([version, data]) => data.isRegistered)
                 .map(([version]) => version)
         ];
-        const selectableVersions = ["latest version", ...registeredVersions];
+        const selectableVersions = [VERSION_KEYWORDS.LATEST, ...registeredVersions];
         const selectedVersionIndex = selectableVersions.indexOf(addonData.selectedVersion);
 
         const selectableVersionsRawtexts = [
