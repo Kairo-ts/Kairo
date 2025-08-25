@@ -17,7 +17,6 @@ export class AddonRequireValidator {
         return new AddonRequireValidator(addonManager);
     }
 
-    // 有効にするべきアドオンを配列にまとめる必要がある。
     public async validateRequiredAddons(player: Player, addonData: AddonData, newVersion: string, isActive: boolean): Promise<void> {
         /**
          * 有効にする場合は、前提アドオンも有効にする必要がある
@@ -94,17 +93,9 @@ export class AddonRequireValidator {
                     return false;
                 }
 
-                // latest version を返すutilを作る
-
                 if (!this.isAddonActive(requiredAddon, version)) {
                     const requireLatestStableVersion = this.addonManager.getLatestStableVersion(id);
                     if (!requireLatestStableVersion) {
-                        /**
-                         * 登録時に前提アドオンが登録されているかどうかで、設定を変更できるかどうかを決めるため、
-                         * ここで前提アドオンが最新バージョンでも対応していないなんてことは普通は起こらない
-                         * At registration, whether required addons are present determines if settings can be changed,
-                         * therefore, it is unusual for a required addon to be unsupported even at its latest version here
-                         */
                         ConsoleManager.error(`Addon data corrupted: missing required=${id}@${version}`);
                         return false;
                     }
