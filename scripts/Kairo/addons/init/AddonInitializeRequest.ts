@@ -2,7 +2,7 @@ import { system, WorldLoadAfterEvent } from "@minecraft/server";
 import { ConsoleManager } from "../../../utils/ConsoleManager";
 import type { AddonInitializer } from "./AddonInitializer";
 import { ScoreboardManager } from "../../../utils/ScoreboardManager";
-import { SCRIPT_EVENT_IDS } from "../../constants";
+import { SCOREBOARD_NAMES, SCRIPT_EVENT_IDS } from "../../constants";
 
 /**
  * ルーターが各アドオンに登録要求を送るためのクラス
@@ -27,7 +27,7 @@ export class AddonInitializeRequest {
          * アドオンの数を数えるためのscoreboardを用意しておく
          * Prepare a scoreboard to count the number of addons
          */
-        ScoreboardManager.ensureObjective("AddonCounter").setScore("AddonCounter", 0);
+        ScoreboardManager.ensureObjective(SCOREBOARD_NAMES.ADDON_COUNTER).setScore(SCOREBOARD_NAMES.ADDON_COUNTER, 0);
 
         /**
          * scriptEventを送信して、各アドオンに登録要求を送る
