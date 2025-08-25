@@ -6,6 +6,11 @@ export const SCRIPT_EVENT_IDS = {
     SHOW_ADDON_LIST: "kairo:showAddonList"
 }
 
+export const SCRIPT_EVENT_MESSAGES = {
+    ACTIVE_REQUEST: "active request",
+    DEACTIVE_REQUEST: "deactive request"
+}
+
 export const KAIRO_TRANSLATE_IDS = {
 
 }
