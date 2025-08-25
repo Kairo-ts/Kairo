@@ -1,19 +1,17 @@
 import { type Player } from "@minecraft/server";
-import { VersionManager } from "../../../utils/VersionManager";
 import type { AddonData, AddonManager } from "../AddonManager";
-import { MessageFormData } from "@minecraft/server-ui";
-import { ConsoleManager } from "../../../utils/ConsoleManager";
-import { ErrorManager } from "../../../utils/ErrorManager";
-import { KAIRO_TRANSLATE_IDS } from "../../../constants/translate";
-import { VERSION_KEYWORDS } from "../../../constants/version_keywords";
+import { AddonRequireValidatorForDeactivation } from "./AddonRequireValidatorForDeactivation";
+import { AddonRequireValidatorForActivation } from "./AddonRequireValidatorForActivation";
+import { VersionManager } from "../../../utils/VersionManager";
 
 export class AddonRequireValidator {
-    private readonly activationQueue: Map<string, { addonData: AddonData, version: string }> = new Map();
-    private readonly deactivationQueue: Map<string, { addonData: AddonData, version: string }> = new Map();
-    private readonly visited: Map<string, string> = new Map();
-    private readonly visiting: Set<string> = new Set();
+    private readonly forActivation: AddonRequireValidatorForActivation;
+    private readonly forDeactivation: AddonRequireValidatorForDeactivation;
 
-    private constructor(private readonly addonManager: AddonManager) {}
+    private constructor(private readonly addonManager: AddonManager) {
+        this.forActivation = AddonRequireValidatorForActivation.create(this);
+        this.forDeactivation = AddonRequireValidatorForDeactivation.create(this);
+    }
     public static create(addonManager: AddonManager): AddonRequireValidator {
         return new AddonRequireValidator(addonManager);
     }
@@ -23,140 +21,42 @@ export class AddonRequireValidator {
          * 有効にする場合は、前提アドオンも有効にする必要がある
          * 無効にする場合は、自身が依存されているかどうかを調べ、依存されていれば、そのアドオンも無効化する
          */
-        if (isActive) this.validateRequiredAddonsForActivation(player, addonData, newVersion);
-        else this.validateRequiredAddonsForDeactivation(player, addonData);
+        if (isActive) this.forActivation.validateRequiredAddonsForActivation(player, addonData, newVersion);
+        else this.forDeactivation.validateRequiredAddonsForDeactivation(player, addonData);
     }
 
-    private async validateRequiredAddonsForActivation(player: Player, addonData: AddonData, newVersion: string): Promise<void> {
-        this.clearActivationQueue();
-            const isResolved = this.resolveRequiredAddonsForActivation(addonData, newVersion);
-            if (!isResolved) {
-                this.clearActivationQueue();
-                ErrorManager.showErrorDetails(player, "kairo_resolve_for_activation_error");
-                return;
-            }
-
-            if (this.activationQueue.size > 1) {
-                const rootAddonId = addonData.id;
-                const queueAddonList = Array.from(this.activationQueue.values())
-                    .filter(({ addonData }) => addonData.id !== rootAddonId)
-                    .map(({ addonData, version }) =>  `・${addonData.name} (ver.${version})`)
-                    .join("\n");
-                const messageForm = new MessageFormData()
-                    .title({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_TITLE })
-                    .body({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_BODY, with: [queueAddonList] })
-                    .button1({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_ACTIVE })
-                    .button2({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_CANCEL });
-                const { selection, canceled } = await messageForm.show(player);
-                if (canceled || selection === undefined || selection === 1) {
-                    this.clearActivationQueue();
-                    return;
-                }
-            }
-
-            for (const {addonData, version} of this.activationQueue.values()) {
-                this.addonManager.changeAddonSettings(addonData, version, true);
-            }
-            this.clearActivationQueue();
+    public getAddonsData(): Map<string, AddonData> {
+        return this.addonManager.getAddonsData();
     }
 
-    private async validateRequiredAddonsForDeactivation(player: Player, addonData: AddonData): Promise<void> {
-        
+    public changeAddonSettings(addonData: AddonData, version: string, isActive: boolean): void {
+        this.addonManager.changeAddonSettings(addonData, version, isActive);
     }
 
-    private resolveRequiredAddonsForActivation(addonData: AddonData, newVersion: string): boolean {
-        const newActiveVersion = newVersion === VERSION_KEYWORDS.LATEST
-            ? this.addonManager.getLatestVersion(addonData.id)
-            : newVersion;
-        if (newActiveVersion === undefined) return false;
+    public getLatestStableVersion(id: string): string | undefined {
+         const addonData = this.getAddonsData().get(id);
+        if (!addonData) return undefined;
 
-        if (this.visited.has(addonData.id)) {
-            const visitedVersion = this.visited.get(addonData.id);
-            if (visitedVersion && VersionManager.compare(visitedVersion, newActiveVersion) >= 0) {
-                return true;
-            }
+        const sorted = Object.keys(addonData.versions)
+            .filter(v => addonData.versions[v]?.isRegistered)
+            .sort((a, b) => VersionManager.compare(b, a));
+
+        if (sorted.length === 0) {
+            return undefined;
         }
-    
-        if (this.visiting.has(addonData.id)) return false;
-        this.visiting.add(addonData.id);
 
-        try {
-            const newActiveVersionData = addonData.versions[newActiveVersion];
-            if (!newActiveVersionData) return false;
-            const requiredAddons = newActiveVersionData.requiredAddons ?? {};
-
-            for (const [id, version] of Object.entries(requiredAddons)) {
-                const requiredAddon = this.addonManager.getAddonsData().get(id);
-                if (!requiredAddon) {
-                    /**
-                     * 登録時に前提アドオンがそもそも登録されていない場合ははじいているので、
-                     * ここでrequiredAddonが壊れている場合、登録されていないわけではない
-                     * Since addons that lack required dependencies are already rejected at registration, 
-                     * if requiredAddons is corrupted here, it does not mean the addon was not registered
-                     */
-                    ConsoleManager.error(`Addon data corrupted: parent=${addonData.id}@${newActiveVersion}, missing required=${id}@${version}`);
-                    return false;
-                }
-
-                if (!this.isAddonActive(requiredAddon, version)) {
-                    const requireLatestStableVersion = this.addonManager.getLatestStableVersion(id);
-                    if (!requireLatestStableVersion) {
-                        ConsoleManager.error(`Addon data corrupted: missing required=${id}@${version}`);
-                        return false;
-                    }
-
-                    if (VersionManager.compare(requireLatestStableVersion, version) < 0) {
-                        const requireLatestVersion = this.addonManager.getLatestVersion(id);
-                        if (!requireLatestVersion || VersionManager.compare(requireLatestVersion, version) < 0) {
-                            
-                            ConsoleManager.error(`Addon data corrupted: missing required=${id}@${version}`);
-                            return false;
-                        }
-
-                        const isResolved = this.resolveRequiredAddonsForActivation(requiredAddon, requireLatestVersion);
-                        if (!isResolved) return false;
-                    }
-                    else {
-                        const isResolved = this.resolveRequiredAddonsForActivation(requiredAddon, requireLatestStableVersion);
-                        if (!isResolved) return false;
-                    }
-                }
-            }
-
-            const prev = this.activationQueue.get(addonData.id);
-            if (!prev || VersionManager.compare(newActiveVersion, prev.version) > 0) {
-                this.activationQueue.set(addonData.id, { addonData, version: newActiveVersion });
-            }
-            this.visited.set(addonData.id, newActiveVersion);
-            return true;
-        }
-        finally {
-            this.visiting.delete(addonData.id);
-        }      
+        const stable = sorted.find(v => !VersionManager.fromString(v).prerelease);
+        return stable ?? sorted[0]!;
     }
 
-    private isAddonActive(addonData: AddonData, version: string): boolean {
-        const queued = this.activationQueue.get(addonData.id);
-        if (queued && VersionManager.compare(queued.version, version) >= 0) return true;
+    public getLatestVersion(id: string): string | undefined {
+        const addonData = this.getAddonsData().get(id);
+        if (!addonData) return undefined;
 
-        if (!addonData) return false;
-        if (!addonData.isActive) return false;
+        const latestVersion = Object.keys(addonData.versions)
+            .filter(v => addonData.versions[v]?.isRegistered)
+            .sort((a, b) => VersionManager.compare(b, a))[0];
 
-        return VersionManager.compare(addonData.activeVersion, version) >= 0;
-    }
-
-    private clearActivationQueue() {
-        this.activationQueue.clear();
-        this.clearVisitFlags();
-    }
-
-    private clearDeactivationQueue() {
-        this.deactivationQueue.clear();
-        this.clearVisitFlags();
-    }
-
-    private clearVisitFlags() {
-        this.visited.clear();
-        this.visiting.clear();
+        return latestVersion ?? undefined;
     }
 }
