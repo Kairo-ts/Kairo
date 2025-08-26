@@ -1,9 +1,10 @@
 import { system, world, type ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
-import type { AddonProperty } from "../AddonPropertyManager";
+import type { AddonProperty } from "../../AddonPropertyManager";
 import type { AddonInitializer } from "./AddonInitializer";
-import { SCRIPT_EVENT_IDS } from "../../constants";
-import { ConsoleManager } from "../../../utils/consoleManager";
-import { VersionManager } from "../../../utils/versionManager";
+import { ConsoleManager } from "../../../../utils/ConsoleManager";
+import { VersionManager } from "../../../../utils/VersionManager";
+import { SCOREBOARD_NAMES } from "../../../../constants/scoreboard";
+import { SCRIPT_EVENT_IDS } from "../../../../constants/scriptevent";
 
 /**
  * 応答したアドオンを登録するためのクラス
@@ -29,11 +30,11 @@ export class AddonInitializeRegister {
         if (id !== SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZE_RESPONSE) return;
         this.add(message);
 
-        const addonCount: number = world.scoreboard.getObjective("AddonCounter")?.getScore("AddonCounter") ?? 0;
+        const addonCount: number = world.scoreboard.getObjective(SCOREBOARD_NAMES.ADDON_COUNTER)?.getScore(SCOREBOARD_NAMES.ADDON_COUNTER) ?? 0;
         if (addonCount === this.registeredAddons.size) {
             this._resolveReady?.();
             this._resolveReady = null;
-            world.scoreboard.removeObjective("AddonCounter");
+            world.scoreboard.removeObjective(SCOREBOARD_NAMES.ADDON_COUNTER);
         }
     }
 

@@ -1,7 +1,8 @@
 import type { ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
 import type { AddonInitializer } from "./AddonInitializer";
-import { SCRIPT_EVENT_IDS } from "../../constants";
-import { ScoreboardManager } from "../../../utils/scoreboardManager";
+import { ScoreboardManager } from "../../../../utils/ScoreboardManager";
+import { SCRIPT_EVENT_IDS } from "../../../../constants/scriptevent";
+import { SCOREBOARD_NAMES } from "../../../../constants/scoreboard";
 
 /**
  * 各アドオンが、ルーターからのリクエストを受け取るためのクラス
@@ -34,9 +35,9 @@ export class AddonInitializeReceive {
     }
 
     private handleInitializeRequest(): void {
-        const addonCounter = ScoreboardManager.ensureObjective("AddonCounter");
-        addonCounter.addScore("AddonCounter", 1);
-        this.addonInitializer.setRegistrationNum(addonCounter.getScore("AddonCounter") ?? 0);
+        const addonCounter = ScoreboardManager.ensureObjective(SCOREBOARD_NAMES.ADDON_COUNTER);
+        addonCounter.addScore(SCOREBOARD_NAMES.ADDON_COUNTER, 1);
+        this.addonInitializer.setRegistrationNum(addonCounter.getScore(SCOREBOARD_NAMES.ADDON_COUNTER) ?? 0);
 
         this.addonInitializer.sendResponse();
     }

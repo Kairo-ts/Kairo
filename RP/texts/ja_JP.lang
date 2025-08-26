@@ -8,7 +8,7 @@ kairo.addonList.inactive=§l§4無効§r
 kairo.addonSetting.latestVersion=最新バージョン
 kairo.addonSetting.active=§9(§o有効§r§9)§r
 kairo.addonSetting.uninstalled=§7(§o未導入§r§7)§r
-kairo.addonSetting.registerdAddonList=§lバージョンの記録§r
+kairo.addonSetting.registeredAddonList=§lバージョンの記録§r
 kairo.addonSetting.required=§l前提アドオン§r
 kairo.addonSetting.nonerequired=§7§oなし§r
 kairo.addonSetting.selectVersion=バージョン選択
@@ -19,3 +19,19 @@ kairo.tags.official=公式
 kairo.tags.approved=公認
 kairo.tags.stable=安定版
 kairo.tags.experimental=実験的
+
+kairo.addonSetting.required.title=変更確認
+kairo.addonSetting.required.activation.body=以下の前提アドオンを有効化する必要があります。それぞれ最新バージョンで有効化しますか？\n%s
+kairo.addonSetting.required.deactivation.body=以下の前提アドオンを無効化する必要があります。無効化しますか？\n%s
+kairo.addonSetting.required.active.confirm=有効化
+kairo.addonSetting.required.deactive.confirm=無効化
+kairo.addonSetting.required.cancel=キャンセル
+
+kairo.errorForm.title=エラーが発生しました
+kairo.errorForm.header=エラー詳細
+kairo.errorForm.footer=§7解決できない場合は、エラー番号[ %s ]を開発者に報告してください。§r
+
+kairo.error.not.found.message=予期せぬ不具合が発生しました。
+kairo.error.not.found.hint=Kairoの開発者にお問い合わせください。
+kairo.error.resolve.for.activation.message=前提アドオンを有効にする過程で、予期せぬ不具合が発生しました。
+kairo.error.resolve.for.activation.hint=前提アドオンが正しくインストールされているか確認してください。

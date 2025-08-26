@@ -1,7 +1,8 @@
 import type { AddonProperty } from "../AddonPropertyManager";
-import type { AddonInitializer } from "../init/AddonInitializer";
-import { VersionManager } from "../../../utils/versionManager";
+import type { AddonInitializer } from "../router/init/AddonInitializer";
+import { VersionManager } from "../../../utils/VersionManager";
 import { DynamicPropertyStorage } from "./DynamicPropertyStorage";
+import { VERSION_KEYWORDS } from "../../../constants/version_keywords";
 
 export interface AddonRecords {
     [id: string]: {
@@ -30,7 +31,7 @@ export class AddonRecord {
                 addonRecords[id] = {
                     name: name,
                     description: ["0.0.0", ""],
-                    selectedVersion: "latest version",
+                    selectedVersion: VERSION_KEYWORDS.LATEST,
                     versions: []
                 };
             }

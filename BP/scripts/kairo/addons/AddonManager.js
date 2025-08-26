@@ -1,7 +1,8 @@
-import { AddonActivator } from "./AddonActivator";
+import { AddonActivator } from "./router/AddonActivator";
 import { ScriptEventCommandMessageAfterEvent, system } from "@minecraft/server";
 import { AddonList } from "./ui/AddonList";
-import { AddonReceiver } from "./AddonReceiver";
+import { AddonReceiver } from "./router/AddonReceiver";
+import { AddonRequireValidator } from "./router/AddonRequireValidator";
 export class AddonManager {
     constructor(kairo) {
         this.kairo = kairo;
@@ -11,6 +12,7 @@ export class AddonManager {
         };
         this.activator = AddonActivator.create(this);
         this.receiver = AddonReceiver.create(this);
+        this.requireValidator = AddonRequireValidator.create(this);
         this.addonList = AddonList.create(this);
     }
     static create(kairo) {
@@ -42,5 +44,8 @@ export class AddonManager {
     }
     changeAddonSettings(addonData, version, isActive) {
         this.activator.changeAddonSettings(addonData, version, isActive);
+    }
+    async validateRequiredAddons(player, addonData, version, isActive) {
+        this.requireValidator.validateRequiredAddons(player, addonData, version, isActive);
     }
 }

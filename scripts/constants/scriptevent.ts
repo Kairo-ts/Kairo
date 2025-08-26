@@ -5,3 +5,8 @@ export const SCRIPT_EVENT_IDS = {
     REQUEST_RESEED_SESSION_ID: "kairo:reseedSessionId",
     SHOW_ADDON_LIST: "kairo:showAddonList"
 }
+
+export const SCRIPT_EVENT_MESSAGES = {
+    ACTIVE_REQUEST: "active request",
+    DEACTIVE_REQUEST: "deactive request"
+}
