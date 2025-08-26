@@ -33,7 +33,7 @@ export class AddonRequireValidator {
         this.addonManager.changeAddonSettings(addonData, version, isActive);
     }
 
-    public getLatestStableVersion(id: string): string | undefined {
+    public getLatestPreferStableVersion(id: string): string | undefined {
          const addonData = this.getAddonsData().get(id);
         if (!addonData) return undefined;
 

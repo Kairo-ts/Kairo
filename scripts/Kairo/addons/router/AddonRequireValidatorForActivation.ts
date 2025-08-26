@@ -90,7 +90,7 @@ export class AddonRequireValidatorForActivation {
                 }
 
                 if (!this.isAddonActive(requiredAddon, version)) {
-                    const requireLatestStableVersion = this.requireValidator.getLatestStableVersion(id);
+                    const requireLatestStableVersion = this.requireValidator.getLatestPreferStableVersion(id);
                     if (!requireLatestStableVersion) {
                         ConsoleManager.error(`Addon data corrupted: missing required=${id}@${version}`);
                         return false;
