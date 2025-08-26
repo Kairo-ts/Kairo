@@ -1,6 +1,6 @@
 import { system, world } from "@minecraft/server";
-import { SCOREBOARD_NAMES } from "../../../constants/scoreboard";
-import { SCRIPT_EVENT_IDS } from "../../../constants/scriptevent";
+import { SCOREBOARD_NAMES } from "../../../../constants/scoreboard";
+import { SCRIPT_EVENT_IDS } from "../../../../constants/scriptevent";
 /**
  * アドオンの properties を参照して、ルーターに応答するためのクラス
  * propertiesの必要な部分を抜粋して、JSON.stringifyで送信します

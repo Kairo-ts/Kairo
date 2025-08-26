@@ -1,6 +1,6 @@
-import { ScoreboardManager } from "../../../utils/ScoreboardManager";
-import { SCRIPT_EVENT_IDS } from "../../../constants/scriptevent";
-import { SCOREBOARD_NAMES } from "../../../constants/scoreboard";
+import { ScoreboardManager } from "../../../../utils/ScoreboardManager";
+import { SCRIPT_EVENT_IDS } from "../../../../constants/scriptevent";
+import { SCOREBOARD_NAMES } from "../../../../constants/scoreboard";
 /**
  * 各アドオンが、ルーターからのリクエストを受け取るためのクラス
  * 受け取った initializeRequest を、そのまま AddonInitializeResponseへ流します

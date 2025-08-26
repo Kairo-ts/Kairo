@@ -3,7 +3,7 @@ import { AddonInitializeReceive } from "./AddonInitializeReceive";
 import { AddonInitializeRegister } from "./AddonInitializeRegister";
 import { AddonInitializeRequest } from "./AddonInitializeRequest";
 import { AddonInitializeResponse } from "./AddonInitializeResponse";
-import { AddonRecord } from "../record/AddonRecord";
+import { AddonRecord } from "../../record/AddonRecord";
 export class AddonInitializer {
     constructor(kairo) {
         this.kairo = kairo;

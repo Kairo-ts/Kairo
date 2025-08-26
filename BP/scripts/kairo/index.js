@@ -1,6 +1,6 @@
 import { Player, system } from "@minecraft/server";
 import { AddonPropertyManager } from "./addons/AddonPropertyManager";
-import { AddonInitializer } from "./addons/init/AddonInitializer";
+import { AddonInitializer } from "./addons/router/init/AddonInitializer";
 import { AddonManager } from "./addons/AddonManager";
 import { SCRIPT_EVENT_IDS } from "../constants/scriptevent";
 export class Kairo {

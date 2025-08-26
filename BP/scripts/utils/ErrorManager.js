@@ -14,7 +14,7 @@ export class ErrorManager {
             .divider()
             .label({ rawtext: [
                 { translate: errorDetail.errorMessageId },
-                { text: "\n" },
+                { text: "\n\n" },
                 { translate: errorDetail.errorHintId }
             ] })
             .divider()

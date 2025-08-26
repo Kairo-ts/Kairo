@@ -1,4 +1,4 @@
-import { SCRIPT_EVENT_MESSAGES } from "../../constants/scriptevent";
+import { SCRIPT_EVENT_MESSAGES } from "../../../constants/scriptevent";
 export class AddonReceiver {
     constructor(addonManager) {
         this.addonManager = addonManager;

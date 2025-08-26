@@ -1,7 +1,7 @@
 import { system } from "@minecraft/server";
-import { VersionManager } from "../../utils/VersionManager";
-import { VERSION_KEYWORDS } from "../../constants/version_keywords";
-import { SCRIPT_EVENT_MESSAGES } from "../../constants/scriptevent";
+import { VersionManager } from "../../../utils/VersionManager";
+import { VERSION_KEYWORDS } from "../../../constants/version_keywords";
+import { SCRIPT_EVENT_MESSAGES } from "../../../constants/scriptevent";
 export class AddonActivator {
     constructor(addonManager) {
         this.addonManager = addonManager;

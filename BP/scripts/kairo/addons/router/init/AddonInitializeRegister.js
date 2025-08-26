@@ -1,8 +1,8 @@
 import { system, world } from "@minecraft/server";
-import { ConsoleManager } from "../../../utils/ConsoleManager";
-import { VersionManager } from "../../../utils/VersionManager";
-import { SCOREBOARD_NAMES } from "../../../constants/scoreboard";
-import { SCRIPT_EVENT_IDS } from "../../../constants/scriptevent";
+import { ConsoleManager } from "../../../../utils/ConsoleManager";
+import { VersionManager } from "../../../../utils/VersionManager";
+import { SCOREBOARD_NAMES } from "../../../../constants/scoreboard";
+import { SCRIPT_EVENT_IDS } from "../../../../constants/scriptevent";
 /**
  * 応答したアドオンを登録するためのクラス
  *

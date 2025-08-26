@@ -1,8 +1,8 @@
 import { system, WorldLoadAfterEvent } from "@minecraft/server";
-import { ConsoleManager } from "../../../utils/ConsoleManager";
-import { ScoreboardManager } from "../../../utils/ScoreboardManager";
-import { SCOREBOARD_NAMES } from "../../../constants/scoreboard";
-import { SCRIPT_EVENT_IDS } from "../../../constants/scriptevent";
+import { ConsoleManager } from "../../../../utils/ConsoleManager";
+import { ScoreboardManager } from "../../../../utils/ScoreboardManager";
+import { SCOREBOARD_NAMES } from "../../../../constants/scoreboard";
+import { SCRIPT_EVENT_IDS } from "../../../../constants/scriptevent";
 /**
  * ルーターが各アドオンに登録要求を送るためのクラス
  * 各アドオンが AddonInitializeReceive を準備しておく必要があります

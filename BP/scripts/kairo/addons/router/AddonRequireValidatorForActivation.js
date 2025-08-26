@@ -1,62 +1,52 @@
-import {} from "@minecraft/server";
-import { VersionManager } from "../../utils/VersionManager";
+import { ErrorManager } from "../../../utils/ErrorManager";
+import { KAIRO_TRANSLATE_IDS } from "../../../constants/translate";
 import { MessageFormData } from "@minecraft/server-ui";
-import { ConsoleManager } from "../../utils/ConsoleManager";
-import { ErrorManager } from "../../utils/ErrorManager";
-import { KAIRO_TRANSLATE_IDS } from "../../constants/translate";
-import { VERSION_KEYWORDS } from "../../constants/version_keywords";
-export class AddonRequireValidator {
-    constructor(addonManager) {
-        this.addonManager = addonManager;
+import { VERSION_KEYWORDS } from "../../../constants/version_keywords";
+import { VersionManager } from "../../../utils/VersionManager";
+import { ConsoleManager } from "../../../utils/ConsoleManager";
+export class AddonRequireValidatorForActivation {
+    constructor(requireValidator) {
+        this.requireValidator = requireValidator;
         this.activationQueue = new Map();
         this.visited = new Map();
         this.visiting = new Set();
     }
-    static create(addonManager) {
-        return new AddonRequireValidator(addonManager);
+    static create(requireValidator) {
+        return new AddonRequireValidatorForActivation(requireValidator);
     }
-    async validateRequiredAddons(player, addonData, newVersion, isActive) {
-        /**
-         * 有効にする場合は、前提アドオンも有効にする必要がある
-         * 無効にする場合は、自身が依存されているかどうかを調べ、依存されていれば、そのアドオンも無効化する
-         */
-        if (isActive) {
+    async validateRequiredAddonsForActivation(player, addonData, newVersion) {
+        this.clearActivationQueue();
+        const isResolved = this.resolveRequiredAddonsForActivation(addonData, newVersion);
+        if (!isResolved) {
             this.clearActivationQueue();
-            const isResolved = this.resolveRequiredAddonsForActivation(addonData, newVersion);
-            if (!isResolved) {
+            ErrorManager.showErrorDetails(player, "kairo_resolve_for_activation_error");
+            return;
+        }
+        if (this.activationQueue.size > 1) {
+            const rootAddonId = addonData.id;
+            const queueAddonList = Array.from(this.activationQueue.values())
+                .filter(({ addonData }) => addonData.id !== rootAddonId)
+                .map(({ addonData, version }) => `・${addonData.name} (ver.${version})`)
+                .join("\n");
+            const messageForm = new MessageFormData()
+                .title({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_TITLE })
+                .body({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_ACTIVATION_BODY, with: [queueAddonList] })
+                .button1({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_ACTIVE_CONFIRM })
+                .button2({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_CANCEL });
+            const { selection, canceled } = await messageForm.show(player);
+            if (canceled || selection === undefined || selection === 1) {
                 this.clearActivationQueue();
-                ErrorManager.showErrorDetails(player, "kairo_resolve_for_activation_error");
                 return;
             }
-            if (this.activationQueue.size > 1) {
-                const rootAddonId = addonData.id;
-                const queueAddonList = Array.from(this.activationQueue.values())
-                    .filter(({ addonData }) => addonData.id !== rootAddonId)
-                    .map(({ addonData, version }) => `・${addonData.name} (ver.${version})`)
-                    .join("\n");
-                const messageForm = new MessageFormData()
-                    .title({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_TITLE })
-                    .body({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_BODY, with: [queueAddonList] })
-                    .button1({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_ACTIVE })
-                    .button2({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_CANCEL });
-                const { selection, canceled } = await messageForm.show(player);
-                if (canceled || selection === undefined || selection === 1) {
-                    this.clearActivationQueue();
-                    return;
-                }
-            }
-            for (const { addonData, version } of this.activationQueue.values()) {
-                this.addonManager.changeAddonSettings(addonData, version, isActive);
-            }
-            this.clearActivationQueue();
         }
-        else {
-            // 無効にするパターンも作る
+        for (const { addonData, version } of this.activationQueue.values()) {
+            this.requireValidator.changeAddonSettings(addonData, version, true);
         }
+        this.clearActivationQueue();
     }
     resolveRequiredAddonsForActivation(addonData, newVersion) {
         const newActiveVersion = newVersion === VERSION_KEYWORDS.LATEST
-            ? this.addonManager.getLatestVersion(addonData.id)
+            ? this.requireValidator.getLatestVersion(addonData.id)
             : newVersion;
         if (newActiveVersion === undefined)
             return false;
@@ -66,8 +56,10 @@ export class AddonRequireValidator {
                 return true;
             }
         }
-        if (this.visiting.has(addonData.id))
+        if (this.visiting.has(addonData.id)) {
+            ConsoleManager.error(`Cycle detected while activating: ${addonData.id}`);
             return false;
+        }
         this.visiting.add(addonData.id);
         try {
             const newActiveVersionData = addonData.versions[newActiveVersion];
@@ -75,7 +67,7 @@ export class AddonRequireValidator {
                 return false;
             const requiredAddons = newActiveVersionData.requiredAddons ?? {};
             for (const [id, version] of Object.entries(requiredAddons)) {
-                const requiredAddon = this.addonManager.getAddonsData().get(id);
+                const requiredAddon = this.requireValidator.getAddonsData().get(id);
                 if (!requiredAddon) {
                     /**
                      * 登録時に前提アドオンがそもそも登録されていない場合ははじいているので、
@@ -87,13 +79,13 @@ export class AddonRequireValidator {
                     return false;
                 }
                 if (!this.isAddonActive(requiredAddon, version)) {
-                    const requireLatestStableVersion = this.addonManager.getLatestStableVersion(id);
+                    const requireLatestStableVersion = this.requireValidator.getLatestPreferStableVersion(id);
                     if (!requireLatestStableVersion) {
                         ConsoleManager.error(`Addon data corrupted: missing required=${id}@${version}`);
                         return false;
                     }
                     if (VersionManager.compare(requireLatestStableVersion, version) < 0) {
-                        const requireLatestVersion = this.addonManager.getLatestVersion(id);
+                        const requireLatestVersion = this.requireValidator.getLatestVersion(id);
                         if (!requireLatestVersion || VersionManager.compare(requireLatestVersion, version) < 0) {
                             ConsoleManager.error(`Addon data corrupted: missing required=${id}@${version}`);
                             return false;

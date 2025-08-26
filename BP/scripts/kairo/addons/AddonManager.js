@@ -1,9 +1,8 @@
-import { AddonActivator } from "./AddonActivator";
+import { AddonActivator } from "./router/AddonActivator";
 import { ScriptEventCommandMessageAfterEvent, system } from "@minecraft/server";
 import { AddonList } from "./ui/AddonList";
-import { AddonReceiver } from "./AddonReceiver";
-import { AddonRequireValidator } from "./AddonRequireValidator";
-import { VersionManager } from "../../utils/VersionManager";
+import { AddonReceiver } from "./router/AddonReceiver";
+import { AddonRequireValidator } from "./router/AddonRequireValidator";
 export class AddonManager {
     constructor(kairo) {
         this.kairo = kairo;
@@ -48,27 +47,5 @@ export class AddonManager {
     }
     async validateRequiredAddons(player, addonData, version, isActive) {
         this.requireValidator.validateRequiredAddons(player, addonData, version, isActive);
-    }
-    getLatestStableVersion(id) {
-        const addonData = this.getAddonsData().get(id);
-        if (!addonData)
-            return undefined;
-        const sorted = Object.keys(addonData.versions)
-            .filter(v => addonData.versions[v]?.isRegistered)
-            .sort((a, b) => VersionManager.compare(b, a));
-        if (sorted.length === 0) {
-            return undefined;
-        }
-        const stable = sorted.find(v => !VersionManager.fromString(v).prerelease);
-        return stable ?? sorted[0];
-    }
-    getLatestVersion(id) {
-        const addonData = this.addonsData.get(id);
-        if (!addonData)
-            return undefined;
-        const latestVersion = Object.keys(addonData.versions)
-            .filter(v => addonData.versions[v]?.isRegistered)
-            .sort((a, b) => VersionManager.compare(b, a))[0];
-        return latestVersion ?? undefined;
     }
 }

@@ -8,5 +8,10 @@ export const ErrorDetails = {
         errorMessageId: "kairo.error.resolve.for.activation.message",
         errorHintId: "kairo.error.resolve.for.activation.hint",
         errorCode: "E100001"
+    },
+    "kairo_resolve_for_deactivation_error": {
+        errorMessageId: "kairo.error.resolve.for.deactivation.message",
+        errorHintId: "kairo.error.resolve.for.deactivation.hint",
+        errorCode: "E100002"
     }
 };
