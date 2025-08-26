@@ -21,7 +21,8 @@ kairo.tags.stable=Stable
 kairo.tags.experimental=Experimental
 
 kairo.addonSetting.required.title=Confirm Changes
-kairo.addonSetting.required.body=The following required addons must be activated. Do you want to activate them with the latest version?\n%s
+kairo.addonSetting.required.activation.body=The following required addons must be activated. Do you want to activate them with the latest version?\n%s
+kairo.addonSetting.required.deactivation.body=The following required addons must be deactivated. Do you want to deactivate them?\n%s
 kairo.addonSetting.required.active=Activate
 kairo.addonSetting.required.cancel=Cancel
 

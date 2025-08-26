@@ -21,7 +21,8 @@ kairo.tags.stable=安定版
 kairo.tags.experimental=実験的
 
 kairo.addonSetting.required.title=変更確認
-kairo.addonSetting.required.body=以下の前提アドオンを有効化する必要があります。それぞれ最新バージョンで有効化しますか？\n%s
+kairo.addonSetting.required.activation.body=以下の前提アドオンを有効化する必要があります。それぞれ最新バージョンで有効化しますか？\n%s
+kairo.addonSetting.required.deactivation.body=以下の前提アドオンを無効化する必要があります。無効化しますか？\n%s
 kairo.addonSetting.required.active=有効化
 kairo.addonSetting.required.cancel=キャンセル
 
