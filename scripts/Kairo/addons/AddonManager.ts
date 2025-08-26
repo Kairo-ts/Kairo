@@ -7,6 +7,8 @@ import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./router/AddonReceiver";
 import { AddonRequireValidator } from "./router/AddonRequireValidator";
 
+export type RegistrationState = "registered" | "unregistered" | "missing_requiredAddons";
+
 export interface AddonData {
     id: string;
     name: string;
@@ -17,6 +19,7 @@ export interface AddonData {
     versions: {
         [version: string]: {
             isRegistered: boolean;
+            registrationState: RegistrationState;
             sessionId?: string;
             tags?: string[];
             dependencies?: {
