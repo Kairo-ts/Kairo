@@ -96,7 +96,7 @@ export class AddonManager {
     }
 
     public getLatestPreferStableVersion(id: string): string | undefined {
-         const addonData = this.getAddonsData().get(id);
+        const addonData = this.getAddonsData().get(id);
         if (!addonData) return undefined;
 
         const sorted = Object.keys(addonData.versions)
