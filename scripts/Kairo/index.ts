@@ -1,6 +1,6 @@
 import { Player, system } from "@minecraft/server";
 import { AddonPropertyManager, type AddonProperty } from "./addons/AddonPropertyManager";
-import { AddonInitializer } from "./addons/init/AddonInitializer";
+import { AddonInitializer } from "./addons/router/init/AddonInitializer";
 import { AddonManager } from "./addons/AddonManager";
 import type { AddonRecords } from "./addons/record/AddonRecord";
 import { SCRIPT_EVENT_IDS } from "../constants/scriptevent";
