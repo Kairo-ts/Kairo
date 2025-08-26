@@ -53,7 +53,10 @@ export class AddonRequireValidatorForDeactivation {
 
     private resolveRequiredAddonsForDeactivation(addonData: AddonData): boolean {
         if (this.visited.has(addonData.id)) return true;
-        if (this.visiting.has(addonData.id)) return false;
+        if (this.visiting.has(addonData.id)) {
+            ConsoleManager.error(`Cycle detected while activating: ${addonData.id}`);
+            return false;
+        }
         this.visiting.add(addonData.id);
 
         try {
