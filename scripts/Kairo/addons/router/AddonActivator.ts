@@ -24,7 +24,7 @@ export class AddonActivator {
         else this.sendInactiveRequest(sessionId);
     }
 
-    public activateAddons(addons: AddonProperty[]): void {
+    public initActivateAddons(addons: AddonProperty[]): void {
         const addonRecords = this.addonManager.getAddonRecords();
 
         Object.entries(addonRecords).forEach(([id, record]) => {

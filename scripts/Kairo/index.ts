@@ -87,7 +87,7 @@ export class Kairo {
 
     public static initActivateAddons(): void {
         const inst = this.getInstance();
-        inst.addonManager.activateAddons(inst.addonInitializer.getRegisteredAddons());
+        inst.addonManager.initActivateAddons(inst.addonInitializer.getRegisteredAddons());
     }
 
     public getAddonRecords(): AddonRecords {

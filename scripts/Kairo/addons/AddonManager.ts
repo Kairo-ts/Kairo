@@ -47,8 +47,8 @@ export class AddonManager {
         return new AddonManager(kairo);
     }
 
-    public activateAddons(addons: AddonProperty[]): void {
-        this.activator.activateAddons(addons);
+    public initActivateAddons(addons: AddonProperty[]): void {
+        this.activator.initActivateAddons(addons);
     }
 
     public getAddonsData(): Map<string, AddonData> {
