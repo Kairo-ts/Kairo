@@ -15,12 +15,14 @@ export interface AddonData {
     name: string;
     description: [string, string];
     isActive: boolean;
+    isEditable: boolean;
     selectedVersion: string;
     activeVersion: string;
     versions: {
         [version: string]: {
             isRegistered: boolean;
             registrationState: RegistrationState;
+            isActivable?: boolean;
             sessionId?: string;
             tags?: string[];
             dependencies?: {
