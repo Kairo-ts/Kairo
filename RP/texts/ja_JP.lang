@@ -8,6 +8,7 @@ kairo.addonList.inactive=§l§4無効§r
 kairo.addonSetting.latestVersion=最新バージョン
 kairo.addonSetting.active=§9(§o有効§r§9)§r
 kairo.addonSetting.uninstalled=§7(§o未導入§r§7)§r
+kairo.addonSetting.missing.required=§7(§o前提アドオン未導入§r§7)§r
 kairo.addonSetting.registeredAddonList=§lバージョンの記録§r
 kairo.addonSetting.required=§l前提アドオン§r
 kairo.addonSetting.nonerequired=§7§oなし§r

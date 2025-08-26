@@ -1,3 +1,7 @@
+export const SCRIPT_EVENT_ID_PREFIX = {
+    KAIRO: "kairo"
+}
+
 export const SCRIPT_EVENT_IDS = {
     BEHAVIOR_INITIALIZE_REQUEST: "kairo:initializeRequest",
     BEHAVIOR_INITIALIZE_RESPONSE: "kairo:initializeResponse",
@@ -7,6 +11,6 @@ export const SCRIPT_EVENT_IDS = {
 }
 
 export const SCRIPT_EVENT_MESSAGES = {
-    ACTIVE_REQUEST: "active request",
-    DEACTIVE_REQUEST: "deactive request"
+    ACTIVATE_REQUEST: "activate request",
+    DEACTIVATE_REQUEST: "deactivate request"
 }

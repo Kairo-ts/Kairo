@@ -7,6 +7,7 @@ export const KAIRO_TRANSLATE_IDS = {
     ADDON_SETTING_NONE_REQUIRED: "kairo.addonSetting.noneRequired",
     ADDON_SETTING_ACTIVE: "kairo.addonSetting.active",
     ADDON_SETTING_UNINSTALLED: "kairo.addonSetting.uninstalled",
+    ADDON_SETTING_MISSING_REQUIRED: "kairo.addonSetting.missing.required",
     ADDON_SETTING_REGISTERED_ADDON_LIST: "kairo.addonSetting.registeredAddonList",
     ADDON_SETTING_SELECT_VERSION: "kairo.addonSetting.selectVersion",
     ADDON_SETTING_ACTIVATE: "kairo.addonSetting.activate",
