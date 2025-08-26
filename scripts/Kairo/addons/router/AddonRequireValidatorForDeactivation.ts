@@ -36,7 +36,7 @@ export class AddonRequireValidatorForDeactivation {
             const messageForm = new MessageFormData()
                 .title({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_TITLE })
                 .body({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_DEACTIVATION_BODY, with: [queueAddonList] })
-                .button1({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_ACTIVE })
+                .button1({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_DEACTIVE_CONFIRM })
                 .button2({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_CANCEL });
             const { selection, canceled } = await messageForm.show(player);
             if (canceled || selection === undefined || selection === 1) {
@@ -53,7 +53,7 @@ export class AddonRequireValidatorForDeactivation {
 
     private resolveRequiredAddonsForDeactivation(addonData: AddonData): boolean {
         if (this.visited.has(addonData.id)) return true;
-        if (this.visiting.has(addonData.id)) return true;
+        if (this.visiting.has(addonData.id)) return false;
         this.visiting.add(addonData.id);
 
         try {
@@ -61,8 +61,7 @@ export class AddonRequireValidatorForDeactivation {
             const addonsData = this.requireValidator.getAddonsData();
 
             for (const data of addonsData.values()) {
-                const isDeactive = this.isDeactive(data);
-                if (isDeactive) continue;
+                if (this.isInactive(data)) continue;
 
                 const activeVersionData = data.versions[data.activeVersion];
                 const requiredAddons = activeVersionData?.requiredAddons;
@@ -74,21 +73,16 @@ export class AddonRequireValidatorForDeactivation {
                     return false;
                 }
 
-                const dependentAddon = Object.entries(requiredAddons).find(([id, version]) => id === addonData.id);
-                if (dependentAddon) {
-                    const [id, version] = dependentAddon;
-                    if (VersionManager.compare(currentlyActiveVersion, version) >= 0) {
-                        const dependentAddonData = addonsData.get(id);
-                        if (!dependentAddonData) {
-                            /**
-                             * isDeactive() でデータを既にチェック済みなので、
-                             * ここで、データが無い場合は不具合。tsの型チェックのためのif文
-                             */
-                            ConsoleManager.error(`Addon data corrupted: ${id}@${version}, missing dependent addon`);
-                            return false;
-                        }
-
-                        const isResolved = this.resolveRequiredAddonsForDeactivation(dependentAddonData);
+                const requiredVersion = requiredAddons[addonData.id];
+                if (requiredVersion !== undefined) {
+                    if (VersionManager.compare(currentlyActiveVersion, requiredVersion) < 0) {
+                        ConsoleManager.error(
+                            `Inconsistent state: ${data.id}@${data.activeVersion} requires ${addonData.id}@${requiredVersion} but has ${currentlyActiveVersion}`
+                        );
+                        return false;
+                    }
+                    else {
+                        const isResolved = this.resolveRequiredAddonsForDeactivation(data);
                         if (!isResolved) return false;
                     }
                 }
@@ -103,7 +97,7 @@ export class AddonRequireValidatorForDeactivation {
         }
     }
 
-    private isDeactive(addonData: AddonData): boolean {
+    private isInactive(addonData: AddonData): boolean {
         const queued = this.deactivationQueue.has(addonData.id);
         if (queued) return true;
 
