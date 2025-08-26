@@ -73,7 +73,7 @@ export class AddonRequireValidatorForActivation {
             if (!newActiveVersionData) return false;
             const requiredAddons = newActiveVersionData.requiredAddons ?? {};
 
-            for (const [id, version] of Object.entries(requiredAddons)) {
+            Object.entries(requiredAddons).forEach(([id, version]) => {
                 const requiredAddon = this.requireValidator.getAddonsData().get(id);
                 if (!requiredAddon) {
                     /**
@@ -109,7 +109,7 @@ export class AddonRequireValidatorForActivation {
                         if (!isResolved) return false;
                     }
                 }
-            }
+            });
 
             const prev = this.activationQueue.get(addonData.id);
             if (!prev || VersionManager.compare(newActiveVersion, prev.version) > 0) {
