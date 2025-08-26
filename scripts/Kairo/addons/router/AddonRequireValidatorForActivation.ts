@@ -36,7 +36,7 @@ export class AddonRequireValidatorForActivation {
                     .join("\n");
                 const messageForm = new MessageFormData()
                     .title({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_TITLE })
-                    .body({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_BODY, with: [queueAddonList] })
+                    .body({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_ACTIVATION_BODY, with: [queueAddonList] })
                     .button1({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_ACTIVE })
                     .button2({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_CANCEL });
                 const { selection, canceled } = await messageForm.show(player);
@@ -65,7 +65,7 @@ export class AddonRequireValidatorForActivation {
             }
         }
     
-        if (this.visiting.has(addonData.id)) return false;
+        if (this.visiting.has(addonData.id)) return true;
         this.visiting.add(addonData.id);
 
         try {
