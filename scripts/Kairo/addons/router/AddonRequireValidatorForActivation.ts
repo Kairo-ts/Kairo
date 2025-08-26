@@ -65,7 +65,7 @@ export class AddonRequireValidatorForActivation {
             }
         }
     
-        if (this.visiting.has(addonData.id)) return true;
+        if (this.visiting.has(addonData.id)) return false;
         this.visiting.add(addonData.id);
 
         try {
