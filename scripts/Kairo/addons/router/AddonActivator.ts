@@ -3,7 +3,7 @@ import { VersionManager } from "../../../utils/VersionManager";
 import type { AddonData, AddonManager, RegistrationState } from "../AddonManager";
 import type { AddonProperty } from "../AddonPropertyManager";
 import { VERSION_KEYWORDS } from "../../../constants/version_keywords";
-import { SCRIPT_EVENT_MESSAGES } from "../../../constants/scriptevent";
+import { SCRIPT_EVENT_ID_PREFIX, SCRIPT_EVENT_MESSAGES } from "../../../constants/scriptevent";
 
 interface PendingData {
     id: string;
@@ -203,10 +203,10 @@ export class AddonActivator {
     }
 
     private sendActiveRequest(sessionId: string): void {
-        system.sendScriptEvent(`kairo:${sessionId}`, SCRIPT_EVENT_MESSAGES.ACTIVATE_REQUEST);
+        system.sendScriptEvent(`${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${sessionId}`, SCRIPT_EVENT_MESSAGES.ACTIVATE_REQUEST);
     }
 
     private sendInactiveRequest(sessionId: string): void {
-        system.sendScriptEvent(`kairo:${sessionId}`, SCRIPT_EVENT_MESSAGES.DEACTIVATE_REQUEST);
+        system.sendScriptEvent(`${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${sessionId}`, SCRIPT_EVENT_MESSAGES.DEACTIVATE_REQUEST);
     }
 }
