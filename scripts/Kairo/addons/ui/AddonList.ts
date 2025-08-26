@@ -102,14 +102,17 @@ export class AddonList {
 
 
         const versionListRawtext = entries.flatMap(([version, data]) => {
-            if (data.isRegistered) {
-                if (version === addonData.activeVersion) {
-                    return [{ text: `§f${version}§r ` },{ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_ACTIVE },{ text: "\n" }];
-                } else {
-                    return [{ text: `§f${version}§r` },{ text: "\n" }];
-                }
-            } else {
-                return [{ text: `§7${version}§r ` },{ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_UNINSTALLED },{ text: "\n" }];
+            switch (data.registrationState) {
+                case "registered":
+                    if (version === addonData.activeVersion) {
+                        return [{ text: `§f${version}§r ` },{ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_ACTIVE },{ text: "\n" }];
+                    } else {
+                        return [{ text: `§f${version}§r` },{ text: "\n" }];
+                    }
+                case "unregistered":
+                    return [{ text: `§7${version}§r ` },{ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_UNINSTALLED },{ text: "\n" }];
+                case "missing_requiredAddons":
+                    return [{ text: `§c${version}§r ` },{ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_MISSING_REQUIRED },{ text: "\n" }];
             }
         });
 
