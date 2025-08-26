@@ -16,10 +16,10 @@ export class AddonReceiver {
         if (id !== `kairo:${addonProperty.sessionId}`) return;
 
         switch (message) {
-            case SCRIPT_EVENT_MESSAGES.ACTIVE_REQUEST:
+            case SCRIPT_EVENT_MESSAGES.ACTIVATE_REQUEST:
                 this.addonManager.activeAddon();
                 break;
-            case SCRIPT_EVENT_MESSAGES.DEACTIVE_REQUEST:
+            case SCRIPT_EVENT_MESSAGES.DEACTIVATE_REQUEST:
                 this.addonManager.inactiveAddon();
                 break;
         }
