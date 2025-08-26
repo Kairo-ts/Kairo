@@ -3,9 +3,9 @@ import { AddonInitializeReceive } from "./AddonInitializeReceive";
 import { AddonInitializeRegister } from "./AddonInitializeRegister";
 import { AddonInitializeRequest } from "./AddonInitializeRequest";
 import { AddonInitializeResponse } from "./AddonInitializeResponse";
-import { AddonRecord, type AddonRecords } from "../record/AddonRecord";
-import type { Kairo } from "../..";
-import type { AddonProperty } from "../AddonPropertyManager";
+import { AddonRecord, type AddonRecords } from "../../record/AddonRecord";
+import type { Kairo } from "../../..";
+import type { AddonProperty } from "../../AddonPropertyManager";
 
 export class AddonInitializer {
     private registrationNum: number = 0;
