@@ -4,10 +4,12 @@ import { AddonInitializeRegister } from "./AddonInitializeRegister";
 import { AddonInitializeRequest } from "./AddonInitializeRequest";
 import { AddonInitializeResponse } from "./AddonInitializeResponse";
 import { AddonRecord } from "../../record/AddonRecord";
+import { AddonInitializeActivator } from "./AddonInitializeActivator";
 export class AddonInitializer {
     constructor(kairo) {
         this.kairo = kairo;
         this.registrationNum = 0;
+        this.activator = AddonInitializeActivator.create(this);
         this.receive = AddonInitializeReceive.create(this);
         this.register = AddonInitializeRegister.create(this);
         this.request = AddonInitializeRequest.create(this);
@@ -60,6 +62,9 @@ export class AddonInitializer {
     saveAddons() {
         this.record.saveAddons(this.register.getAll());
     }
+    getAddonsData() {
+        return this.kairo.getAddonsData();
+    }
     getAddonRecords() {
         return this.record.loadAddons();
     }
@@ -68,5 +73,14 @@ export class AddonInitializer {
     }
     subscribeReceiverHooks() {
         this.kairo.subscribeReceiverHooks();
+    }
+    sendActiveRequest(sessionId) {
+        this.kairo.sendActiveRequest(sessionId);
+    }
+    sendDeactiveRequest(sessionId) {
+        this.kairo.sendDeactiveRequest(sessionId);
+    }
+    initActivateAddons(addons) {
+        this.activator.initActivateAddons(addons);
     }
 }

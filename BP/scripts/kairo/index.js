@@ -66,12 +66,21 @@ export class Kairo {
     }
     static initActivateAddons() {
         const inst = this.getInstance();
-        inst.addonManager.activateAddons(inst.addonInitializer.getRegisteredAddons());
+        inst.addonInitializer.initActivateAddons(inst.addonInitializer.getRegisteredAddons());
+    }
+    getAddonsData() {
+        return this.addonManager.getAddonsData();
     }
     getAddonRecords() {
         return this.addonInitializer.getAddonRecords();
     }
     static showAddonList(player) {
         this.getInstance().addonManager.showAddonList(player);
+    }
+    sendActiveRequest(sessionId) {
+        this.addonManager.sendActiveRequest(sessionId);
+    }
+    sendDeactiveRequest(sessionId) {
+        this.addonManager.sendDeactiveRequest(sessionId);
     }
 }
