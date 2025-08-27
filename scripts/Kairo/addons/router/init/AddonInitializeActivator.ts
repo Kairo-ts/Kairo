@@ -38,7 +38,7 @@ export class AddonInitializeActivator {
         });
 
         addons.forEach(addon => {
-            this.registerAddonData(addon);
+            this.updateAddonRegistrationState(addon);
         });
 
         this.addonInitializer.getAddonsData().forEach((data, id) => {
@@ -97,7 +97,7 @@ export class AddonInitializeActivator {
         };
     }
 
-    private registerAddonData(addon: AddonProperty): void {
+    private updateAddonRegistrationState(addon: AddonProperty): void {
         const addonData = this.addonInitializer.getAddonsData().get(addon.id);
         if (!addonData) return;
 
@@ -109,7 +109,7 @@ export class AddonInitializeActivator {
 
         addonData.versions[version] = {
             isRegistered: isRegisterable,
-            isInitActivable: this.checkRequiredAddonsForActivation(addon.requiredAddons),
+            canInitActivate: this.checkRequiredAddonsForActivation(addon.requiredAddons),
             registrationState,
             sessionId: addon.sessionId,
             tags: addon.tags,
@@ -188,7 +188,7 @@ export class AddonInitializeActivator {
         if (!addonData) return;
 
         const sorted = Object.keys(addonData.versions)
-            .filter(v => addonData.versions[v]?.isRegistered && addonData.versions[v]?.isInitActivable)
+            .filter(v => addonData.versions[v]?.isRegistered && addonData.versions[v]?.canInitActivate)
             .sort((a, b) => VersionManager.compare(b, a));
 
         if (sorted.length === 0) return;
@@ -211,7 +211,7 @@ export class AddonInitializeActivator {
         const selectedVersion = Object.keys(addonData.versions)
             .find(v => v === addonData.selectedVersion 
                 && addonData.versions[v]?.isRegistered
-                && addonData.versions[v]?.isInitActivable
+                && addonData.versions[v]?.canInitActivate
             );
 
         if (!selectedVersion) return;

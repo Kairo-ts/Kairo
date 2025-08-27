@@ -22,7 +22,7 @@ export interface AddonData {
         [version: string]: {
             isRegistered: boolean;
             registrationState: RegistrationState;
-            isInitActivable?: boolean;
+            canInitActivate?: boolean;
             sessionId?: string;
             tags?: string[];
             dependencies?: {
