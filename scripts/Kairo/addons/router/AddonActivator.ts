@@ -122,7 +122,7 @@ export class AddonActivator {
 
         addonData.versions[version] = {
             isRegistered: isRegisterable,
-            isActivable: this.checkRequiredAddonsForActivation(addon.requiredAddons),
+            isInitActivable: this.checkRequiredAddonsForActivation(addon.requiredAddons),
             registrationState,
             sessionId: addon.sessionId,
             tags: addon.tags,
@@ -201,14 +201,15 @@ export class AddonActivator {
         if (!addonData) return;
 
         const sorted = Object.keys(addonData.versions)
-            .filter(v => addonData.versions[v]?.isRegistered && addonData.versions[v]?.isActivable)
+            .filter(v => addonData.versions[v]?.isRegistered && addonData.versions[v]?.isInitActivable)
             .sort((a, b) => VersionManager.compare(b, a));
 
         if (sorted.length === 0) return;
 
         const stable = sorted.find(v => !VersionManager.fromString(v).prerelease);
-        addonData.activeVersion = stable ?? sorted[0]!;
-        addonData.isActive = true;
+        const activeVersion = stable ?? sorted[0]!;
+
+        this.initActivation(addonData, activeVersion);
     }
 
     private activateSelectedVersion(id: string): void {
@@ -223,16 +224,16 @@ export class AddonActivator {
         const selectedVersion = Object.keys(addonData.versions)
             .find(v => v === addonData.selectedVersion 
                 && addonData.versions[v]?.isRegistered
-                && addonData.versions[v]?.isActivable
+                && addonData.versions[v]?.isInitActivable
             );
 
-        if (!selectedVersion) {
-            addonData.selectedVersion = VERSION_KEYWORDS.LATEST;
-            this.activateLatestVersion(id);
-            return;
-        }
+        if (!selectedVersion) return;
 
-        addonData.activeVersion = selectedVersion;
+        this.initActivation(addonData, selectedVersion);
+    }
+
+    private initActivation(addonData: AddonData, activeVersion: string): void {
+        addonData.activeVersion = activeVersion;
         addonData.isActive = true;
     }
 
