@@ -1,7 +1,7 @@
 import { Player, system } from "@minecraft/server";
 import { AddonPropertyManager, type AddonProperty } from "./addons/AddonPropertyManager";
 import { AddonInitializer } from "./addons/router/init/AddonInitializer";
-import { AddonManager } from "./addons/AddonManager";
+import { AddonManager, type AddonData } from "./addons/AddonManager";
 import type { AddonRecords } from "./addons/record/AddonRecord";
 import { SCRIPT_EVENT_IDS } from "../constants/scriptevent";
 
@@ -87,7 +87,11 @@ export class Kairo {
 
     public static initActivateAddons(): void {
         const inst = this.getInstance();
-        inst.addonManager.initActivateAddons(inst.addonInitializer.getRegisteredAddons());
+        inst.addonInitializer.initActivateAddons(inst.addonInitializer.getRegisteredAddons());
+    }
+
+    public getAddonsData(): Map<string, AddonData> {
+        return this.addonManager.getAddonsData();
     }
 
     public getAddonRecords(): AddonRecords {
@@ -96,5 +100,13 @@ export class Kairo {
 
     public static showAddonList(player: Player): void {
         this.getInstance().addonManager.showAddonList(player);
+    }
+
+    public sendActiveRequest(sessionId: string): void {
+        this.addonManager.sendActiveRequest(sessionId);
+    }
+
+    public sendDeactiveRequest(sessionId: string): void {
+        this.addonManager.sendDeactiveRequest(sessionId);
     }
 }

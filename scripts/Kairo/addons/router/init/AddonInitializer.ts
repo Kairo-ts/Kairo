@@ -7,6 +7,7 @@ import { AddonRecord, type AddonRecords } from "../../record/AddonRecord";
 import type { Kairo } from "../../..";
 import type { AddonProperty } from "../../AddonPropertyManager";
 import { AddonInitializeActivator } from "./AddonInitializeActivator";
+import type { AddonData } from "../../AddonManager";
 
 export class AddonInitializer {
     private registrationNum: number = 0;
@@ -86,6 +87,10 @@ export class AddonInitializer {
         this.record.saveAddons(this.register.getAll());
     }
 
+    public getAddonsData(): Map<string, AddonData> {
+        return this.kairo.getAddonsData();
+    }
+
     public getAddonRecords(): AddonRecords {
         return this.record.loadAddons();
     }
@@ -96,5 +101,17 @@ export class AddonInitializer {
 
     public subscribeReceiverHooks(): void {
         this.kairo.subscribeReceiverHooks();
+    }
+
+    public sendActiveRequest(sessionId: string): void {
+        this.kairo.sendActiveRequest(sessionId);
+    }
+
+    public sendDeactiveRequest(sessionId: string): void {
+        this.kairo.sendDeactiveRequest(sessionId);
+    }
+
+    public initActivateAddons(addons: AddonProperty[]): void {
+        this.activator.initActivateAddons(addons);
     }
 }

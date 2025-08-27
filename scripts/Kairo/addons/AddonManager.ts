@@ -53,10 +53,6 @@ export class AddonManager {
         return new AddonManager(kairo);
     }
 
-    public initActivateAddons(addons: AddonProperty[]): void {
-        this.activator.initActivateAddons(addons);
-    }
-
     public getAddonsData(): Map<string, AddonData> {
         return this.addonsData;
     }
@@ -122,5 +118,13 @@ export class AddonManager {
             .sort((a, b) => VersionManager.compare(b, a))[0];
 
         return latestVersion ?? undefined;
+    }
+
+    public sendActiveRequest(sessionId: string): void {
+        this.activator.sendActiveRequest(sessionId);
+    }
+
+    public sendDeactiveRequest(sessionId: string): void {
+        this.activator.sendDeactiveRequest(sessionId);
     }
 }
