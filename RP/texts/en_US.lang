@@ -7,7 +7,9 @@ kairo.addonList.inactive=§l§4Inactive§r
 
 kairo.addonSetting.latestVersion=Latest Version
 kairo.addonSetting.active=§9(§oactive§r§9)§r
+kairo.addonSetting.selected=§7(§oselected§r§7)§r
 kairo.addonSetting.uninstalled=§7(§ouninstalled§r§7)§r
+kairo.addonSetting.missing.required=§7(§orequired addons missing§r§7)§r
 kairo.addonSetting.registeredAddonList=§lRegistered Version Records§r
 kairo.addonSetting.required=§lRequired Addons§r
 kairo.addonSetting.nonerequired=§7§oNo addons required§r

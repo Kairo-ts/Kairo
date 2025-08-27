@@ -6,10 +6,13 @@ import { AddonInitializeResponse } from "./AddonInitializeResponse";
 import { AddonRecord, type AddonRecords } from "../../record/AddonRecord";
 import type { Kairo } from "../../..";
 import type { AddonProperty } from "../../AddonPropertyManager";
+import { AddonInitializeActivator } from "./AddonInitializeActivator";
+import type { AddonData } from "../../AddonManager";
 
 export class AddonInitializer {
     private registrationNum: number = 0;
 
+    private readonly activator: AddonInitializeActivator;
     private readonly receive: AddonInitializeReceive;
     private readonly register: AddonInitializeRegister;
     private readonly request: AddonInitializeRequest;
@@ -17,6 +20,7 @@ export class AddonInitializer {
     private readonly record: AddonRecord;
 
     private constructor(private readonly kairo: Kairo) {
+        this.activator = AddonInitializeActivator.create(this);
         this.receive = AddonInitializeReceive.create(this);
         this.register = AddonInitializeRegister.create(this);
         this.request = AddonInitializeRequest.create(this);
@@ -83,6 +87,10 @@ export class AddonInitializer {
         this.record.saveAddons(this.register.getAll());
     }
 
+    public getAddonsData(): Map<string, AddonData> {
+        return this.kairo.getAddonsData();
+    }
+
     public getAddonRecords(): AddonRecords {
         return this.record.loadAddons();
     }
@@ -93,5 +101,17 @@ export class AddonInitializer {
 
     public subscribeReceiverHooks(): void {
         this.kairo.subscribeReceiverHooks();
+    }
+
+    public sendActiveRequest(sessionId: string): void {
+        this.kairo.sendActiveRequest(sessionId);
+    }
+
+    public sendDeactiveRequest(sessionId: string): void {
+        this.kairo.sendDeactiveRequest(sessionId);
+    }
+
+    public initActivateAddons(addons: AddonProperty[]): void {
+        this.activator.initActivateAddons(addons);
     }
 }
