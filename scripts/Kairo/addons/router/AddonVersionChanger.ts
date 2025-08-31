@@ -4,7 +4,7 @@ import type { AddonData, AddonManager } from "../AddonManager";
 export class AddonVersionChanger {
     private constructor(private readonly addonManager: AddonManager) {}
 
-    private static create(addonManager: AddonManager): AddonVersionChanger {
+    public static create(addonManager: AddonManager): AddonVersionChanger {
         return new AddonVersionChanger(addonManager);
     }
 
