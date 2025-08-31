@@ -4,6 +4,7 @@ import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./router/AddonReceiver";
 import { AddonRequireValidator } from "./router/AddonRequireValidator";
 import { VersionManager } from "../../utils/VersionManager";
+import { AddonVersionChanger } from "./router/AddonVersionChanger";
 export class AddonManager {
     constructor(kairo) {
         this.kairo = kairo;
@@ -12,6 +13,7 @@ export class AddonManager {
             this.addonList.handleScriptEvent(ev);
         };
         this.activator = AddonActivator.create(this);
+        this.versionChanger = AddonVersionChanger.create(this);
         this.receiver = AddonReceiver.create(this);
         this.requireValidator = AddonRequireValidator.create(this);
         this.addonList = AddonList.create(this);
@@ -34,11 +36,11 @@ export class AddonManager {
     subscribeReceiverHooks() {
         system.afterEvents.scriptEventReceive.subscribe(this.receiver.handleScriptEvent);
     }
-    activeAddon() {
-        this.kairo.activeAddon();
+    _activeAddon() {
+        this.kairo._activeAddon();
     }
-    inactiveAddon() {
-        this.kairo.inactiveAddon();
+    _inactiveAddon() {
+        this.kairo._inactiveAddon();
     }
     changeAddonSettings(addonData, version, isActive) {
         this.activator.changeAddonSettings(addonData, version, isActive);
@@ -73,5 +75,14 @@ export class AddonManager {
     }
     sendDeactiveRequest(sessionId) {
         this.activator.sendDeactiveRequest(sessionId);
+    }
+    activeAddon(player, addonData, version) {
+        this.activator.activeAddon(player, addonData, version);
+    }
+    deactiveAddon(player, addonData) {
+        this.activator.deactiveAddon(player, addonData);
+    }
+    changeAddonVersion(player, addonData, version) {
+        this.versionChanger.changeAddonVersion(player, addonData, version);
     }
 }

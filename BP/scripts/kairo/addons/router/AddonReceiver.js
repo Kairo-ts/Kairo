@@ -9,10 +9,10 @@ export class AddonReceiver {
                 return;
             switch (message) {
                 case SCRIPT_EVENT_MESSAGES.ACTIVATE_REQUEST:
-                    this.addonManager.activeAddon();
+                    this.addonManager._activeAddon();
                     break;
                 case SCRIPT_EVENT_MESSAGES.DEACTIVATE_REQUEST:
-                    this.addonManager.inactiveAddon();
+                    this.addonManager._inactiveAddon();
                     break;
             }
         };
