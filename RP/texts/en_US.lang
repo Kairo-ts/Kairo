@@ -3,7 +3,7 @@ kairo.description=Enables communication between multiple behavior packs by lever
 
 kairo.addon.active=%1 ver.%2 has been activated
 kairo.addon.deactive=%1 has been deactivated
-kairo.addon.changeVersion=%1's version has been changed to %2
+kairo.addon.changeVersion=The version of %1 has been changed to %2
 
 kairo.addonList.title=Addon List
 kairo.addonList.active=§l§9Active§r
