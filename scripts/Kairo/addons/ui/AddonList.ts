@@ -169,6 +169,8 @@ export class AddonList {
             ...registeredVersions.map(version => ({ text: version }))
         ]
 
+        const currentActiveState = addonData.isActive;
+
         const addonDataForm = new ModalFormData()
             .title(addonDataRawtexts.name)
             .header(addonDataRawtexts.name)
@@ -180,16 +182,31 @@ export class AddonList {
             .label(addonDataRawtexts.required)
             .divider()
             .dropdown(addonDataRawtexts.selectVersion, selectableVersionsRawtexts, { defaultValueIndex: selectedVersionIndex })
-            .toggle(addonDataRawtexts.activate, { defaultValue: addonData.isActive })
+            .toggle(addonDataRawtexts.activate, { defaultValue: currentActiveState })
             .submitButton(addonDataRawtexts.submit);
 
         const { formValues, canceled } = await addonDataForm.show(player);
         if (canceled || formValues === undefined) return;
-        const versionIndex = Number(formValues[8]);
-        const newSelectedVersion = selectableVersions[versionIndex];
-        if (newSelectedVersion === undefined) return;
 
-        this.addonManager.validateRequiredAddons(player, addonData, newSelectedVersion, formValues[9] as boolean);
+        // 無効化するときは、バージョンを考慮せず無効化処理だけ
+        // 有効化するときは、バージョンの変更も一緒に渡す
+        // バージョンだけ変更するときは、別途の処理を作る
+
+        const newVersionIndex = Number(formValues[8]);
+        const newSelectedVersion = selectableVersions[newVersionIndex];
+        if (newSelectedVersion === undefined) return;
+        
+        const newActiveState = formValues[9] as boolean;
+        if (currentActiveState === false && newActiveState === true) {
+            // 有効化にする場合
+            this.addonManager.activeAddon(player, addonData, newSelectedVersion);
+        } else if (currentActiveState === true && newActiveState === false) {
+            // 無効化にする場合
+            this.addonManager.deactiveAddon(player, addonData);
+        } else if (currentActiveState === true && newActiveState === true && newVersionIndex !== selectedVersionIndex) {
+            // バージョンだけを変更する場合
+            this.addonManager.changeAddonVersion(player, addonData, newSelectedVersion);
+        }
     }
 
     private async showAddonDataForm(player: Player, addonDataRawtexts: AddonDataRawtexts): Promise<void> {

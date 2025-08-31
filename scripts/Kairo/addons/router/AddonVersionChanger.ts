@@ -9,6 +9,6 @@ export class AddonVersionChanger {
     }
 
     public changeAddonVersion(player: Player, addonData: AddonData, version: string): void {
-        this.addonManager.changeAddonVersion(player, addonData, version);
+        
     }
 }

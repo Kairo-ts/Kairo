@@ -7,6 +7,7 @@ import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./router/AddonReceiver";
 import { AddonRequireValidator } from "./router/AddonRequireValidator";
 import { VersionManager } from "../../utils/VersionManager";
+import { AddonVersionChanger } from "./router/AddonVersionChanger";
 
 export type RegistrationState = "registered" | "unregistered" | "missing_requiredAddons";
 
@@ -38,6 +39,7 @@ export interface AddonData {
 
 export class AddonManager {
     private readonly activator: AddonActivator;
+    private readonly versionChanger: AddonVersionChanger;
     private readonly receiver: AddonReceiver;
     private readonly requireValidator: AddonRequireValidator;
     private readonly addonList: AddonList;
@@ -45,6 +47,7 @@ export class AddonManager {
 
     private constructor(private readonly kairo: Kairo) {
         this.activator = AddonActivator.create(this);
+        this.versionChanger = AddonVersionChanger.create(this);
         this.receiver = AddonReceiver.create(this);
         this.requireValidator = AddonRequireValidator.create(this);
         this.addonList = AddonList.create(this);
@@ -126,5 +129,17 @@ export class AddonManager {
 
     public sendDeactiveRequest(sessionId: string): void {
         this.activator.sendDeactiveRequest(sessionId);
+    }
+
+    public activeAddon(player: Player, addonData: AddonData, version: string): void {
+        this.activator.activeAddon(player, addonData, version);
+    }
+
+    public deactiveAddon(player: Player, addonData: AddonData): void {
+        this.activator.deactiveAddon(player, addonData);
+    }
+
+    public changeAddonVersion(player: Player, addonData: AddonData, version: string): void {
+        this.versionChanger.changeAddonVersion(player, addonData, version);
     }
 }

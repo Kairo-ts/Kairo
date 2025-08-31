@@ -1,4 +1,4 @@
-import { system } from "@minecraft/server";
+import { Player, system } from "@minecraft/server";
 import type { AddonData, AddonManager } from "../AddonManager";
 import { SCRIPT_EVENT_ID_PREFIX, SCRIPT_EVENT_MESSAGES } from "../../../constants/scriptevent";
 
@@ -7,6 +7,14 @@ export class AddonActivator {
 
     public static create(addonManager: AddonManager): AddonActivator {
         return new AddonActivator(addonManager);
+    }
+
+    public activeAddon(player: Player, addonData: AddonData, version: string): void {
+
+    }
+
+    public deactiveAddon(player: Player, addonData: AddonData): void {
+        
     }
 
     public changeAddonSettings(addonData: AddonData, version: string, isActive: boolean): void {
