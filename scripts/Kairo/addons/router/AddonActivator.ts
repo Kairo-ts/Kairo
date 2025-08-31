@@ -1,6 +1,7 @@
-import { Player, system } from "@minecraft/server";
+import { Player, system, world } from "@minecraft/server";
 import type { AddonData, AddonManager } from "../AddonManager";
 import { SCRIPT_EVENT_ID_PREFIX, SCRIPT_EVENT_MESSAGES } from "../../../constants/scriptevent";
+import { KAIRO_TRANSLATE_IDS } from "../../../constants/translate";
 
 export class AddonActivator {
     private constructor(private readonly addonManager: AddonManager) {}
@@ -10,11 +11,11 @@ export class AddonActivator {
     }
 
     public activeAddon(player: Player, addonData: AddonData, version: string): void {
-
+        world.sendMessage({ translate: KAIRO_TRANSLATE_IDS.ADDON_ACTIVE, with: [addonData.name, version]});
     }
 
     public deactiveAddon(player: Player, addonData: AddonData): void {
-        
+        world.sendMessage({ translate: KAIRO_TRANSLATE_IDS.ADDON_DEACTIVE, with: [addonData.name]});
     }
 
     public changeAddonSettings(addonData: AddonData, version: string, isActive: boolean): void {
