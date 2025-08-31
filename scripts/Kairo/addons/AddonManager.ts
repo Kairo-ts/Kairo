@@ -73,12 +73,12 @@ export class AddonManager {
         system.afterEvents.scriptEventReceive.subscribe(this.receiver.handleScriptEvent);
     }
 
-    public activeAddon(): void {
-        this.kairo.activeAddon();
+    public _activeAddon(): void {
+        this.kairo._activeAddon();
     }
 
-    public inactiveAddon(): void {
-        this.kairo.inactiveAddon();
+    public _inactiveAddon(): void {
+        this.kairo._inactiveAddon();
     }
 
     public changeAddonSettings(addonData: AddonData, version: string, isActive: boolean): void {

@@ -19,7 +19,7 @@ export class Kairo {
         this.addonInitializer = AddonInitializer.create(this);
     }
 
-    public activeAddon(): void {
+    public _activeAddon(): void {
         /** 
          * ここに各アドオンの初期化処理を追加してください。 
          * 例えば、イベントのsubscribeなど
@@ -33,7 +33,7 @@ export class Kairo {
         system.afterEvents.scriptEventReceive.subscribe(this.addonManager.handleAddonListScriptEvent);
     }
 
-    public inactiveAddon(): void {
+    public _inactiveAddon(): void {
         /**
          * アドオン無効化時に登録解除する処理などをまとめてください。
          * Consolidate processes such as unregistering when an addon is disabled
