@@ -18,43 +18,53 @@ export class AddonRequireValidatorForDeactivation {
         return new AddonRequireValidatorForDeactivation(requireValidator);
     }
 
-    public async validateRequiredAddonsForDeactivation(player: Player, addonData: AddonData): Promise<void> {
+    /**
+     * length = 0: cancel or error
+     * length > 0: success
+     */
+    public async validateRequiredAddonsForDeactivation(player: Player, addonData: AddonData): Promise<string[]> {
         this.clearDeactivationQueue();
         const isResolved = this.resolveRequiredAddonsForDeactivation(addonData);
-        if (!isResolved) {
-            this.clearDeactivationQueue();
-            ErrorManager.showErrorDetails(player, "kairo_resolve_for_deactivation_error");
-            return;
-        }
-
-        if (this.deactivationQueue.size > 1) {
-            const rootAddonId = addonData.id;
-            const queueAddonList = Array.from(this.deactivationQueue.values())
-                .filter(( addonData ) => addonData.id !== rootAddonId)
-                .map(( addonData ) => `・${addonData.name} (ver.${addonData.activeVersion})`)
-                .join("\n");
-            const messageForm = new MessageFormData()
-                .title({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_TITLE })
-                .body({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_DEACTIVATION_BODY, with: [queueAddonList] })
-                .button1({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_DEACTIVE_CONFIRM })
-                .button2({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_CANCEL });
-            const { selection, canceled } = await messageForm.show(player);
-            if (canceled || selection === undefined || selection === 1) {
-                this.clearDeactivationQueue();
-                return;
+        try {
+            if (!isResolved) {
+                ErrorManager.showErrorDetails(player, "kairo_resolve_for_deactivation_error");
+                return [];
             }
-        }
 
-        for (const addonData of this.deactivationQueue.values()) {
-            this.requireValidator.changeAddonSettings(addonData, addonData.activeVersion, false);
+            if (this.deactivationQueue.size > 1) {
+                const rootAddonId = addonData.id;
+                const queueAddonList = Array.from(this.deactivationQueue.values())
+                    .filter(( addonData ) => addonData.id !== rootAddonId)
+                    .map(( addonData ) => `・${addonData.name} (ver.${addonData.activeVersion})`)
+                    .join("\n");
+                const messageForm = new MessageFormData()
+                    .title({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_TITLE })
+                    .body({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_DEACTIVATION_BODY, with: [queueAddonList] })
+                    .button1({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_DEACTIVE_CONFIRM })
+                    .button2({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_CANCEL });
+                const { selection, canceled } = await messageForm.show(player);
+                if (canceled || selection === undefined || selection === 1) {
+                    return [];
+                }
+                return [...this.deactivationQueue.keys()];
+            }
+            return [addonData.id];
         }
-        this.clearDeactivationQueue();
+        finally {
+            this.clearDeactivationQueue();
+        }
     }
 
     private resolveRequiredAddonsForDeactivation(addonData: AddonData): boolean {
         if (this.visited.has(addonData.id)) return true;
+
+        if (this.isInactive(addonData)) {
+            this.visited.add(addonData.id);
+            return true;
+        }
+
         if (this.visiting.has(addonData.id)) {
-            ConsoleManager.error(`Cycle detected while activating: ${addonData.id}`);
+            ConsoleManager.error(`Cycle detected while deactivating: ${addonData.id}`);
             return false;
         }
         this.visiting.add(addonData.id);

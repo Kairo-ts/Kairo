@@ -41,7 +41,6 @@ export class AddonManager {
     private readonly activator: AddonActivator;
     private readonly versionChanger: AddonVersionChanger;
     private readonly receiver: AddonReceiver;
-    private readonly requireValidator: AddonRequireValidator;
     private readonly addonList: AddonList;
     private readonly addonsData: Map<string, AddonData> = new Map();
 
@@ -49,7 +48,6 @@ export class AddonManager {
         this.activator = AddonActivator.create(this);
         this.versionChanger = AddonVersionChanger.create(this);
         this.receiver = AddonReceiver.create(this);
-        this.requireValidator = AddonRequireValidator.create(this);
         this.addonList = AddonList.create(this);
     }
     public static create(kairo: Kairo): AddonManager {
@@ -90,10 +88,6 @@ export class AddonManager {
 
     public handleAddonListScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
         this.addonList.handleScriptEvent(ev);
-    }
-
-    public async validateRequiredAddons(player: Player, addonData: AddonData, version: string, isActive: boolean): Promise<void> {
-        this.requireValidator.validateRequiredAddons(player, addonData, version, isActive);
     }
 
     public getLatestPreferStableVersion(id: string): string | undefined {
