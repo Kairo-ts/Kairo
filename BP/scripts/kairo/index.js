@@ -65,7 +65,7 @@ export class Kairo {
         this.addonManager.sendDeactiveRequest(sessionId);
     }
     static handleAddonListScriptEvent(ev) {
-        this.getInstance().addonManager.handleAddonListScriptEvent(ev);
+        Kairo.getInstance().addonManager.handleAddonListScriptEvent(ev);
     }
     static set onActivate(val) {
         if (typeof val === "function")
