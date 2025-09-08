@@ -157,13 +157,13 @@ export class AddonList {
         if (newSelectedVersion === undefined)
             return;
         const newActiveState = formValues[9];
-        if ((currentActiveState === false && newActiveState === true) || newVersionIndex !== selectedVersionIndex) {
-            // 有効化にする場合 or バージョンを変更する場合
-            this.addonManager.activateAddon(player, addonData, newSelectedVersion);
-        }
-        else if (currentActiveState === true && newActiveState === false) {
+        if (currentActiveState === true && newActiveState === false) {
             // 無効化にする場合
             this.addonManager.deactivateAddon(player, addonData);
+        }
+        else if ((currentActiveState === false && newActiveState === true) || newVersionIndex !== selectedVersionIndex) {
+            // 有効化にする場合 or バージョンを変更する場合
+            this.addonManager.activateAddon(player, addonData, newSelectedVersion);
         }
     }
     async showAddonDataForm(player, addonDataRawtexts) {

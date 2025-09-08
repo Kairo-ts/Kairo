@@ -1,4 +1,4 @@
-import { Player, system } from "@minecraft/server";
+import { Player, ScriptEventCommandMessageAfterEvent, system } from "@minecraft/server";
 import { AddonPropertyManager } from "./addons/AddonPropertyManager";
 import { AddonInitializer } from "./addons/router/init/AddonInitializer";
 import { AddonManager } from "./addons/AddonManager";
@@ -9,25 +9,6 @@ export class Kairo {
         this.addonManager = AddonManager.create(this);
         this.addonPropertyManager = AddonPropertyManager.create(this);
         this.addonInitializer = AddonInitializer.create(this);
-    }
-    _activeAddon() {
-        /**
-         * ここに各アドオンの初期化処理を追加してください。
-         * 例えば、イベントのsubscribeなど
-         * subscribeするメソッドは全て、unsubscribeできるようにし、inactiveAddon()にまとめてください。
-         *
-         * Add the initialization process for each addon here.
-         * For example, subscribing to events
-         * Ensure that all subscribed methods can be unsubscribed, and group them into inactiveAddon()
-         */
-        system.afterEvents.scriptEventReceive.subscribe(this.addonManager.handleAddonListScriptEvent);
-    }
-    _inactiveAddon() {
-        /**
-         * アドオン無効化時に登録解除する処理などをまとめてください。
-         * Consolidate processes such as unregistering when an addon is disabled
-         */
-        system.afterEvents.scriptEventReceive.unsubscribe(this.addonManager.handleAddonListScriptEvent);
     }
     static getInstance() {
         if (!this.instance) {
@@ -83,4 +64,77 @@ export class Kairo {
     sendDeactiveRequest(sessionId) {
         this.addonManager.sendDeactiveRequest(sessionId);
     }
+    static handleAddonRouterScriptEvent(ev) {
+        Kairo.getInstance().addonManager.handleAddonRouterScriptEvent(ev);
+    }
+    static handleAddonListScriptEvent(ev) {
+        Kairo.getInstance().addonManager.handleAddonListScriptEvent(ev);
+    }
+    static set onActivate(val) {
+        if (typeof val === "function")
+            this._pushSorted(this._initHooks, val);
+        else
+            this._pushSorted(this._initHooks, val.run, val.options);
+    }
+    static set onDeactivate(val) {
+        if (typeof val === "function")
+            this._pushSorted(this._deinitHooks, val);
+        else
+            this._pushSorted(this._deinitHooks, val.run, val.options);
+    }
+    static set onScriptEvent(val) {
+        if (typeof val === "function")
+            this._pushSorted(this._seHooks, val);
+        else
+            this._pushSorted(this._seHooks, val.run, val.options);
+    }
+    static addActivate(fn, opt) { this._pushSorted(this._initHooks, fn, opt); }
+    static addDeactivate(fn, opt) { this._pushSorted(this._deinitHooks, fn, opt); }
+    static addScriptEvent(fn, opt) { this._pushSorted(this._seHooks, fn, opt); }
+    _scriptEvent(message) {
+        void Kairo._runScriptEvent(message);
+    }
+    _activateAddon() {
+        void Kairo._runActivateHooks();
+    }
+    _deactivateAddon() {
+        void Kairo._runDeactivateHooks();
+    }
+    static _pushSorted(arr, fn, opt) {
+        arr.push({ fn, priority: opt?.priority ?? 0 });
+        arr.sort((a, b) => b.priority - a.priority);
+    }
+    static async _runActivateHooks() {
+        for (const { fn } of this._initHooks) {
+            try {
+                await fn();
+            }
+            catch (e) {
+                system.run(() => console.warn(`[Kairo.onActivate] ${e instanceof Error ? e.stack ?? e.message : String(e)}`));
+            }
+        }
+    }
+    static async _runDeactivateHooks() {
+        for (const { fn } of [...this._deinitHooks].reverse()) {
+            try {
+                await fn();
+            }
+            catch (e) {
+                system.run(() => console.warn(`[Kairo.onDeactivate] ${e instanceof Error ? e.stack ?? e.message : String(e)}`));
+            }
+        }
+    }
+    static async _runScriptEvent(message) {
+        for (const { fn } of this._seHooks) {
+            try {
+                await fn(message);
+            }
+            catch (e) {
+                system.run(() => console.warn(`[Kairo.onScriptEvent] ${e instanceof Error ? e.stack ?? e.message : String(e)}`));
+            }
+        }
+    }
 }
+Kairo._initHooks = [];
+Kairo._deinitHooks = [];
+Kairo._seHooks = [];

@@ -2,19 +2,23 @@ import { AddonActivator } from "./router/AddonActivator";
 import { ScriptEventCommandMessageAfterEvent, system } from "@minecraft/server";
 import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./router/AddonReceiver";
-import { AddonRequireValidator } from "./router/AddonRequireValidator";
 import { VersionManager } from "../../utils/VersionManager";
 import { AddonVersionChanger } from "./router/AddonVersionChanger";
+import { AddonRouter } from "./router/AddonRouter";
 export class AddonManager {
     constructor(kairo) {
         this.kairo = kairo;
         this.addonsData = new Map();
+        this.handleAddonRouterScriptEvent = (ev) => {
+            this.addonRouter.handleScriptEvent(ev);
+        };
         this.handleAddonListScriptEvent = (ev) => {
             this.addonList.handleScriptEvent(ev);
         };
         this.activator = AddonActivator.create(this);
         this.versionChanger = AddonVersionChanger.create(this);
         this.receiver = AddonReceiver.create(this);
+        this.addonRouter = AddonRouter.create(this);
         this.addonList = AddonList.create(this);
     }
     static create(kairo) {
@@ -35,11 +39,14 @@ export class AddonManager {
     subscribeReceiverHooks() {
         system.afterEvents.scriptEventReceive.subscribe(this.receiver.handleScriptEvent);
     }
-    _activeAddon() {
-        this.kairo._activeAddon();
+    _activateAddon() {
+        this.kairo._activateAddon();
     }
-    _inactiveAddon() {
-        this.kairo._inactiveAddon();
+    _deactivateAddon() {
+        this.kairo._deactivateAddon();
+    }
+    _scriptEvent(message) {
+        this.kairo._scriptEvent(message);
     }
     getLatestPreferStableVersion(id) {
         const addonData = this.getAddonsData().get(id);

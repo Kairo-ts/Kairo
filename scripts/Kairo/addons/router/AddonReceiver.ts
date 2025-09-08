@@ -10,17 +10,20 @@ export class AddonReceiver {
     }
 
     public handleScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
-        const { id, message, sourceEntity } = ev;
+        const { id, message } = ev;
 
         const addonProperty = this.addonManager.getSelfAddonProperty();
         if (id !== `${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${addonProperty.sessionId}`) return;
 
         switch (message) {
             case SCRIPT_EVENT_MESSAGES.ACTIVATE_REQUEST:
-                this.addonManager._activeAddon();
+                this.addonManager._activateAddon();
                 break;
             case SCRIPT_EVENT_MESSAGES.DEACTIVATE_REQUEST:
-                this.addonManager._inactiveAddon();
+                this.addonManager._deactivateAddon();
+                break;
+            default:
+                this.addonManager._scriptEvent(message);
                 break;
         }
     }

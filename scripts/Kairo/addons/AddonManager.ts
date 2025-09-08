@@ -5,9 +5,9 @@ import type { AddonRecords } from "./record/AddonRecord";
 import { ScriptEventCommandMessageAfterEvent, system, type Player } from "@minecraft/server";
 import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./router/AddonReceiver";
-import { AddonRequireValidator } from "./router/AddonRequireValidator";
 import { VersionManager } from "../../utils/VersionManager";
 import { AddonVersionChanger } from "./router/AddonVersionChanger";
+import { AddonRouter } from "./router/AddonRouter";
 
 export type RegistrationState = "registered" | "unregistered" | "missing_requiredAddons";
 
@@ -41,6 +41,7 @@ export class AddonManager {
     private readonly activator: AddonActivator;
     private readonly versionChanger: AddonVersionChanger;
     private readonly receiver: AddonReceiver;
+    private readonly addonRouter: AddonRouter;
     private readonly addonList: AddonList;
     private readonly addonsData: Map<string, AddonData> = new Map();
 
@@ -48,6 +49,7 @@ export class AddonManager {
         this.activator = AddonActivator.create(this);
         this.versionChanger = AddonVersionChanger.create(this);
         this.receiver = AddonReceiver.create(this);
+        this.addonRouter = AddonRouter.create(this);
         this.addonList = AddonList.create(this);
     }
     public static create(kairo: Kairo): AddonManager {
@@ -74,12 +76,20 @@ export class AddonManager {
         system.afterEvents.scriptEventReceive.subscribe(this.receiver.handleScriptEvent);
     }
 
-    public _activeAddon(): void {
-        this.kairo._activeAddon();
+    public _activateAddon(): void {
+        this.kairo._activateAddon();
     }
 
-    public _inactiveAddon(): void {
-        this.kairo._inactiveAddon();
+    public _deactivateAddon(): void {
+        this.kairo._deactivateAddon();
+    }
+
+    public _scriptEvent(message: string): void {
+        this.kairo._scriptEvent(message);
+    }
+
+    public handleAddonRouterScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
+        this.addonRouter.handleScriptEvent(ev);
     }
 
     public handleAddonListScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
