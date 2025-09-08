@@ -82,10 +82,6 @@ export class AddonManager {
         this.kairo._inactiveAddon();
     }
 
-    public changeAddonSettings(addonData: AddonData, version: string, isActive: boolean): void {
-        this.activator.changeAddonSettings(addonData, version, isActive);
-    }
-
     public handleAddonListScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
         this.addonList.handleScriptEvent(ev);
     }
@@ -125,12 +121,12 @@ export class AddonManager {
         this.activator.sendDeactiveRequest(sessionId);
     }
 
-    public activeAddon(player: Player, addonData: AddonData, version: string): void {
-        this.activator.activeAddon(player, addonData, version);
+    public activateAddon(player: Player, addonData: AddonData, version: string): void {
+        this.activator.activateAddon(player, addonData, version);
     }
 
-    public deactiveAddon(player: Player, addonData: AddonData): void {
-        this.activator.deactiveAddon(player, addonData);
+    public deactivateAddon(player: Player, addonData: AddonData): void {
+        this.activator.deactivateAddon(player, addonData);
     }
 
     public changeAddonVersion(player: Player, addonData: AddonData, version: string): void {
