@@ -74,12 +74,16 @@ export class AddonManager {
         system.afterEvents.scriptEventReceive.subscribe(this.receiver.handleScriptEvent);
     }
 
-    public _activeAddon(): void {
-        this.kairo._activeAddon();
+    public _activateAddon(): void {
+        this.kairo._activateAddon();
     }
 
-    public _inactiveAddon(): void {
-        this.kairo._inactiveAddon();
+    public _deactivateAddon(): void {
+        this.kairo._deactivateAddon();
+    }
+
+    public _scriptEvent(message: string): void {
+        this.kairo._scriptEvent(message);
     }
 
     public handleAddonListScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
