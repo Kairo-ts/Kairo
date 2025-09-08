@@ -6,7 +6,6 @@ import { ScriptEventCommandMessageAfterEvent, system, type Player } from "@minec
 import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./router/AddonReceiver";
 import { VersionManager } from "../../utils/VersionManager";
-import { AddonVersionChanger } from "./router/AddonVersionChanger";
 import { AddonRouter } from "./router/AddonRouter";
 
 export type RegistrationState = "registered" | "unregistered" | "missing_requiredAddons";
@@ -39,7 +38,6 @@ export interface AddonData {
 
 export class AddonManager {
     private readonly activator: AddonActivator;
-    private readonly versionChanger: AddonVersionChanger;
     private readonly receiver: AddonReceiver;
     private readonly addonRouter: AddonRouter;
     private readonly addonList: AddonList;
@@ -47,7 +45,6 @@ export class AddonManager {
 
     private constructor(private readonly kairo: Kairo) {
         this.activator = AddonActivator.create(this);
-        this.versionChanger = AddonVersionChanger.create(this);
         this.receiver = AddonReceiver.create(this);
         this.addonRouter = AddonRouter.create(this);
         this.addonList = AddonList.create(this);
@@ -137,9 +134,5 @@ export class AddonManager {
 
     public deactivateAddon(player: Player, addonData: AddonData): void {
         this.activator.deactivateAddon(player, addonData);
-    }
-
-    public changeAddonVersion(player: Player, addonData: AddonData, version: string): void {
-        this.versionChanger.changeAddonVersion(player, addonData, version);
     }
 }
