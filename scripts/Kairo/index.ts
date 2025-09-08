@@ -104,7 +104,7 @@ export class Kairo {
     }
 
     public static handleAddonListScriptEvent(ev: ScriptEventCommandMessageAfterEvent): void {
-        this.getInstance().addonManager.handleAddonListScriptEvent(ev);
+        Kairo.getInstance().addonManager.handleAddonListScriptEvent(ev);
     }
 
     public static set onActivate(val: Assignable<ActivateHandler>) {
