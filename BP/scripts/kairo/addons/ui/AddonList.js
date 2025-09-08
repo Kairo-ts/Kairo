@@ -160,11 +160,11 @@ export class AddonList {
         const newActiveState = formValues[9];
         if (currentActiveState === false && newActiveState === true) {
             // 有効化にする場合
-            this.addonManager.activeAddon(player, addonData, newSelectedVersion);
+            this.addonManager.activateAddon(player, addonData, newSelectedVersion);
         }
         else if (currentActiveState === true && newActiveState === false) {
             // 無効化にする場合
-            this.addonManager.deactiveAddon(player, addonData);
+            this.addonManager.deactivateAddon(player, addonData);
         }
         else if (currentActiveState === true && newActiveState === true && newVersionIndex !== selectedVersionIndex) {
             // バージョンだけを変更する場合

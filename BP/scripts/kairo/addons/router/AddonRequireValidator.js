@@ -1,15 +1,20 @@
 import {} from "@minecraft/server";
 import { AddonRequireValidatorForDeactivation } from "./AddonRequireValidatorForDeactivation";
 import { AddonRequireValidatorForActivation } from "./AddonRequireValidatorForActivation";
-import { VersionManager } from "../../../utils/VersionManager";
 export class AddonRequireValidator {
-    constructor(addonManager) {
-        this.addonManager = addonManager;
+    constructor(addonActivator) {
+        this.addonActivator = addonActivator;
         this.forActivation = AddonRequireValidatorForActivation.create(this);
         this.forDeactivation = AddonRequireValidatorForDeactivation.create(this);
     }
-    static create(addonManager) {
-        return new AddonRequireValidator(addonManager);
+    static create(addonActivator) {
+        return new AddonRequireValidator(addonActivator);
+    }
+    async validateRequiredAddonsForActivation(player, addonData, newVersion) {
+        return this.forActivation.validateRequiredAddonsForActivation(player, addonData, newVersion);
+    }
+    async validateRequiredAddonsForDeactivation(player, addonData, newVersion = addonData.activeVersion) {
+        return this.forDeactivation.validateRequiredAddonsForDeactivation(player, addonData, newVersion);
     }
     async validateRequiredAddons(player, addonData, newVersion, isActive) {
         /**
@@ -22,15 +27,12 @@ export class AddonRequireValidator {
             this.forDeactivation.validateRequiredAddonsForDeactivation(player, addonData);
     }
     getAddonsData() {
-        return this.addonManager.getAddonsData();
-    }
-    changeAddonSettings(addonData, version, isActive) {
-        this.addonManager.changeAddonSettings(addonData, version, isActive);
+        return this.addonActivator.getAddonsData();
     }
     getLatestPreferStableVersion(id) {
-        return this.addonManager.getLatestPreferStableVersion(id);
+        return this.addonActivator.getLatestPreferStableVersion(id);
     }
     getLatestVersion(id) {
-        return this.addonManager.getLatestVersion(id);
+        return this.addonActivator.getLatestVersion(id);
     }
 }

@@ -15,7 +15,6 @@ export class AddonManager {
         this.activator = AddonActivator.create(this);
         this.versionChanger = AddonVersionChanger.create(this);
         this.receiver = AddonReceiver.create(this);
-        this.requireValidator = AddonRequireValidator.create(this);
         this.addonList = AddonList.create(this);
     }
     static create(kairo) {
@@ -41,12 +40,6 @@ export class AddonManager {
     }
     _inactiveAddon() {
         this.kairo._inactiveAddon();
-    }
-    changeAddonSettings(addonData, version, isActive) {
-        this.activator.changeAddonSettings(addonData, version, isActive);
-    }
-    async validateRequiredAddons(player, addonData, version, isActive) {
-        this.requireValidator.validateRequiredAddons(player, addonData, version, isActive);
     }
     getLatestPreferStableVersion(id) {
         const addonData = this.getAddonsData().get(id);
@@ -76,11 +69,11 @@ export class AddonManager {
     sendDeactiveRequest(sessionId) {
         this.activator.sendDeactiveRequest(sessionId);
     }
-    activeAddon(player, addonData, version) {
-        this.activator.activeAddon(player, addonData, version);
+    activateAddon(player, addonData, version) {
+        this.activator.activateAddon(player, addonData, version);
     }
-    deactiveAddon(player, addonData) {
-        this.activator.deactiveAddon(player, addonData);
+    deactivateAddon(player, addonData) {
+        this.activator.deactivateAddon(player, addonData);
     }
     changeAddonVersion(player, addonData, version) {
         this.versionChanger.changeAddonVersion(player, addonData, version);
