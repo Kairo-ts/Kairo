@@ -35,11 +35,14 @@ export class AddonManager {
     subscribeReceiverHooks() {
         system.afterEvents.scriptEventReceive.subscribe(this.receiver.handleScriptEvent);
     }
-    _activeAddon() {
-        this.kairo._activeAddon();
+    _activateAddon() {
+        this.kairo._activateAddon();
     }
-    _inactiveAddon() {
-        this.kairo._inactiveAddon();
+    _deactivateAddon() {
+        this.kairo._deactivateAddon();
+    }
+    _scriptEvent(message) {
+        this.kairo._scriptEvent(message);
     }
     getLatestPreferStableVersion(id) {
         const addonData = this.getAddonsData().get(id);
