@@ -22,9 +22,9 @@ export class AddonRequireValidatorForDeactivation {
      * length = 0: cancel or error
      * length > 0: success
      */
-    public async validateRequiredAddonsForDeactivation(player: Player, addonData: AddonData): Promise<string[]> {
+    public async validateRequiredAddonsForDeactivation(player: Player, addonData: AddonData, newVersion: string = addonData.activeVersion): Promise<string[]> {
         this.clearDeactivationQueue();
-        const isResolved = this.resolveRequiredAddonsForDeactivation(addonData);
+        const isResolved = this.resolveRequiredAddonsForDeactivation(addonData, newVersion);
         try {
             if (!isResolved) {
                 ErrorManager.showErrorDetails(player, "kairo_resolve_for_deactivation_error");
@@ -55,7 +55,15 @@ export class AddonRequireValidatorForDeactivation {
         }
     }
 
-    private resolveRequiredAddonsForDeactivation(addonData: AddonData): boolean {
+    private resolveRequiredAddonsForDeactivation(addonData: AddonData, newVersion: string = addonData.activeVersion): boolean {
+        /**
+         * 新しいバージョンを有効にする場合、依存関係を調べる必要はない
+         */
+        if (VersionManager.compare(addonData.activeVersion, newVersion) < 0) {
+            this.visited.add(addonData.id);
+            return true;
+        }
+
         if (this.visited.has(addonData.id)) return true;
 
         if (this.isInactive(addonData)) {
@@ -70,7 +78,6 @@ export class AddonRequireValidatorForDeactivation {
         this.visiting.add(addonData.id);
 
         try {
-            const currentlyActiveVersion = addonData.activeVersion;
             const addonsData = this.requireValidator.getAddonsData();
 
             for (const data of addonsData.values()) {
@@ -88,13 +95,17 @@ export class AddonRequireValidatorForDeactivation {
 
                 const requiredVersion = requiredAddons[addonData.id];
                 if (requiredVersion !== undefined) {
-                    if (VersionManager.compare(currentlyActiveVersion, requiredVersion) < 0) {
-                        ConsoleManager.error(
-                            `Inconsistent state: ${data.id}@${data.activeVersion} requires ${addonData.id}@${requiredVersion} but has ${currentlyActiveVersion}`
-                        );
-                        return false;
+                    if (newVersion === addonData.activeVersion) {
+                        /**
+                         * 普通に無効化する場合
+                         */
+                        const isResolved = this.resolveRequiredAddonsForDeactivation(data);
+                        if (!isResolved) return false;
                     }
-                    else {
+                    else if (VersionManager.compare(newVersion, requiredVersion) < 0) {
+                        /**
+                         * 依存されているバージョンよりも小さくする場合は、依存元を無効化する必要がある
+                         */
                         const isResolved = this.resolveRequiredAddonsForDeactivation(data);
                         if (!isResolved) return false;
                     }
