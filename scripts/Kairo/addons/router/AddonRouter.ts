@@ -1,3 +1,4 @@
+import type { ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
 import type { AddonManager } from "../AddonManager";
 
 export class AddonRouter {
@@ -5,5 +6,9 @@ export class AddonRouter {
     
     public static create(addonManager: AddonManager): AddonRouter {
         return new AddonRouter(addonManager);
+    }
+
+    public handleScriptEvent(ev: ScriptEventCommandMessageAfterEvent): void {
+        console.log("test");
     }
 }

@@ -103,6 +103,10 @@ export class Kairo {
         this.addonManager.sendDeactiveRequest(sessionId);
     }
 
+    public static handleAddonRouterScriptEvent(ev: ScriptEventCommandMessageAfterEvent): void {
+        Kairo.getInstance().addonManager.handleAddonRouterScriptEvent(ev);
+    }
+
     public static handleAddonListScriptEvent(ev: ScriptEventCommandMessageAfterEvent): void {
         Kairo.getInstance().addonManager.handleAddonListScriptEvent(ev);
     }
