@@ -133,6 +133,7 @@ export class AddonList {
             { translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_LATEST_VERSION },
             ...registeredVersions.map(version => ({ text: version }))
         ];
+        const currentActiveState = addonData.isActive;
         const addonDataForm = new ModalFormData()
             .title(addonDataRawtexts.name)
             .header(addonDataRawtexts.name)
@@ -144,16 +145,26 @@ export class AddonList {
             .label(addonDataRawtexts.required)
             .divider()
             .dropdown(addonDataRawtexts.selectVersion, selectableVersionsRawtexts, { defaultValueIndex: selectedVersionIndex })
-            .toggle(addonDataRawtexts.activate, { defaultValue: addonData.isActive })
+            .toggle(addonDataRawtexts.activate, { defaultValue: currentActiveState })
             .submitButton(addonDataRawtexts.submit);
         const { formValues, canceled } = await addonDataForm.show(player);
         if (canceled || formValues === undefined)
             return;
-        const versionIndex = Number(formValues[8]);
-        const newSelectedVersion = selectableVersions[versionIndex];
+        // 有効化するときは、バージョンの変更も一緒に渡す
+        // 無効化するときは、バージョンを考慮せず無効化処理だけ
+        const newVersionIndex = Number(formValues[8]);
+        const newSelectedVersion = selectableVersions[newVersionIndex];
         if (newSelectedVersion === undefined)
             return;
-        this.addonManager.validateRequiredAddons(player, addonData, newSelectedVersion, formValues[9]);
+        const newActiveState = formValues[9];
+        if ((currentActiveState === false && newActiveState === true) || newVersionIndex !== selectedVersionIndex) {
+            // 有効化にする場合 or バージョンを変更する場合
+            this.addonManager.activateAddon(player, addonData, newSelectedVersion);
+        }
+        else if (currentActiveState === true && newActiveState === false) {
+            // 無効化にする場合
+            this.addonManager.deactivateAddon(player, addonData);
+        }
     }
     async showAddonDataForm(player, addonDataRawtexts) {
         const addonDataForm = new ActionFormData()

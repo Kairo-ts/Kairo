@@ -1,19 +1,27 @@
 import { type Player } from "@minecraft/server";
-import type { AddonData, AddonManager } from "../AddonManager";
+import type { AddonData } from "../AddonManager";
 import { AddonRequireValidatorForDeactivation } from "./AddonRequireValidatorForDeactivation";
 import { AddonRequireValidatorForActivation } from "./AddonRequireValidatorForActivation";
-import { VersionManager } from "../../../utils/VersionManager";
+import type { AddonActivator } from "./AddonActivator";
 
 export class AddonRequireValidator {
     private readonly forActivation: AddonRequireValidatorForActivation;
     private readonly forDeactivation: AddonRequireValidatorForDeactivation;
 
-    private constructor(private readonly addonManager: AddonManager) {
+    private constructor(private readonly addonActivator: AddonActivator) {
         this.forActivation = AddonRequireValidatorForActivation.create(this);
         this.forDeactivation = AddonRequireValidatorForDeactivation.create(this);
     }
-    public static create(addonManager: AddonManager): AddonRequireValidator {
-        return new AddonRequireValidator(addonManager);
+    public static create(addonActivator: AddonActivator): AddonRequireValidator {
+        return new AddonRequireValidator(addonActivator);
+    }
+
+    public async validateRequiredAddonsForActivation(player: Player, addonData: AddonData, newVersion: string): Promise<string[]> {
+        return this.forActivation.validateRequiredAddonsForActivation(player, addonData, newVersion);
+    }
+
+    public async validateRequiredAddonsForDeactivation(player: Player, addonData: AddonData, newVersion: string = addonData.activeVersion): Promise<string[]> {
+        return this.forDeactivation.validateRequiredAddonsForDeactivation(player, addonData, newVersion);
     }
 
     public async validateRequiredAddons(player: Player, addonData: AddonData, newVersion: string, isActive: boolean): Promise<void> {
@@ -26,18 +34,14 @@ export class AddonRequireValidator {
     }
 
     public getAddonsData(): Map<string, AddonData> {
-        return this.addonManager.getAddonsData();
-    }
-
-    public changeAddonSettings(addonData: AddonData, version: string, isActive: boolean): void {
-        this.addonManager.changeAddonSettings(addonData, version, isActive);
+        return this.addonActivator.getAddonsData();
     }
 
     public getLatestPreferStableVersion(id: string): string | undefined {
-        return this.addonManager.getLatestPreferStableVersion(id);
+        return this.addonActivator.getLatestPreferStableVersion(id);
     }
 
     public getLatestVersion(id: string): string | undefined {
-        return this.addonManager.getLatestVersion(id);
+        return this.addonActivator.getLatestVersion(id);
     }
 }

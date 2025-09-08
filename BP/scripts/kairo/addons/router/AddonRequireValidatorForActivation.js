@@ -17,32 +17,33 @@ export class AddonRequireValidatorForActivation {
     async validateRequiredAddonsForActivation(player, addonData, newVersion) {
         this.clearActivationQueue();
         const isResolved = this.resolveRequiredAddonsForActivation(addonData, newVersion);
-        if (!isResolved) {
-            this.clearActivationQueue();
-            ErrorManager.showErrorDetails(player, "kairo_resolve_for_activation_error");
-            return;
-        }
-        if (this.activationQueue.size > 1) {
-            const rootAddonId = addonData.id;
-            const queueAddonList = Array.from(this.activationQueue.values())
-                .filter(({ addonData }) => addonData.id !== rootAddonId)
-                .map(({ addonData, version }) => `・${addonData.name} (ver.${version})`)
-                .join("\n");
-            const messageForm = new MessageFormData()
-                .title({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_TITLE })
-                .body({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_ACTIVATION_BODY, with: [queueAddonList] })
-                .button1({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_ACTIVE_CONFIRM })
-                .button2({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_CANCEL });
-            const { selection, canceled } = await messageForm.show(player);
-            if (canceled || selection === undefined || selection === 1) {
-                this.clearActivationQueue();
-                return;
+        try {
+            if (!isResolved) {
+                ErrorManager.showErrorDetails(player, "kairo_resolve_for_activation_error");
+                return [];
             }
+            if (this.activationQueue.size > 1) {
+                const rootAddonId = addonData.id;
+                const queueAddonList = Array.from(this.activationQueue.values())
+                    .filter(({ addonData }) => addonData.id !== rootAddonId)
+                    .map(({ addonData, version }) => `・${addonData.name} (ver.${version})`)
+                    .join("\n");
+                const messageForm = new MessageFormData()
+                    .title({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_TITLE })
+                    .body({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_ACTIVATION_BODY, with: [queueAddonList] })
+                    .button1({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_ACTIVE_CONFIRM })
+                    .button2({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_CANCEL });
+                const { selection, canceled } = await messageForm.show(player);
+                if (canceled || selection === undefined || selection === 1) {
+                    return [];
+                }
+                return [...this.activationQueue.keys()];
+            }
+            return [addonData.id];
         }
-        for (const { addonData, version } of this.activationQueue.values()) {
-            this.requireValidator.changeAddonSettings(addonData, version, true);
+        finally {
+            this.clearActivationQueue();
         }
-        this.clearActivationQueue();
     }
     resolveRequiredAddonsForActivation(addonData, newVersion) {
         const newActiveVersion = newVersion === VERSION_KEYWORDS.LATEST
@@ -66,8 +67,9 @@ export class AddonRequireValidatorForActivation {
             if (!newActiveVersionData)
                 return false;
             const requiredAddons = newActiveVersionData.requiredAddons ?? {};
+            const addonsData = this.requireValidator.getAddonsData();
             for (const [id, version] of Object.entries(requiredAddons)) {
-                const requiredAddon = this.requireValidator.getAddonsData().get(id);
+                const requiredAddon = addonsData.get(id);
                 if (!requiredAddon) {
                     /**
                      * 登録時に前提アドオンがそもそも登録されていない場合ははじいているので、

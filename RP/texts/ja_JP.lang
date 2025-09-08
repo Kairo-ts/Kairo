@@ -1,6 +1,10 @@
 kairo.name=Kairo
 kairo.description=ScriptAPIを利用して、複数のビヘイビアーパック間での通信を可能とするフレームワーク
 
+kairo.addon.active=%1 ver.%2 を有効にしました
+kairo.addon.deactive=%1 を無効にしました
+kairo.addon.changeVersion=%1 のバージョンを %2 に変更しました
+
 kairo.addonList.title=アドオン一覧
 kairo.addonList.active=§l§9有効§r
 kairo.addonList.inactive=§l§4無効§r

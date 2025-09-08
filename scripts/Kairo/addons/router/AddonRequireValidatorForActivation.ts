@@ -19,13 +19,13 @@ export class AddonRequireValidatorForActivation {
         return new AddonRequireValidatorForActivation(requireValidator);
     }
 
-    public async validateRequiredAddonsForActivation(player: Player, addonData: AddonData, newVersion: string): Promise<void> {
+    public async validateRequiredAddonsForActivation(player: Player, addonData: AddonData, newVersion: string): Promise<string[]> {
         this.clearActivationQueue();
-            const isResolved = this.resolveRequiredAddonsForActivation(addonData, newVersion);
+        const isResolved = this.resolveRequiredAddonsForActivation(addonData, newVersion);
+        try {
             if (!isResolved) {
-                this.clearActivationQueue();
                 ErrorManager.showErrorDetails(player, "kairo_resolve_for_activation_error");
-                return;
+                return [];
             }
 
             if (this.activationQueue.size > 1) {
@@ -41,15 +41,15 @@ export class AddonRequireValidatorForActivation {
                     .button2({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_CANCEL });
                 const { selection, canceled } = await messageForm.show(player);
                 if (canceled || selection === undefined || selection === 1) {
-                    this.clearActivationQueue();
-                    return;
+                    return [];
                 }
+                return [...this.activationQueue.keys()];
             }
-
-            for (const {addonData, version} of this.activationQueue.values()) {
-                this.requireValidator.changeAddonSettings(addonData, version, true);
-            }
+            return [addonData.id];
+        }
+        finally {
             this.clearActivationQueue();
+        }
     }
 
     private resolveRequiredAddonsForActivation(addonData: AddonData, newVersion: string): boolean {
@@ -76,8 +76,9 @@ export class AddonRequireValidatorForActivation {
             if (!newActiveVersionData) return false;
             const requiredAddons = newActiveVersionData.requiredAddons ?? {};
 
+            const addonsData = this.requireValidator.getAddonsData();
             for (const [id, version] of Object.entries(requiredAddons)) {
-                const requiredAddon = this.requireValidator.getAddonsData().get(id);
+                const requiredAddon = addonsData.get(id);
                 if (!requiredAddon) {
                     /**
                      * 登録時に前提アドオンがそもそも登録されていない場合ははじいているので、

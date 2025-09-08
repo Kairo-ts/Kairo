@@ -4,6 +4,7 @@ import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./router/AddonReceiver";
 import { AddonRequireValidator } from "./router/AddonRequireValidator";
 import { VersionManager } from "../../utils/VersionManager";
+import { AddonVersionChanger } from "./router/AddonVersionChanger";
 export class AddonManager {
     constructor(kairo) {
         this.kairo = kairo;
@@ -12,8 +13,8 @@ export class AddonManager {
             this.addonList.handleScriptEvent(ev);
         };
         this.activator = AddonActivator.create(this);
+        this.versionChanger = AddonVersionChanger.create(this);
         this.receiver = AddonReceiver.create(this);
-        this.requireValidator = AddonRequireValidator.create(this);
         this.addonList = AddonList.create(this);
     }
     static create(kairo) {
@@ -34,17 +35,11 @@ export class AddonManager {
     subscribeReceiverHooks() {
         system.afterEvents.scriptEventReceive.subscribe(this.receiver.handleScriptEvent);
     }
-    activeAddon() {
-        this.kairo.activeAddon();
+    _activeAddon() {
+        this.kairo._activeAddon();
     }
-    inactiveAddon() {
-        this.kairo.inactiveAddon();
-    }
-    changeAddonSettings(addonData, version, isActive) {
-        this.activator.changeAddonSettings(addonData, version, isActive);
-    }
-    async validateRequiredAddons(player, addonData, version, isActive) {
-        this.requireValidator.validateRequiredAddons(player, addonData, version, isActive);
+    _inactiveAddon() {
+        this.kairo._inactiveAddon();
     }
     getLatestPreferStableVersion(id) {
         const addonData = this.getAddonsData().get(id);
@@ -73,5 +68,14 @@ export class AddonManager {
     }
     sendDeactiveRequest(sessionId) {
         this.activator.sendDeactiveRequest(sessionId);
+    }
+    activateAddon(player, addonData, version) {
+        this.activator.activateAddon(player, addonData, version);
+    }
+    deactivateAddon(player, addonData) {
+        this.activator.deactivateAddon(player, addonData);
+    }
+    changeAddonVersion(player, addonData, version) {
+        this.versionChanger.changeAddonVersion(player, addonData, version);
     }
 }

@@ -1,4 +1,7 @@
 export const KAIRO_TRANSLATE_IDS = {
+    ADDON_ACTIVE: "kairo.addon.active",
+    ADDON_DEACTIVE: "kairo.addon.deactive",
+    ADDON_CHANGE_VERSION: "kairo.addon.changeVersion",
     ADDON_LIST_TITLE: "kairo.addonList.title",
     ADDON_LIST_ACTIVE: "kairo.addonList.active",
     ADDON_LIST_INACTIVE: "kairo.addonList.inactive",

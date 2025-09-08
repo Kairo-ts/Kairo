@@ -13,46 +13,61 @@ export class AddonRequireValidatorForDeactivation {
     static create(requireValidator) {
         return new AddonRequireValidatorForDeactivation(requireValidator);
     }
-    async validateRequiredAddonsForDeactivation(player, addonData) {
+    /**
+     * length = 0: cancel or error
+     * length > 0: success
+     */
+    async validateRequiredAddonsForDeactivation(player, addonData, newVersion = addonData.activeVersion) {
         this.clearDeactivationQueue();
-        const isResolved = this.resolveRequiredAddonsForDeactivation(addonData);
-        if (!isResolved) {
-            this.clearDeactivationQueue();
-            ErrorManager.showErrorDetails(player, "kairo_resolve_for_deactivation_error");
-            return;
-        }
-        if (this.deactivationQueue.size > 1) {
-            const rootAddonId = addonData.id;
-            const queueAddonList = Array.from(this.deactivationQueue.values())
-                .filter((addonData) => addonData.id !== rootAddonId)
-                .map((addonData) => `・${addonData.name} (ver.${addonData.activeVersion})`)
-                .join("\n");
-            const messageForm = new MessageFormData()
-                .title({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_TITLE })
-                .body({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_DEACTIVATION_BODY, with: [queueAddonList] })
-                .button1({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_DEACTIVE_CONFIRM })
-                .button2({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_CANCEL });
-            const { selection, canceled } = await messageForm.show(player);
-            if (canceled || selection === undefined || selection === 1) {
-                this.clearDeactivationQueue();
-                return;
+        const isResolved = this.resolveRequiredAddonsForDeactivation(addonData, newVersion);
+        try {
+            if (!isResolved) {
+                ErrorManager.showErrorDetails(player, "kairo_resolve_for_deactivation_error");
+                return [];
             }
+            if (this.deactivationQueue.size > 1) {
+                const rootAddonId = addonData.id;
+                const queueAddonList = Array.from(this.deactivationQueue.values())
+                    .filter((addonData) => addonData.id !== rootAddonId)
+                    .map((addonData) => `・${addonData.name} (ver.${addonData.activeVersion})`)
+                    .join("\n");
+                const messageForm = new MessageFormData()
+                    .title({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_TITLE })
+                    .body({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_DEACTIVATION_BODY, with: [queueAddonList] })
+                    .button1({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_DEACTIVE_CONFIRM })
+                    .button2({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_CANCEL });
+                const { selection, canceled } = await messageForm.show(player);
+                if (canceled || selection === undefined || selection === 1) {
+                    return [];
+                }
+                return [...this.deactivationQueue.keys()];
+            }
+            return [addonData.id];
         }
-        for (const addonData of this.deactivationQueue.values()) {
-            this.requireValidator.changeAddonSettings(addonData, addonData.activeVersion, false);
+        finally {
+            this.clearDeactivationQueue();
         }
-        this.clearDeactivationQueue();
     }
-    resolveRequiredAddonsForDeactivation(addonData) {
+    resolveRequiredAddonsForDeactivation(addonData, newVersion = addonData.activeVersion) {
+        /**
+         * 新しいバージョンを有効にする場合、依存関係を調べる必要はない
+         */
+        if (VersionManager.compare(addonData.activeVersion, newVersion) < 0) {
+            this.visited.add(addonData.id);
+            return true;
+        }
         if (this.visited.has(addonData.id))
             return true;
+        if (this.isInactive(addonData)) {
+            this.visited.add(addonData.id);
+            return true;
+        }
         if (this.visiting.has(addonData.id)) {
-            ConsoleManager.error(`Cycle detected while activating: ${addonData.id}`);
+            ConsoleManager.error(`Cycle detected while deactivating: ${addonData.id}`);
             return false;
         }
         this.visiting.add(addonData.id);
         try {
-            const currentlyActiveVersion = addonData.activeVersion;
             const addonsData = this.requireValidator.getAddonsData();
             for (const data of addonsData.values()) {
                 if (this.isInactive(data))
@@ -68,11 +83,18 @@ export class AddonRequireValidatorForDeactivation {
                 }
                 const requiredVersion = requiredAddons[addonData.id];
                 if (requiredVersion !== undefined) {
-                    if (VersionManager.compare(currentlyActiveVersion, requiredVersion) < 0) {
-                        ConsoleManager.error(`Inconsistent state: ${data.id}@${data.activeVersion} requires ${addonData.id}@${requiredVersion} but has ${currentlyActiveVersion}`);
-                        return false;
+                    if (newVersion === addonData.activeVersion) {
+                        /**
+                         * 普通に無効化する場合
+                         */
+                        const isResolved = this.resolveRequiredAddonsForDeactivation(data);
+                        if (!isResolved)
+                            return false;
                     }
-                    else {
+                    else if (VersionManager.compare(newVersion, requiredVersion) < 0) {
+                        /**
+                         * 依存されているバージョンよりも小さくする場合は、依存元を無効化する必要がある
+                         */
                         const isResolved = this.resolveRequiredAddonsForDeactivation(data);
                         if (!isResolved)
                             return false;

@@ -7,6 +7,7 @@ import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./router/AddonReceiver";
 import { AddonRequireValidator } from "./router/AddonRequireValidator";
 import { VersionManager } from "../../utils/VersionManager";
+import { AddonVersionChanger } from "./router/AddonVersionChanger";
 
 export type RegistrationState = "registered" | "unregistered" | "missing_requiredAddons";
 
@@ -38,15 +39,15 @@ export interface AddonData {
 
 export class AddonManager {
     private readonly activator: AddonActivator;
+    private readonly versionChanger: AddonVersionChanger;
     private readonly receiver: AddonReceiver;
-    private readonly requireValidator: AddonRequireValidator;
     private readonly addonList: AddonList;
     private readonly addonsData: Map<string, AddonData> = new Map();
 
     private constructor(private readonly kairo: Kairo) {
         this.activator = AddonActivator.create(this);
+        this.versionChanger = AddonVersionChanger.create(this);
         this.receiver = AddonReceiver.create(this);
-        this.requireValidator = AddonRequireValidator.create(this);
         this.addonList = AddonList.create(this);
     }
     public static create(kairo: Kairo): AddonManager {
@@ -73,24 +74,16 @@ export class AddonManager {
         system.afterEvents.scriptEventReceive.subscribe(this.receiver.handleScriptEvent);
     }
 
-    public activeAddon(): void {
-        this.kairo.activeAddon();
+    public _activeAddon(): void {
+        this.kairo._activeAddon();
     }
 
-    public inactiveAddon(): void {
-        this.kairo.inactiveAddon();
-    }
-
-    public changeAddonSettings(addonData: AddonData, version: string, isActive: boolean): void {
-        this.activator.changeAddonSettings(addonData, version, isActive);
+    public _inactiveAddon(): void {
+        this.kairo._inactiveAddon();
     }
 
     public handleAddonListScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
         this.addonList.handleScriptEvent(ev);
-    }
-
-    public async validateRequiredAddons(player: Player, addonData: AddonData, version: string, isActive: boolean): Promise<void> {
-        this.requireValidator.validateRequiredAddons(player, addonData, version, isActive);
     }
 
     public getLatestPreferStableVersion(id: string): string | undefined {
@@ -126,5 +119,17 @@ export class AddonManager {
 
     public sendDeactiveRequest(sessionId: string): void {
         this.activator.sendDeactiveRequest(sessionId);
+    }
+
+    public activateAddon(player: Player, addonData: AddonData, version: string): void {
+        this.activator.activateAddon(player, addonData, version);
+    }
+
+    public deactivateAddon(player: Player, addonData: AddonData): void {
+        this.activator.deactivateAddon(player, addonData);
+    }
+
+    public changeAddonVersion(player: Player, addonData: AddonData, version: string): void {
+        this.versionChanger.changeAddonVersion(player, addonData, version);
     }
 }
