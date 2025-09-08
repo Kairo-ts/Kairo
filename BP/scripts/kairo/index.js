@@ -64,6 +64,9 @@ export class Kairo {
     sendDeactiveRequest(sessionId) {
         this.addonManager.sendDeactiveRequest(sessionId);
     }
+    static handleAddonRouterScriptEvent(ev) {
+        Kairo.getInstance().addonManager.handleAddonRouterScriptEvent(ev);
+    }
     static handleAddonListScriptEvent(ev) {
         Kairo.getInstance().addonManager.handleAddonListScriptEvent(ev);
     }
