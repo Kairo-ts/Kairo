@@ -91,4 +91,12 @@ export class AddonActivator {
     public sendDeactiveRequest(sessionId: string): void {
         system.sendScriptEvent(`${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${sessionId}`, SCRIPT_EVENT_MESSAGES.DEACTIVATE_REQUEST);
     }
+
+    public getLatestPreferStableVersion(id: string): string | undefined {
+        return this.addonManager.getLatestPreferStableVersion(id);
+    }
+
+    public getLatestVersion(id: string): string | undefined {
+        return this.addonManager.getLatestVersion(id);
+    }
 }

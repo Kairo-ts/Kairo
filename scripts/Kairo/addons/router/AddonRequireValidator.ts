@@ -16,8 +16,12 @@ export class AddonRequireValidator {
         return new AddonRequireValidator(addonActivator);
     }
 
-    public async validateRequiredAddonsForDeactivation(player: Player, addonData: AddonData): Promise<string[]> {
-        return this.forDeactivation.validateRequiredAddonsForDeactivation(player, addonData);
+    public async validateRequiredAddonsForActivation(player: Player, addonData: AddonData, newVersion: string): Promise<string[]> {
+        return this.forActivation.validateRequiredAddonsForActivation(player, addonData, newVersion);
+    }
+
+    public async validateRequiredAddonsForDeactivation(player: Player, addonData: AddonData, newVersion: string = addonData.activeVersion): Promise<string[]> {
+        return this.forDeactivation.validateRequiredAddonsForDeactivation(player, addonData, newVersion);
     }
 
     public async validateRequiredAddons(player: Player, addonData: AddonData, newVersion: string, isActive: boolean): Promise<void> {
@@ -33,15 +37,11 @@ export class AddonRequireValidator {
         return this.addonActivator.getAddonsData();
     }
 
-    public changeAddonSettings(addonData: AddonData, version: string, isActive: boolean): void {
-        this.addonActivator.changeAddonSettings(addonData, version, isActive);
+    public getLatestPreferStableVersion(id: string): string | undefined {
+        return this.addonActivator.getLatestPreferStableVersion(id);
     }
 
-    //public getLatestPreferStableVersion(id: string): string | undefined {
-    //    return this.addonActivator.getLatestPreferStableVersion(id);
-    //}
-//
-    //public getLatestVersion(id: string): string | undefined {
-    //    return this.addonActivator.getLatestVersion(id);
-    //}
+    public getLatestVersion(id: string): string | undefined {
+        return this.addonActivator.getLatestVersion(id);
+    }
 }
