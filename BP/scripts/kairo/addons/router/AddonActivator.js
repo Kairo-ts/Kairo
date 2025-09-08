@@ -50,7 +50,7 @@ export class AddonActivator {
                 const newSessionId = newActiveVersionData?.sessionId;
                 if (newSessionId)
                     this.sendActiveRequest(newSessionId);
-                world.sendMessage({ translate: KAIRO_TRANSLATE_IDS.ADDON_ACTIVE, with: [addonData.name, newActiveVersion] });
+                world.sendMessage({ translate: KAIRO_TRANSLATE_IDS.ADDON_ACTIVE, with: [data.name, newActiveVersion] });
             }
         }
     }

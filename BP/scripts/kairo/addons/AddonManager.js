@@ -3,7 +3,6 @@ import { ScriptEventCommandMessageAfterEvent, system } from "@minecraft/server";
 import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./router/AddonReceiver";
 import { VersionManager } from "../../utils/VersionManager";
-import { AddonVersionChanger } from "./router/AddonVersionChanger";
 import { AddonRouter } from "./router/AddonRouter";
 export class AddonManager {
     constructor(kairo) {
@@ -16,7 +15,6 @@ export class AddonManager {
             this.addonList.handleScriptEvent(ev);
         };
         this.activator = AddonActivator.create(this);
-        this.versionChanger = AddonVersionChanger.create(this);
         this.receiver = AddonReceiver.create(this);
         this.addonRouter = AddonRouter.create(this);
         this.addonList = AddonList.create(this);
@@ -81,8 +79,5 @@ export class AddonManager {
     }
     deactivateAddon(player, addonData) {
         this.activator.deactivateAddon(player, addonData);
-    }
-    changeAddonVersion(player, addonData, version) {
-        this.versionChanger.changeAddonVersion(player, addonData, version);
     }
 }
