@@ -59,6 +59,9 @@ export class AddonInitializer {
     awaitRegistration() {
         return this.register.ready;
     }
+    saveAddon(addonData) {
+        this.record.saveAddon(addonData);
+    }
     saveAddons() {
         this.record.saveAddons(this.register.getAll());
     }

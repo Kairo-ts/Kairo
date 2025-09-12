@@ -135,4 +135,8 @@ export class AddonManager {
     public deactivateAddon(player: Player, addonData: AddonData): void {
         this.activator.deactivateAddon(player, addonData);
     }
+
+    public saveAddon(addonData: AddonData): void {
+        this.kairo.saveAddon(addonData);
+    }
 }

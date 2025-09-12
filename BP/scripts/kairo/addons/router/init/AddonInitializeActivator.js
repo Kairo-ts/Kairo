@@ -14,16 +14,19 @@ export class AddonInitializeActivator {
     initActivateAddons(addons) {
         const addonRecords = this.addonInitializer.getAddonRecords();
         Object.entries(addonRecords).forEach(([id, record]) => {
-            this.initAddonData(id, record.name, record.description, record.selectedVersion, record.versions);
+            /**
+             * 普通に record ごと渡せばいいと思うけど、recordは recordsとして定義されてて、変えるのが面倒で、
+             * 誰か直してください
+             */
+            this.initAddonData(id, record.name, record.description, record.selectedVersion, record.versions, record.isActive);
         });
-        addons.forEach(addon => {
-            this.enqueuePendingRegistration(addon);
-        });
-        addons.forEach(addon => {
-            this.updateAddonRegistrationState(addon);
-        });
+        this.enqueuePendingRegistration(addons);
+        this.updateAddonRegistrationState(addons);
         this.addonInitializer.getAddonsData().forEach((data, id) => {
             this.activateSelectedVersion(id);
+            data.isEditable = !!Object.entries(data.versions).find(([version, data]) => {
+                return data.isRegistered && data.registrationState === "registered";
+            });
             if (data.isActive) {
                 const activeVersionData = data.versions[data.activeVersion];
                 const sessionId = activeVersionData?.sessionId;
@@ -36,13 +39,13 @@ export class AddonInitializeActivator {
         this.canRegisterAddons.clear();
         this.visiting.clear();
     }
-    initAddonData(id, name, description, selectedVersion, versions) {
+    initAddonData(id, name, description, selectedVersion, versions, isActive) {
         const sortedVersions = versions.sort((a, b) => VersionManager.compare(b, a));
         const addonData = {
             id,
             name,
             description,
-            isActive: false,
+            isActive,
             isEditable: false,
             selectedVersion,
             activeVersion: "",
@@ -57,39 +60,44 @@ export class AddonInitializeActivator {
         this.addonInitializer.getAddonsData().set(id, addonData);
         const pendingData = {
             id,
+            isActive,
             selectedVersion,
             versions: {}
         };
         this.pendingRegistration.set(id, pendingData);
     }
-    enqueuePendingRegistration(addon) {
-        const pendingData = this.pendingRegistration.get(addon.id);
-        if (!pendingData)
-            return;
-        const version = VersionManager.toVersionString(addon.version);
-        pendingData.versions[version] = {
-            isRegistered: true,
-            requiredAddons: addon.requiredAddons ?? {}
-        };
+    enqueuePendingRegistration(addons) {
+        addons.forEach((addon) => {
+            const pendingData = this.pendingRegistration.get(addon.id);
+            if (!pendingData)
+                return;
+            const version = VersionManager.toVersionString(addon.version);
+            pendingData.versions[version] = {
+                isRegistered: true,
+                requiredAddons: addon.requiredAddons ?? {}
+            };
+        });
     }
-    updateAddonRegistrationState(addon) {
-        const addonData = this.addonInitializer.getAddonsData().get(addon.id);
-        if (!addonData)
-            return;
-        const version = VersionManager.toVersionString(addon.version);
-        const isRegisterable = this.checkRequiredAddons(addon.id, version, addon.requiredAddons);
-        let registrationState = isRegisterable
-            ? "registered"
-            : "missing_requiredAddons";
-        addonData.versions[version] = {
-            isRegistered: isRegisterable,
-            canInitActivate: this.checkRequiredAddonsForActivation(addon.requiredAddons),
-            registrationState,
-            sessionId: addon.sessionId,
-            tags: addon.tags,
-            dependencies: addon.dependencies,
-            requiredAddons: addon.requiredAddons
-        };
+    updateAddonRegistrationState(addons) {
+        addons.forEach((addon) => {
+            const addonData = this.addonInitializer.getAddonsData().get(addon.id);
+            if (!addonData)
+                return;
+            const version = VersionManager.toVersionString(addon.version);
+            const isRegisterable = this.checkRequiredAddons(addon.id, version, addon.requiredAddons);
+            let registrationState = isRegisterable
+                ? "registered"
+                : "missing_requiredAddons";
+            addonData.versions[version] = {
+                isRegistered: isRegisterable,
+                canInitActivate: this.checkRequiredAddonsForActivation(addon.requiredAddons),
+                registrationState,
+                sessionId: addon.sessionId,
+                tags: addon.tags,
+                dependencies: addon.dependencies,
+                requiredAddons: addon.requiredAddons
+            };
+        });
     }
     checkRequiredAddons(id, version, requiredAddons) {
         const selfKey = this.makeKey(id, version);
@@ -126,6 +134,8 @@ export class AddonInitializeActivator {
         for (const [requiredId, requiredVersion] of Object.entries(requiredAddons)) {
             const requiredAddonData = this.pendingRegistration.get(requiredId);
             if (!requiredAddonData)
+                return false;
+            if (!requiredAddonData.isActive)
                 return false;
             const requiredSelectedVersion = requiredAddonData.selectedVersion === VERSION_KEYWORDS.LATEST
                 ? this.getLatestPreferStableVersionInPending(requiredId)
@@ -169,6 +179,8 @@ export class AddonInitializeActivator {
     activateSelectedVersion(id) {
         const addonData = this.addonInitializer.getAddonsData().get(id);
         if (!addonData)
+            return;
+        if (!addonData.isActive)
             return;
         if (addonData.selectedVersion === VERSION_KEYWORDS.LATEST) {
             this.activateLatestVersion(id);

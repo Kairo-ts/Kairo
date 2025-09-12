@@ -55,6 +55,7 @@ export class AddonActivator {
                 if (newSessionId) this.sendActiveRequest(newSessionId);
 
                 world.sendMessage({ translate: KAIRO_TRANSLATE_IDS.ADDON_ACTIVE, with: [data.name, newActiveVersion]});
+                this.addonManager.saveAddon(data);
             }
         }
     }
@@ -76,6 +77,7 @@ export class AddonActivator {
                 if (sessionId) this.sendDeactiveRequest(sessionId);
 
                 world.sendMessage({ translate: KAIRO_TRANSLATE_IDS.ADDON_DEACTIVE, with: [data.name]});
+                this.addonManager.saveAddon(data);
             }
         }
     }
