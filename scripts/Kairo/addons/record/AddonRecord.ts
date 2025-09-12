@@ -33,7 +33,7 @@ export class AddonRecord {
                 description: ["0.0.0", ""],
                 selectedVersion: VERSION_KEYWORDS.LATEST,
                 versions: Object.keys(addonData?.versions),
-                isActive: false
+                isActive: true
             }
         }
 
@@ -57,7 +57,7 @@ export class AddonRecord {
                     description: ["0.0.0", ""],
                     selectedVersion: VERSION_KEYWORDS.LATEST,
                     versions: [],
-                    isActive: false
+                    isActive: true
                 };
             }
 
