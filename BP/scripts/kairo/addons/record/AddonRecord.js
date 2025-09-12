@@ -18,7 +18,7 @@ export class AddonRecord {
                 description: ["0.0.0", ""],
                 selectedVersion: VERSION_KEYWORDS.LATEST,
                 versions: Object.keys(addonData?.versions),
-                isActive: false
+                isActive: true
             };
         }
         addonRecords[id].description = addonData.description;
@@ -37,7 +37,7 @@ export class AddonRecord {
                     description: ["0.0.0", ""],
                     selectedVersion: VERSION_KEYWORDS.LATEST,
                     versions: [],
-                    isActive: false
+                    isActive: true
                 };
             }
             if (VersionManager.compare(addonRecords[id].description[0], vStr) === -1) {
