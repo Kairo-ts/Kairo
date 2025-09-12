@@ -80,4 +80,7 @@ export class AddonManager {
     deactivateAddon(player, addonData) {
         this.activator.deactivateAddon(player, addonData);
     }
+    saveAddon(addonData) {
+        this.kairo.saveAddon(addonData);
+    }
 }

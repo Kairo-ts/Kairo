@@ -1,12 +1,28 @@
 import { VersionManager } from "../../../utils/VersionManager";
 import { DynamicPropertyStorage } from "./DynamicPropertyStorage";
 import { VERSION_KEYWORDS } from "../../../constants/version_keywords";
+import { STORAGE_KEYWORDS } from "../../../constants/storage";
 export class AddonRecord {
     constructor(addonInitializer) {
         this.addonInitializer = addonInitializer;
     }
     static create(addonInitializer) {
         return new AddonRecord(addonInitializer);
+    }
+    saveAddon(addonData) {
+        const addonRecords = this.loadAddons();
+        const { id, name } = addonData;
+        if (!addonRecords[id]) {
+            addonRecords[id] = {
+                name: name,
+                description: ["0.0.0", ""],
+                selectedVersion: VERSION_KEYWORDS.LATEST,
+                versions: Object.keys(addonData?.versions)
+            };
+        }
+        addonRecords[id].description = addonData.description;
+        addonRecords[id].selectedVersion = addonData.selectedVersion;
+        DynamicPropertyStorage.save(STORAGE_KEYWORDS.ADDON_RECORDS, addonRecords);
     }
     saveAddons(addons) {
         const addonRecords = this.loadAddons();
@@ -27,9 +43,9 @@ export class AddonRecord {
             }
             addonRecords[id].versions.push(vStr);
         });
-        DynamicPropertyStorage.save("AddonRecords", addonRecords);
+        DynamicPropertyStorage.save(STORAGE_KEYWORDS.ADDON_RECORDS, addonRecords);
     }
     loadAddons() {
-        return DynamicPropertyStorage.load("AddonRecords");
+        return DynamicPropertyStorage.load(STORAGE_KEYWORDS.ADDON_RECORDS);
     }
 }

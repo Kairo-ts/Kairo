@@ -134,6 +134,9 @@ export class Kairo {
             }
         }
     }
+    saveAddon(addonData) {
+        this.addonInitializer.saveAddon(addonData);
+    }
 }
 Kairo._initHooks = [];
 Kairo._deinitHooks = [];
