@@ -83,6 +83,10 @@ export class AddonInitializer {
         return this.register.ready;
     }
 
+    public saveAddon(addonData: AddonData): void {
+        this.record.saveAddon(addonData);
+    }
+
     public saveAddons(): void {
         this.record.saveAddons(this.register.getAll());
     }

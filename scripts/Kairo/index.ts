@@ -165,4 +165,8 @@ export class Kairo {
             catch (e) { system.run(() => console.warn(`[Kairo.onScriptEvent] ${e instanceof Error ? e.stack ?? e.message : String(e)}`)); }
         }
     }
+
+    public saveAddon(addonData: AddonData): void {
+        this.addonInitializer.saveAddon(addonData);
+    }
 }
