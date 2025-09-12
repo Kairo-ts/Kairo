@@ -48,6 +48,10 @@ export class AddonInitializeActivator {
         this.addonInitializer.getAddonsData().forEach((data, id) => {
             this.activateSelectedVersion(id);
 
+            data.isEditable = !!Object.entries(data.versions).find(([version, data]) => {
+                return data.isRegistered && data.registrationState === "registered";
+            });
+
             if (data.isActive) {
                 const activeVersionData = data.versions[data.activeVersion];
                 const sessionId = activeVersionData?.sessionId;

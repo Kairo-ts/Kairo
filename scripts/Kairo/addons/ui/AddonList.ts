@@ -59,10 +59,8 @@ export class AddonList {
     public async formatAddonDataForDisplay(player: Player, addonData: AddonData): Promise<void> {
         const entries = Object.entries(addonData.versions);
 
-        const isRegistered = addonData.activeVersion !== VERSION_KEYWORDS.UNREGISTERED;
-
         const isActive = addonData.isActive ? { translate: KAIRO_TRANSLATE_IDS.ADDON_LIST_ACTIVE } : { translate: KAIRO_TRANSLATE_IDS.ADDON_LIST_INACTIVE };
-        const selectedVersion = isRegistered
+        const selectedVersion = addonData.isEditable
             ? addonData.selectedVersion === VERSION_KEYWORDS.LATEST
                 ? [{ text: " §7|§r " },{ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_LATEST_VERSION },{ text: ` (ver.${addonData.activeVersion})` }]
                 : [{ text: " §7|§r " },{ text: `ver.${addonData.selectedVersion}` }]
@@ -149,7 +147,7 @@ export class AddonList {
             submit: { translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_SUBMIT }
         }
 
-        if (isRegistered) this.settingAddonDataForm(player, addonData, addonDataRawtexts);
+        if (addonData.isEditable) this.settingAddonDataForm(player, addonData, addonDataRawtexts);
         else this.showAddonDataForm(player, addonDataRawtexts);
     }
 
