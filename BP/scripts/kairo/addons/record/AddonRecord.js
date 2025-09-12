@@ -17,11 +17,13 @@ export class AddonRecord {
                 name: name,
                 description: ["0.0.0", ""],
                 selectedVersion: VERSION_KEYWORDS.LATEST,
-                versions: Object.keys(addonData?.versions)
+                versions: Object.keys(addonData?.versions),
+                isActive: false
             };
         }
         addonRecords[id].description = addonData.description;
         addonRecords[id].selectedVersion = addonData.selectedVersion;
+        addonRecords[id].isActive = addonData.isActive;
         DynamicPropertyStorage.save(STORAGE_KEYWORDS.ADDON_RECORDS, addonRecords);
     }
     saveAddons(addons) {
@@ -34,7 +36,8 @@ export class AddonRecord {
                     name: name,
                     description: ["0.0.0", ""],
                     selectedVersion: VERSION_KEYWORDS.LATEST,
-                    versions: []
+                    versions: [],
+                    isActive: false
                 };
             }
             if (VersionManager.compare(addonRecords[id].description[0], vStr) === -1) {
