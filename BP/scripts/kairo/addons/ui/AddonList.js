@@ -1,8 +1,8 @@
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import { properties, supportedTags } from "../../../properties";
-import { SCRIPT_EVENT_IDS } from "../../../constants/scriptevent";
-import { KAIRO_TRANSLATE_IDS } from "../../../constants/translate";
-import { VERSION_KEYWORDS } from "../../../constants/version_keywords";
+import { SCRIPT_EVENT_IDS } from "../../constants/scriptevent";
+import { KAIRO_TRANSLATE_IDS } from "../../constants/translate";
+import { VERSION_KEYWORDS } from "../../constants/version_keywords";
 export class AddonList {
     constructor(addonManager) {
         this.addonManager = addonManager;

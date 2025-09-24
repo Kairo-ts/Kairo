@@ -1,5 +1,5 @@
 import { system } from "@minecraft/server";
-import { SCRIPT_EVENT_ID_PREFIX } from "../../../constants/scriptevent";
+import { SCRIPT_EVENT_ID_PREFIX } from "../../constants/scriptevent";
 export class AddonRouter {
     constructor(addonManager) {
         this.addonManager = addonManager;

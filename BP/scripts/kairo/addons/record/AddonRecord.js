@@ -1,7 +1,7 @@
-import { VersionManager } from "../../../utils/VersionManager";
 import { DynamicPropertyStorage } from "./DynamicPropertyStorage";
-import { VERSION_KEYWORDS } from "../../../constants/version_keywords";
-import { STORAGE_KEYWORDS } from "../../../constants/storage";
+import { VERSION_KEYWORDS } from "../../constants/version_keywords";
+import { STORAGE_KEYWORDS } from "../../constants/storage";
+import { VersionManager } from "../../utils/VersionManager";
 export class AddonRecord {
     constructor(addonInitializer) {
         this.addonInitializer = addonInitializer;

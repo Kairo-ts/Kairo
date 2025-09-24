@@ -1,9 +1,9 @@
-import { ErrorManager } from "../../../utils/ErrorManager";
-import { KAIRO_TRANSLATE_IDS } from "../../../constants/translate";
+import { ErrorManager } from "../../utils/ErrorManager";
+import { KAIRO_TRANSLATE_IDS } from "../../constants/translate";
 import { MessageFormData } from "@minecraft/server-ui";
-import { VERSION_KEYWORDS } from "../../../constants/version_keywords";
-import { VersionManager } from "../../../utils/VersionManager";
-import { ConsoleManager } from "../../../utils/ConsoleManager";
+import { VERSION_KEYWORDS } from "../../constants/version_keywords";
+import { VersionManager } from "../../utils/VersionManager";
+import { ConsoleManager } from "../../utils/ConsoleManager";
 export class AddonRequireValidatorForActivation {
     constructor(requireValidator) {
         this.requireValidator = requireValidator;

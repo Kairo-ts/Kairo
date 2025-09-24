@@ -1,5 +1,5 @@
-import { VERSION_KEYWORDS } from "../../../../constants/version_keywords";
-import { VersionManager } from "../../../../utils/VersionManager";
+import { VERSION_KEYWORDS } from "../../../constants/version_keywords";
+import { VersionManager } from "../../../utils/VersionManager";
 ;
 export class AddonInitializeActivator {
     constructor(addonInitializer) {
