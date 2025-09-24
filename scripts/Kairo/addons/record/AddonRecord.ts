@@ -1,10 +1,10 @@
 import type { AddonProperty } from "../AddonPropertyManager";
 import type { AddonInitializer } from "../router/init/AddonInitializer";
-import { VersionManager } from "../../../utils/VersionManager";
 import { DynamicPropertyStorage } from "./DynamicPropertyStorage";
-import { VERSION_KEYWORDS } from "../../../constants/version_keywords";
+import { VERSION_KEYWORDS } from "../../constants/version_keywords";
 import type { AddonData } from "../AddonManager";
-import { STORAGE_KEYWORDS } from "../../../constants/storage";
+import { STORAGE_KEYWORDS } from "../../constants/storage";
+import { VersionManager } from "../../utils/VersionManager";
 
 export interface AddonRecords {
     [id: string]: {

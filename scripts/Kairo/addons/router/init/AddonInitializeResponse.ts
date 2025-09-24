@@ -1,8 +1,8 @@
 import { system, world } from "@minecraft/server";
 import type { AddonProperty } from "../../AddonPropertyManager";
 import type { AddonInitializer } from "./AddonInitializer";
-import { SCOREBOARD_NAMES } from "../../../../constants/scoreboard";
-import { SCRIPT_EVENT_IDS } from "../../../../constants/scriptevent";
+import { SCOREBOARD_NAMES } from "../../../constants/scoreboard";
+import { SCRIPT_EVENT_IDS } from "../../../constants/scriptevent";
 
 /**
  * アドオンの properties を参照して、ルーターに応答するためのクラス

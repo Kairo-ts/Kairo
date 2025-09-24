@@ -1,6 +1,6 @@
 import { system, type ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
 import type { AddonManager } from "../AddonManager";
-import { SCRIPT_EVENT_ID_PREFIX } from "../../../constants/scriptevent";
+import { SCRIPT_EVENT_ID_PREFIX } from "../../constants/scriptevent";
 
 export class AddonRouter {
     private constructor(private readonly addonManager: AddonManager) {}

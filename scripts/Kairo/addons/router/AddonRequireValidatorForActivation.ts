@@ -1,12 +1,12 @@
 import type { Player } from "@minecraft/server";
 import type { AddonData } from "../AddonManager";
 import type { AddonRequireValidator } from "./AddonRequireValidator";
-import { ErrorManager } from "../../../utils/ErrorManager";
-import { KAIRO_TRANSLATE_IDS } from "../../../constants/translate";
+import { ErrorManager } from "../../utils/ErrorManager";
+import { KAIRO_TRANSLATE_IDS } from "../../constants/translate";
 import { MessageFormData } from "@minecraft/server-ui";
-import { VERSION_KEYWORDS } from "../../../constants/version_keywords";
-import { VersionManager } from "../../../utils/VersionManager";
-import { ConsoleManager } from "../../../utils/ConsoleManager";
+import { VERSION_KEYWORDS } from "../../constants/version_keywords";
+import { VersionManager } from "../../utils/VersionManager";
+import { ConsoleManager } from "../../utils/ConsoleManager";
 
 export class AddonRequireValidatorForActivation {
     private readonly activationQueue: Map<string, { addonData: AddonData, version: string }> = new Map();

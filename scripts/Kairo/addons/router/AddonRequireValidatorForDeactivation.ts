@@ -1,11 +1,11 @@
 import type { Player } from "@minecraft/server";
 import type { AddonData } from "../AddonManager";
 import type { AddonRequireValidator } from "./AddonRequireValidator";
-import { VersionManager } from "../../../utils/VersionManager";
-import { ConsoleManager } from "../../../utils/ConsoleManager";
-import { ErrorManager } from "../../../utils/ErrorManager";
+import { VersionManager } from "../../utils/VersionManager";
+import { ConsoleManager } from "../../utils/ConsoleManager";
+import { ErrorManager } from "../../utils/ErrorManager";
 import { MessageFormData } from "@minecraft/server-ui";
-import { KAIRO_TRANSLATE_IDS } from "../../../constants/translate";
+import { KAIRO_TRANSLATE_IDS } from "../../constants/translate";
 
 export class AddonRequireValidatorForDeactivation {
     private readonly deactivationQueue: Map<string, AddonData> = new Map();

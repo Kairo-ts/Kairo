@@ -3,7 +3,7 @@ import { AddonPropertyManager, type AddonProperty } from "./addons/AddonProperty
 import { AddonInitializer } from "./addons/router/init/AddonInitializer";
 import { AddonManager, type AddonData } from "./addons/AddonManager";
 import type { AddonRecords } from "./addons/record/AddonRecord";
-import { SCRIPT_EVENT_IDS } from "../constants/scriptevent";
+import { SCRIPT_EVENT_IDS } from "./constants/scriptevent";
 
 type ActivateHandler = () => void | Promise<void>;
 type DeactivateHandler = () => void | Promise<void>;

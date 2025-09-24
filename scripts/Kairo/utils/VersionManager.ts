@@ -1,4 +1,4 @@
-import type { SemVer } from "../properties";
+import type { SemVer } from "../../properties";
 
 export class VersionManager {
     public static toVersionString(v: SemVer): string {
