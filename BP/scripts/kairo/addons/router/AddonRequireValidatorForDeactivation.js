@@ -1,8 +1,8 @@
-import { VersionManager } from "../../../utils/VersionManager";
-import { ConsoleManager } from "../../../utils/ConsoleManager";
-import { ErrorManager } from "../../../utils/ErrorManager";
+import { VersionManager } from "../../utils/VersionManager";
+import { ConsoleManager } from "../../utils/ConsoleManager";
+import { ErrorManager } from "../../utils/ErrorManager";
 import { MessageFormData } from "@minecraft/server-ui";
-import { KAIRO_TRANSLATE_IDS } from "../../../constants/translate";
+import { KAIRO_TRANSLATE_IDS } from "../../constants/translate";
 export class AddonRequireValidatorForDeactivation {
     constructor(requireValidator) {
         this.requireValidator = requireValidator;

@@ -1,10 +1,10 @@
 import { Player, system, world } from "@minecraft/server";
 import type { AddonData, AddonManager } from "../AddonManager";
-import { SCRIPT_EVENT_ID_PREFIX, SCRIPT_EVENT_MESSAGES } from "../../../constants/scriptevent";
-import { KAIRO_TRANSLATE_IDS } from "../../../constants/translate";
+import { SCRIPT_EVENT_ID_PREFIX, SCRIPT_EVENT_MESSAGES } from "../../constants/scriptevent";
+import { KAIRO_TRANSLATE_IDS } from "../../constants/translate";
 import { AddonRequireValidator } from "./AddonRequireValidator";
-import { VERSION_KEYWORDS } from "../../../constants/version_keywords";
-import { VersionManager } from "../../../utils/VersionManager";
+import { VERSION_KEYWORDS } from "../../constants/version_keywords";
+import { VersionManager } from "../../utils/VersionManager";
 
 export class AddonActivator {
     private readonly addonRequireValidator: AddonRequireValidator;

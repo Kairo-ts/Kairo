@@ -1,15 +1,12 @@
-import { properties } from "../properties";
-
+import { properties } from "../../properties";
 export class ConsoleManager {
-    static log(message: string): void {
+    static log(message) {
         console.log(`[${properties.header.name}][Log] ${message}`);
     }
-
-    static warn(message: string): void {
+    static warn(message) {
         console.warn(`[${properties.header.name}][Warning] ${message}`);
     }
-
-    static error(message: string): void {
+    static error(message) {
         console.error(`[${properties.header.name}][Error] ${message}`);
     }
 }

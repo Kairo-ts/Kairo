@@ -2,7 +2,7 @@ import { Player, ScriptEventCommandMessageAfterEvent, system } from "@minecraft/
 import { AddonPropertyManager } from "./addons/AddonPropertyManager";
 import { AddonInitializer } from "./addons/router/init/AddonInitializer";
 import { AddonManager } from "./addons/AddonManager";
-import { SCRIPT_EVENT_IDS } from "../constants/scriptevent";
+import { SCRIPT_EVENT_IDS } from "./constants/scriptevent";
 export class Kairo {
     constructor() {
         this.initialized = false;

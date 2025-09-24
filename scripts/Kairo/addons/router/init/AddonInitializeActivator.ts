@@ -1,5 +1,5 @@
-import { VERSION_KEYWORDS } from "../../../../constants/version_keywords";
-import { VersionManager } from "../../../../utils/VersionManager";
+import { VERSION_KEYWORDS } from "../../../constants/version_keywords";
+import { VersionManager } from "../../../utils/VersionManager";
 import type { AddonData, RegistrationState } from "../../AddonManager";
 import type { AddonProperty } from "../../AddonPropertyManager";
 import type { AddonInitializer } from "./AddonInitializer";

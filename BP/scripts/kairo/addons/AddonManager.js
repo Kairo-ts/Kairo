@@ -2,7 +2,7 @@ import { AddonActivator } from "./router/AddonActivator";
 import { ScriptEventCommandMessageAfterEvent, system } from "@minecraft/server";
 import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./router/AddonReceiver";
-import { VersionManager } from "../../utils/VersionManager";
+import { VersionManager } from "../utils/VersionManager";
 import { AddonRouter } from "./router/AddonRouter";
 export class AddonManager {
     constructor(kairo) {
