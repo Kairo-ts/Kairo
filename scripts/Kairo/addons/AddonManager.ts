@@ -5,7 +5,7 @@ import type { AddonRecords } from "./record/AddonRecord";
 import { ScriptEventCommandMessageAfterEvent, system, type Player } from "@minecraft/server";
 import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./router/AddonReceiver";
-import { VersionManager } from "../../utils/VersionManager";
+import { VersionManager } from "../utils/VersionManager";
 import { AddonRouter } from "./router/AddonRouter";
 
 export type RegistrationState = "registered" | "unregistered" | "missing_requiredAddons";
