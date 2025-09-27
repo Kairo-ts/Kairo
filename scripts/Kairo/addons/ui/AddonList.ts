@@ -1,7 +1,7 @@
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import type { AddonData, AddonManager } from "../AddonManager";
 import type { Player, RawMessage, ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
-import { properties, supportedTags } from "../../../properties";
+import { supportedTags } from "../../../properties";
 import { SCRIPT_EVENT_IDS } from "../../constants/scriptevent";
 import { KAIRO_TRANSLATE_IDS } from "../../constants/translate";
 import { VERSION_KEYWORDS } from "../../constants/version_keywords";
@@ -137,8 +137,8 @@ export class AddonList {
         });
 
         const addonDataRawtexts: AddonDataRawtexts = {
-            name: { translate: `${properties.id}.name` },
-            description: { translate: `${properties.id}.description` },
+            name: { translate: `${addonData.id}.name` },
+            description: { translate: `${addonData.id}.description` },
             details: { rawtext: [ isActive, ...selectedVersion, ...lineBreak, ...activeVersionTags, { text: "§r" }] },
             required: { rawtext: [requiredAddonsRawtext ] },
             versionList: { rawtext: [{ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REGISTERED_ADDON_LIST },{ text: "\n" }, ...versionListRawtext] },
