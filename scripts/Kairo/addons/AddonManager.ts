@@ -7,6 +7,7 @@ import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./router/AddonReceiver";
 import { VersionManager } from "../utils/VersionManager";
 import { AddonRouter } from "./router/AddonRouter";
+import { DataVaultReceiver } from "./router/DataVaultReceiver";
 
 export type RegistrationState = "registered" | "unregistered" | "missing_requiredAddons";
 
@@ -39,6 +40,7 @@ export interface AddonData {
 export class AddonManager {
     private readonly activator: AddonActivator;
     private readonly receiver: AddonReceiver;
+    private readonly dataVaultReceiver: DataVaultReceiver;
     private readonly addonRouter: AddonRouter;
     private readonly addonList: AddonList;
     private readonly addonsData: Map<string, AddonData> = new Map();
@@ -46,6 +48,7 @@ export class AddonManager {
     private constructor(private readonly kairo: Kairo) {
         this.activator = AddonActivator.create(this);
         this.receiver = AddonReceiver.create(this);
+        this.dataVaultReceiver = DataVaultReceiver.create(this);
         this.addonRouter = AddonRouter.create(this);
         this.addonList = AddonList.create(this);
     }
@@ -83,6 +86,14 @@ export class AddonManager {
 
     public _scriptEvent(message: string): void {
         this.kairo._scriptEvent(message);
+    }
+
+    public dataVaultHandleOnScriptEvent(message: string): void {
+        this.dataVaultReceiver.handleOnScriptEvent(message);
+    }
+
+    public getDataVaultLastDataLoaded(): { data: string; count: number } {
+        return this.dataVaultReceiver.getLastDataLoaded();
     }
 
     public handleAddonRouterScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
