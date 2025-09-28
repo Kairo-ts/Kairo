@@ -14,3 +14,7 @@ export const SCRIPT_EVENT_MESSAGES = {
     ACTIVATE_REQUEST: "activate request",
     DEACTIVATE_REQUEST: "deactivate request"
 }
+
+export const SCRIPT_EVENT_COMMAND_IDS = {
+    DATA_LOADED: "data_loaded",
+}
