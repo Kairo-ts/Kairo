@@ -15,7 +15,6 @@ function resolveMinecraftDevPath(addonName: string, type: "behavior" | "resource
     const devRoot = path.join(userHome, "AppData", "Roaming", "Minecraft Bedrock");
     if (!fs.existsSync(devRoot)) throw new Error("Bedrock folder not found.");
 
-    const uwp = candidates[0].name;
     return path.join(
         devRoot,
         "Users",
