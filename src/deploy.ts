@@ -12,21 +12,14 @@ const __dirname = path.dirname(__filename);
 // ---------- UWP デプロイ先解決 ----------
 function resolveMinecraftDevPath(addonName: string, type: "behavior" | "resource") {
     const userHome = os.homedir();
-    const devRoot = path.join(userHome, "AppData", "Local", "Packages");
-    if (!fs.existsSync(devRoot)) throw new Error("Packages folder not found.");
-
-    const candidates = fs.readdirSync(devRoot)
-        .filter((name: string) => name.startsWith("Microsoft.MinecraftUWP"))
-        .map(name => ({ name, mtime: fs.statSync(path.join(devRoot, name)).mtimeMs }))
-        .sort((a, b) => b.mtime - a.mtime);
-
-    if (candidates.length === 0) throw new Error("Minecraft UWP folder not found.");
+    const devRoot = path.join(userHome, "AppData", "Roaming", "Minecraft Bedrock");
+    if (!fs.existsSync(devRoot)) throw new Error("Bedrock folder not found.");
 
     const uwp = candidates[0].name;
     return path.join(
         devRoot,
-        uwp,
-        "LocalState",
+        "Users",
+        "Shared",
         "games",
         "com.mojang",
         type === "behavior"
