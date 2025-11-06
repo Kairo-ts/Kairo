@@ -16,16 +16,27 @@ export class AddonInitializeRegister {
         this.ready = new Promise(resolve => {
             this._resolveReady = resolve;
         });
+        this.initializationCompleteCounter = 0;
         this.handleScriptEventReceive = (ev) => {
             const { id, message } = ev;
-            if (id !== SCRIPT_EVENT_IDS.BEHAVIOR_REGISTRATION_RESPONSE)
-                return;
-            this.add(message);
-            const addonCount = world.scoreboard.getObjective(SCOREBOARD_NAMES.ADDON_COUNTER)?.getScore(SCOREBOARD_NAMES.ADDON_COUNTER) ?? 0;
-            if (addonCount === this.registeredAddons.size) {
-                this._resolveReady?.();
-                this._resolveReady = null;
-                world.scoreboard.removeObjective(SCOREBOARD_NAMES.ADDON_COUNTER);
+            const addonCount = world.scoreboard
+                .getObjective(SCOREBOARD_NAMES.ADDON_COUNTER)
+                ?.getScore(SCOREBOARD_NAMES.ADDON_COUNTER) ?? 0;
+            switch (id) {
+                case SCRIPT_EVENT_IDS.BEHAVIOR_REGISTRATION_RESPONSE:
+                    this.add(message);
+                    break;
+                case SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZATION_COMPLETE_RESPONSE:
+                    this.initializationCompleteCounter += 1;
+                    console.log(`${this.initializationCompleteCounter} / ${addonCount} addons have completed initialization.`);
+                    if (this.initializationCompleteCounter === addonCount) {
+                        this._resolveReady?.();
+                        this._resolveReady = null;
+                        world.scoreboard.removeObjective(SCOREBOARD_NAMES.ADDON_COUNTER);
+                        ConsoleManager.log("All addons initialized. Ready!");
+                    }
+                    break;
+                default: break;
             }
         };
     }

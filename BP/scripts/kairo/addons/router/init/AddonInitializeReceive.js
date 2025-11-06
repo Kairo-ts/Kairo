@@ -13,15 +13,22 @@ export class AddonInitializeReceive {
         this.addonInitializer = addonInitializer;
         this.handleScriptEvent = (ev) => {
             const { id, message } = ev;
+            const registrationNum = this.addonInitializer.getRegistrationNum();
+            const isOwnMessage = message === registrationNum.toString();
             switch (id) {
                 case SCRIPT_EVENT_IDS.BEHAVIOR_REGISTRATION_REQUEST:
                     this.handleRegistrationRequest();
                     break;
                 case SCRIPT_EVENT_IDS.REQUEST_RESEED_SESSION_ID:
-                    this.handleRequestReseedId(message);
+                    if (isOwnMessage) {
+                        this.handleRequestReseedId();
+                    }
                     break;
                 case SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZE_REQUEST:
-                    this.subscribeReceiverHooks(message);
+                    if (isOwnMessage) {
+                        this.subscribeReceiverHooks();
+                        this.addonInitializer.sendInitializationCompleteResponse();
+                    }
                     break;
                 case SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE:
                     this.addonInitializer.unsubscribeClientHooks();
@@ -38,17 +45,11 @@ export class AddonInitializeReceive {
         this.addonInitializer.setRegistrationNum(addonCounter.getScore(SCOREBOARD_NAMES.ADDON_COUNTER) ?? 0);
         this.addonInitializer.sendResponse();
     }
-    handleRequestReseedId(message) {
-        const registrationNum = this.addonInitializer.getRegistrationNum();
-        if (message !== registrationNum.toString())
-            return;
+    handleRequestReseedId() {
         this.addonInitializer.refreshSessionId();
         this.addonInitializer.sendResponse();
     }
-    subscribeReceiverHooks(message) {
-        const registrationNum = this.addonInitializer.getRegistrationNum();
-        if (message !== registrationNum.toString())
-            return;
+    subscribeReceiverHooks() {
         this.addonInitializer.subscribeReceiverHooks();
     }
 }
