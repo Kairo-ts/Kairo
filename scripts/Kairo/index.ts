@@ -70,7 +70,6 @@ export class Kairo {
     }
 
     public static unsubscribeInitializeHooks(): void {
-        this.getInstance().addonInitializer.unsubscribeClientHooks();
         system.sendScriptEvent(SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE, "");
     }
 
