@@ -39,7 +39,6 @@ export class Kairo {
         this.addonManager.subscribeReceiverHooks();
     }
     static unsubscribeInitializeHooks() {
-        this.getInstance().addonInitializer.unsubscribeClientHooks();
         system.sendScriptEvent(SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE, "");
     }
     static dataVaultHandleOnScriptEvent(message) {
