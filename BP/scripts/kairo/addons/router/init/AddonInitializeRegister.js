@@ -18,7 +18,7 @@ export class AddonInitializeRegister {
         });
         this.handleScriptEventReceive = (ev) => {
             const { id, message } = ev;
-            if (id !== SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZE_RESPONSE)
+            if (id !== SCRIPT_EVENT_IDS.BEHAVIOR_REGISTRATION_RESPONSE)
                 return;
             this.add(message);
             const addonCount = world.scoreboard.getObjective(SCOREBOARD_NAMES.ADDON_COUNTER)?.getScore(SCOREBOARD_NAMES.ADDON_COUNTER) ?? 0;
@@ -44,7 +44,7 @@ export class AddonInitializeRegister {
         }
         ConsoleManager.log(`Registering addon: ${addonProperties.name} - ver.${VersionManager.toVersionString(addonProperties.version)}`);
         this.registeredAddons.set(addonProperties.sessionId, addonProperties);
-        this.addonInitializer.subscribeReceiverHooks();
+        system.sendScriptEvent(SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZE_REQUEST, registrationNum.toString());
     }
     has(sessionId) {
         return this.registeredAddons.has(sessionId);

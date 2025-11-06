@@ -24,7 +24,7 @@ export class AddonInitializeResponse {
      */
     public sendResponse(addonProperty: AddonProperty): void {
         system.sendScriptEvent(
-            SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZE_RESPONSE, 
+            SCRIPT_EVENT_IDS.BEHAVIOR_REGISTRATION_RESPONSE, 
             JSON.stringify([
                 addonProperty,
                 world.scoreboard.getObjective(SCOREBOARD_NAMES.ADDON_COUNTER)?.getScore(SCOREBOARD_NAMES.ADDON_COUNTER) ?? 0

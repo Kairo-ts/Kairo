@@ -31,6 +31,6 @@ export class AddonInitializeRequest {
          * Send a scriptEvent to request registration from each addon
          */
         ConsoleManager.log("World loaded. Sending core initialization request...");
-        system.sendScriptEvent(SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZE_REQUEST, "");
+        system.sendScriptEvent(SCRIPT_EVENT_IDS.BEHAVIOR_REGISTRATION_REQUEST, "");
     }
 }

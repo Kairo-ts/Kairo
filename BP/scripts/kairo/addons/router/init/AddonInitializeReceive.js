@@ -14,11 +14,14 @@ export class AddonInitializeReceive {
         this.handleScriptEvent = (ev) => {
             const { id, message } = ev;
             switch (id) {
-                case SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZE_REQUEST:
-                    this.handleInitializeRequest();
+                case SCRIPT_EVENT_IDS.BEHAVIOR_REGISTRATION_REQUEST:
+                    this.handleRegistrationRequest();
                     break;
                 case SCRIPT_EVENT_IDS.REQUEST_RESEED_SESSION_ID:
                     this.handleRequestReseedId(message);
+                    break;
+                case SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZE_REQUEST:
+                    this.subscribeReceiverHooks(message);
                     break;
                 case SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE:
                     this.addonInitializer.unsubscribeClientHooks();
@@ -29,7 +32,7 @@ export class AddonInitializeReceive {
     static create(addonInitializer) {
         return new AddonInitializeReceive(addonInitializer);
     }
-    handleInitializeRequest() {
+    handleRegistrationRequest() {
         const addonCounter = ScoreboardManager.ensureObjective(SCOREBOARD_NAMES.ADDON_COUNTER);
         addonCounter.addScore(SCOREBOARD_NAMES.ADDON_COUNTER, 1);
         this.addonInitializer.setRegistrationNum(addonCounter.getScore(SCOREBOARD_NAMES.ADDON_COUNTER) ?? 0);
@@ -41,5 +44,11 @@ export class AddonInitializeReceive {
             return;
         this.addonInitializer.refreshSessionId();
         this.addonInitializer.sendResponse();
+    }
+    subscribeReceiverHooks(message) {
+        const registrationNum = this.addonInitializer.getRegistrationNum();
+        if (message !== registrationNum.toString())
+            return;
+        this.addonInitializer.subscribeReceiverHooks();
     }
 }
