@@ -3,7 +3,7 @@ import { ConsoleManager } from "../../../utils/ConsoleManager";
 import type { AddonInitializer } from "./AddonInitializer";
 import { ScoreboardManager } from "../../../utils/ScoreboardManager";
 import { SCOREBOARD_NAMES } from "../../../constants/scoreboard";
-import { SCRIPT_EVENT_IDS } from "../../../constants/scriptevent";
+import { SCRIPT_EVENT_IDS, SCRIPT_EVENT_MESSAGES } from "../../../constants/scriptevent";
 
 /**
  * ルーターが各アドオンに登録要求を送るためのクラス
@@ -35,6 +35,6 @@ export class AddonInitializeRequest {
          * Send a scriptEvent to request registration from each addon
          */
         ConsoleManager.log("World loaded. Sending core initialization request...");
-        system.sendScriptEvent(SCRIPT_EVENT_IDS.BEHAVIOR_REGISTRATION_REQUEST, "");
+        system.sendScriptEvent(SCRIPT_EVENT_IDS.BEHAVIOR_REGISTRATION_REQUEST, SCRIPT_EVENT_MESSAGES.NONE);
     }
 }

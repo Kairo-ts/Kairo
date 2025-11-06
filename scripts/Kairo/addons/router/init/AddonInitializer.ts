@@ -8,6 +8,7 @@ import type { Kairo } from "../../..";
 import type { AddonProperty } from "../../AddonPropertyManager";
 import { AddonInitializeActivator } from "./AddonInitializeActivator";
 import type { AddonData } from "../../AddonManager";
+import { SCRIPT_EVENT_IDS, SCRIPT_EVENT_MESSAGES } from "../../../constants/scriptevent";
 
 export class AddonInitializer {
     private registrationNum: number = 0;
@@ -59,6 +60,10 @@ export class AddonInitializer {
 
     public getRegistrationNum(): number {
         return this.registrationNum;
+    }
+
+    public sendInitializationCompleteResponse(): void {
+        this.response.sendInitializationCompleteResponse();
     }
 
     /**
