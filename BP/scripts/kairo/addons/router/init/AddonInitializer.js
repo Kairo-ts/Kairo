@@ -5,6 +5,7 @@ import { AddonInitializeRequest } from "./AddonInitializeRequest";
 import { AddonInitializeResponse } from "./AddonInitializeResponse";
 import { AddonRecord } from "../../record/AddonRecord";
 import { AddonInitializeActivator } from "./AddonInitializeActivator";
+import { SCRIPT_EVENT_IDS, SCRIPT_EVENT_MESSAGES } from "../../../constants/scriptevent";
 export class AddonInitializer {
     constructor(kairo) {
         this.kairo = kairo;
@@ -40,6 +41,9 @@ export class AddonInitializer {
     }
     getRegistrationNum() {
         return this.registrationNum;
+    }
+    sendInitializationCompleteResponse() {
+        this.response.sendInitializationCompleteResponse();
     }
     /**
      * WorldLoadとScriptEventReceiveに、BehaviorInitializeのハンドルを追加する

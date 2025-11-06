@@ -2,7 +2,7 @@ import { system, world } from "@minecraft/server";
 import type { AddonProperty } from "../../AddonPropertyManager";
 import type { AddonInitializer } from "./AddonInitializer";
 import { SCOREBOARD_NAMES } from "../../../constants/scoreboard";
-import { SCRIPT_EVENT_IDS } from "../../../constants/scriptevent";
+import { SCRIPT_EVENT_IDS, SCRIPT_EVENT_MESSAGES } from "../../../constants/scriptevent";
 
 /**
  * アドオンの properties を参照して、ルーターに応答するためのクラス
@@ -29,6 +29,13 @@ export class AddonInitializeResponse {
                 addonProperty,
                 world.scoreboard.getObjective(SCOREBOARD_NAMES.ADDON_COUNTER)?.getScore(SCOREBOARD_NAMES.ADDON_COUNTER) ?? 0
             ])
+        );
+    }
+
+    public sendInitializationCompleteResponse(): void {
+        system.sendScriptEvent(
+            SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZATION_COMPLETE_RESPONSE,
+            SCRIPT_EVENT_MESSAGES.NONE
         );
     }
 }

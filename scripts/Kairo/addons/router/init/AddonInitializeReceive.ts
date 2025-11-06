@@ -21,15 +21,23 @@ export class AddonInitializeReceive {
     public handleScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
         const { id, message } = ev;
 
+        const registrationNum = this.addonInitializer.getRegistrationNum();
+        const isOwnMessage = message === registrationNum.toString();
+
         switch (id) {
             case SCRIPT_EVENT_IDS.BEHAVIOR_REGISTRATION_REQUEST:
                 this.handleRegistrationRequest();
                 break;
             case SCRIPT_EVENT_IDS.REQUEST_RESEED_SESSION_ID:
-                this.handleRequestReseedId(message);
+                if (isOwnMessage) {
+                    this.handleRequestReseedId();
+                }
                 break;
             case SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZE_REQUEST:
-                this.subscribeReceiverHooks(message);
+                if (isOwnMessage) {
+                    this.subscribeReceiverHooks();
+                    this.addonInitializer.sendInitializationCompleteResponse();
+                }
                 break;
             case SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE:
                 this.addonInitializer.unsubscribeClientHooks();
@@ -45,18 +53,12 @@ export class AddonInitializeReceive {
         this.addonInitializer.sendResponse();
     }
 
-    private handleRequestReseedId(message: string): void {
-        const registrationNum = this.addonInitializer.getRegistrationNum();
-        if (message !== registrationNum.toString()) return;
-
+    private handleRequestReseedId(): void {
         this.addonInitializer.refreshSessionId();
         this.addonInitializer.sendResponse();
     }
 
-    private subscribeReceiverHooks(message: string): void {
-        const registrationNum = this.addonInitializer.getRegistrationNum();
-        if (message !== registrationNum.toString()) return;
-
+    private subscribeReceiverHooks(): void {
         this.addonInitializer.subscribeReceiverHooks();
     }
 }

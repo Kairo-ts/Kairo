@@ -19,6 +19,8 @@ export class AddonInitializeRegister {
         this._resolveReady = resolve;
     });
 
+    private initializationCompleteCounter: number = 0;
+
     private constructor(private readonly addonInitializer: AddonInitializer) {}
     public static create(addonInitializer: AddonInitializer): AddonInitializeRegister {
         return new AddonInitializeRegister(addonInitializer);
@@ -27,14 +29,26 @@ export class AddonInitializeRegister {
     public handleScriptEventReceive = (ev: ScriptEventCommandMessageAfterEvent): void => {
         const { id, message } = ev;
 
-        if (id !== SCRIPT_EVENT_IDS.BEHAVIOR_REGISTRATION_RESPONSE) return;
-        this.add(message);
+        const addonCount: number = world.scoreboard
+            .getObjective(SCOREBOARD_NAMES.ADDON_COUNTER)
+            ?.getScore(SCOREBOARD_NAMES.ADDON_COUNTER) ?? 0;
 
-        const addonCount: number = world.scoreboard.getObjective(SCOREBOARD_NAMES.ADDON_COUNTER)?.getScore(SCOREBOARD_NAMES.ADDON_COUNTER) ?? 0;
-        if (addonCount === this.registeredAddons.size) {
-            this._resolveReady?.();
-            this._resolveReady = null;
-            world.scoreboard.removeObjective(SCOREBOARD_NAMES.ADDON_COUNTER);
+        switch (id) {
+            case SCRIPT_EVENT_IDS.BEHAVIOR_REGISTRATION_RESPONSE:
+                this.add(message);
+                break;
+            case SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZATION_COMPLETE_RESPONSE:
+                this.initializationCompleteCounter += 1;
+
+                console.log(`${this.initializationCompleteCounter} / ${addonCount} addons have completed initialization.`);
+                if (this.initializationCompleteCounter === addonCount) {
+                    this._resolveReady?.();
+                    this._resolveReady = null;
+                    world.scoreboard.removeObjective(SCOREBOARD_NAMES.ADDON_COUNTER);
+                    ConsoleManager.log("All addons initialized. Ready!");
+                }
+                break;
+            default: break;
         }
     }
 
