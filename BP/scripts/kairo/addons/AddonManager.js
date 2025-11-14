@@ -59,12 +59,12 @@ export class AddonManager {
         if (!addonData)
             return undefined;
         const sorted = Object.keys(addonData.versions)
-            .filter(v => addonData.versions[v]?.isRegistered)
+            .filter((v) => addonData.versions[v]?.isRegistered)
             .sort((a, b) => VersionManager.compare(b, a));
         if (sorted.length === 0) {
             return undefined;
         }
-        const stable = sorted.find(v => !VersionManager.fromString(v).prerelease);
+        const stable = sorted.find((v) => !VersionManager.fromString(v).prerelease);
         return stable ?? sorted[0];
     }
     getLatestVersion(id) {
@@ -72,7 +72,7 @@ export class AddonManager {
         if (!addonData)
             return undefined;
         const latestVersion = Object.keys(addonData.versions)
-            .filter(v => addonData.versions[v]?.isRegistered)
+            .filter((v) => addonData.versions[v]?.isRegistered)
             .sort((a, b) => VersionManager.compare(b, a))[0];
         return latestVersion ?? undefined;
     }

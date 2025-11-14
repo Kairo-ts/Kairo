@@ -18,7 +18,7 @@ export function writePackIcon(rootDir: string) {
         const rpIcon = path.join(rootDir, "RP", "pack_icon.png");
         const rpTexturesIcon = path.join(rootDir, "RP", "textures", properties.id, "pack_icon.png");
 
-        [rpIcon, rpTexturesIcon].forEach(dst => {
+        [rpIcon, rpTexturesIcon].forEach((dst) => {
             fse.ensureDirSync(path.dirname(dst));
             fse.copyFileSync(srcIcon, dst);
         });

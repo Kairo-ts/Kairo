@@ -21,10 +21,8 @@ function resolveMinecraftDevPath(addonName: string, type: "behavior" | "resource
         "Shared",
         "games",
         "com.mojang",
-        type === "behavior"
-            ? "development_behavior_packs"
-            : "development_resource_packs",
-        addonName
+        type === "behavior" ? "development_behavior_packs" : "development_resource_packs",
+        addonName,
     );
 }
 
@@ -66,7 +64,7 @@ async function main() {
     }
 }
 
-main().catch(err => {
+main().catch((err) => {
     console.error(err);
     process.exit(1);
 });

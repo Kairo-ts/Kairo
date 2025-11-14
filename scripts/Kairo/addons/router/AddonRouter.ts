@@ -4,7 +4,7 @@ import { SCRIPT_EVENT_ID_PREFIX } from "../../constants/scriptevent";
 
 export class AddonRouter {
     private constructor(private readonly addonManager: AddonManager) {}
-    
+
     public static create(addonManager: AddonManager): AddonRouter {
         return new AddonRouter(addonManager);
     }
@@ -21,6 +21,9 @@ export class AddonRouter {
         const activeVersionData = addonData.versions[addonData.activeVersion];
         if (!activeVersionData) return;
 
-        system.sendScriptEvent(`${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${activeVersionData.sessionId}`, message);
+        system.sendScriptEvent(
+            `${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${activeVersionData.sessionId}`,
+            message,
+        );
     }
 }

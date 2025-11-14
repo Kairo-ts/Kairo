@@ -4,31 +4,32 @@
  */
 
 export type SemVer = {
-    major: number; minor: number; patch: number;
+    major: number;
+    minor: number;
+    patch: number;
     prerelease?: string | undefined; // "preview.3" / "rc.1"
-    build?: string | undefined;      // "abc123" (commit)
+    build?: string | undefined; // "abc123" (commit)
 };
 
 export const properties = {
     id: "kairo", // a-z & 0-9 - _
-    metadata: { 
+    metadata: {
         /** 製作者の名前 */
-        authors: [
-            "shizuku86"
-        ]
+        authors: ["shizuku86"],
     },
     header: {
         name: "Kairo",
-        description: "Enables communication between multiple behavior packs by leveraging the ScriptAPI as a communication layer.",
-        version: { 
-            major: 1, 
-            minor: 0, 
+        description:
+            "Enables communication between multiple behavior packs by leveraging the ScriptAPI as a communication layer.",
+        version: {
+            major: 1,
+            minor: 0,
             patch: 0,
             prerelease: "dev.40",
             // build: "abc123",
         },
-        min_engine_version: [ 1,21,100 ],
-        uuid: "45826daa-bf9f-4443-b746-944a0970bfef"
+        min_engine_version: [1, 21, 100],
+        uuid: "45826daa-bf9f-4443-b746-944a0970bfef",
     },
     resourcepack: {
         name: "Use BP Name",
@@ -39,37 +40,29 @@ export const properties = {
     modules: [
         {
             type: "script",
-			language: "javascript",
-			entry: "scripts/index.js",
+            language: "javascript",
+            entry: "scripts/index.js",
             version: "header.version",
-            uuid: "1d3bfdf2-7456-435b-bacf-c94c0d7b7c64"
-        }
+            uuid: "1d3bfdf2-7456-435b-bacf-c94c0d7b7c64",
+        },
     ],
     dependencies: [
-		{
-			module_name: "@minecraft/server",
-			version: "2.1.0"
-		},
-		{
-			module_name: "@minecraft/server-ui",
-			version: "2.0.0"
-		}
-	],
+        {
+            module_name: "@minecraft/server",
+            version: "2.1.0",
+        },
+        {
+            module_name: "@minecraft/server-ui",
+            version: "2.0.0",
+        },
+    ],
     /** 前提アドオン */
     requiredAddons: {
         /**
          * id: version (string) // "kairo": "1.0.0"
          */
     },
-    tags: [
-        "official",
-        "stable",
-    ],
-}
+    tags: ["official", "stable"],
+};
 
-export const supportedTags: string[] = [
-    "official",
-    "approved",
-    "stable",
-    "experimental"
-]
+export const supportedTags: string[] = ["official", "approved", "stable", "experimental"];

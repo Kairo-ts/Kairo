@@ -7,7 +7,7 @@ import { SCOREBOARD_NAMES } from "../../../constants/scoreboard";
 /**
  * 各アドオンが、ルーターからのリクエストを受け取るためのクラス
  * 受け取った initializeRequest を、そのまま AddonInitializeResponseへ流します
- * 
+ *
  * A class responsible for receiving requests from the router in each addon.
  * Forwards the received initializeRequest directly to AddonInitializeResponse.
  */
@@ -43,12 +43,14 @@ export class AddonInitializeReceive {
                 this.addonInitializer.unsubscribeClientHooks();
                 break;
         }
-    }
+    };
 
     private handleRegistrationRequest(): void {
         const addonCounter = ScoreboardManager.ensureObjective(SCOREBOARD_NAMES.ADDON_COUNTER);
         addonCounter.addScore(SCOREBOARD_NAMES.ADDON_COUNTER, 1);
-        this.addonInitializer.setRegistrationNum(addonCounter.getScore(SCOREBOARD_NAMES.ADDON_COUNTER) ?? 0);
+        this.addonInitializer.setRegistrationNum(
+            addonCounter.getScore(SCOREBOARD_NAMES.ADDON_COUNTER) ?? 0,
+        );
 
         this.addonInitializer.sendResponse();
     }

@@ -26,5 +26,5 @@ export class AddonReceiver {
                 this.addonManager._scriptEvent(message);
                 break;
         }
-    }
+    };
 }

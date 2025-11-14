@@ -18,7 +18,7 @@ export class AddonRecord {
                 description: ["0.0.0", ""],
                 selectedVersion: VERSION_KEYWORDS.LATEST,
                 versions: Object.keys(addonData?.versions),
-                isActive: true
+                isActive: true,
             };
         }
         addonRecords[id].description = addonData.description;
@@ -28,7 +28,7 @@ export class AddonRecord {
     }
     saveAddons(addons) {
         const addonRecords = this.loadAddons();
-        addons.forEach(addon => {
+        addons.forEach((addon) => {
             const { id, name, version } = addon;
             const vStr = VersionManager.toVersionString(version);
             if (!addonRecords[id]) {
@@ -37,7 +37,7 @@ export class AddonRecord {
                     description: ["0.0.0", ""],
                     selectedVersion: VERSION_KEYWORDS.LATEST,
                     versions: [],
-                    isActive: true
+                    isActive: true,
                 };
             }
             if (VersionManager.compare(addonRecords[id].description[0], vStr) === -1) {

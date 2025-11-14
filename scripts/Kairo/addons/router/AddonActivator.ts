@@ -17,8 +17,17 @@ export class AddonActivator {
         return new AddonActivator(addonManager);
     }
 
-    public async activateAddon(player: Player, addonData: AddonData, version: string): Promise<void> {
-        const activateAddonIds = await this.addonRequireValidator.validateRequiredAddonsForActivation(player, addonData, version);
+    public async activateAddon(
+        player: Player,
+        addonData: AddonData,
+        version: string,
+    ): Promise<void> {
+        const activateAddonIds =
+            await this.addonRequireValidator.validateRequiredAddonsForActivation(
+                player,
+                addonData,
+                version,
+            );
         if (activateAddonIds.length === 0) return;
 
         const addonsData = this.getAddonsData();
@@ -29,9 +38,10 @@ export class AddonActivator {
                 if (data.id === addonData.id) data.selectedVersion = version;
                 else data.selectedVersion = VERSION_KEYWORDS.LATEST;
 
-                const newActiveVersion = data.selectedVersion === VERSION_KEYWORDS.LATEST
-                    ? this.addonManager.getLatestPreferStableVersion(data.id)
-                    : data.selectedVersion;
+                const newActiveVersion =
+                    data.selectedVersion === VERSION_KEYWORDS.LATEST
+                        ? this.addonManager.getLatestPreferStableVersion(data.id)
+                        : data.selectedVersion;
                 if (newActiveVersion === undefined) continue;
 
                 /**
@@ -43,9 +53,13 @@ export class AddonActivator {
                     const oldActiveVersionData = data.versions[data.activeVersion];
                     const oldSessionId = oldActiveVersionData?.sessionId;
                     if (oldSessionId) this.sendDeactiveRequest(oldSessionId);
-                }
-                else if (compare > 0) {
-                    const deactivateAddonIds = await this.addonRequireValidator.validateRequiredAddonsForDeactivation(player, data, newActiveVersion);
+                } else if (compare > 0) {
+                    const deactivateAddonIds =
+                        await this.addonRequireValidator.validateRequiredAddonsForDeactivation(
+                            player,
+                            data,
+                            newActiveVersion,
+                        );
                     this.deactivateAddons(deactivateAddonIds);
                 }
 
@@ -54,14 +68,21 @@ export class AddonActivator {
                 const newSessionId = newActiveVersionData?.sessionId;
                 if (newSessionId) this.sendActiveRequest(newSessionId);
 
-                world.sendMessage({ translate: KAIRO_TRANSLATE_IDS.ADDON_ACTIVE, with: [data.name, newActiveVersion]});
+                world.sendMessage({
+                    translate: KAIRO_TRANSLATE_IDS.ADDON_ACTIVE,
+                    with: [data.name, newActiveVersion],
+                });
                 this.addonManager.saveAddon(data);
             }
         }
     }
 
     public async deactivateAddon(player: Player, addonData: AddonData): Promise<void> {
-        const deactivateAddonIds = await this.addonRequireValidator.validateRequiredAddonsForDeactivation(player, addonData);
+        const deactivateAddonIds =
+            await this.addonRequireValidator.validateRequiredAddonsForDeactivation(
+                player,
+                addonData,
+            );
         this.deactivateAddons(deactivateAddonIds);
     }
 
@@ -76,7 +97,10 @@ export class AddonActivator {
                 const sessionId = activeVersionData?.sessionId;
                 if (sessionId) this.sendDeactiveRequest(sessionId);
 
-                world.sendMessage({ translate: KAIRO_TRANSLATE_IDS.ADDON_DEACTIVE, with: [data.name]});
+                world.sendMessage({
+                    translate: KAIRO_TRANSLATE_IDS.ADDON_DEACTIVE,
+                    with: [data.name],
+                });
                 this.addonManager.saveAddon(data);
             }
         }
@@ -87,11 +111,17 @@ export class AddonActivator {
     }
 
     public sendActiveRequest(sessionId: string): void {
-        system.sendScriptEvent(`${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${sessionId}`, SCRIPT_EVENT_MESSAGES.ACTIVATE_REQUEST);
+        system.sendScriptEvent(
+            `${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${sessionId}`,
+            SCRIPT_EVENT_MESSAGES.ACTIVATE_REQUEST,
+        );
     }
 
     public sendDeactiveRequest(sessionId: string): void {
-        system.sendScriptEvent(`${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${sessionId}`, SCRIPT_EVENT_MESSAGES.DEACTIVATE_REQUEST);
+        system.sendScriptEvent(
+            `${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${sessionId}`,
+            SCRIPT_EVENT_MESSAGES.DEACTIVATE_REQUEST,
+        );
     }
 
     public getLatestPreferStableVersion(id: string): string | undefined {

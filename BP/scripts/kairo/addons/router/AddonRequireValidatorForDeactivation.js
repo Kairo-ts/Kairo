@@ -33,8 +33,13 @@ export class AddonRequireValidatorForDeactivation {
                     .join("\n");
                 const messageForm = new MessageFormData()
                     .title({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_TITLE })
-                    .body({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_DEACTIVATION_BODY, with: [queueAddonList] })
-                    .button1({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_DEACTIVE_CONFIRM })
+                    .body({
+                    translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_DEACTIVATION_BODY,
+                    with: [queueAddonList],
+                })
+                    .button1({
+                    translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_DEACTIVE_CONFIRM,
+                })
                     .button2({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_CANCEL });
                 const { selection, canceled } = await messageForm.show(player);
                 if (canceled || selection === undefined || selection === 1) {

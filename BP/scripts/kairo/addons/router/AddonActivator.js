@@ -50,7 +50,10 @@ export class AddonActivator {
                 const newSessionId = newActiveVersionData?.sessionId;
                 if (newSessionId)
                     this.sendActiveRequest(newSessionId);
-                world.sendMessage({ translate: KAIRO_TRANSLATE_IDS.ADDON_ACTIVE, with: [data.name, newActiveVersion] });
+                world.sendMessage({
+                    translate: KAIRO_TRANSLATE_IDS.ADDON_ACTIVE,
+                    with: [data.name, newActiveVersion],
+                });
                 this.addonManager.saveAddon(data);
             }
         }
@@ -69,7 +72,10 @@ export class AddonActivator {
                 const sessionId = activeVersionData?.sessionId;
                 if (sessionId)
                     this.sendDeactiveRequest(sessionId);
-                world.sendMessage({ translate: KAIRO_TRANSLATE_IDS.ADDON_DEACTIVE, with: [data.name] });
+                world.sendMessage({
+                    translate: KAIRO_TRANSLATE_IDS.ADDON_DEACTIVE,
+                    with: [data.name],
+                });
                 this.addonManager.saveAddon(data);
             }
         }

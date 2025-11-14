@@ -5,19 +5,19 @@ interface ErrorDetail {
 }
 
 export const ErrorDetails: Record<string, ErrorDetail> = {
-    "kairo_error_not_found": {
+    kairo_error_not_found: {
         errorMessageId: "kairo.error.not.found.message",
         errorHintId: "kairo.error.not.found.hint",
-        errorCode: "E000001"
+        errorCode: "E000001",
     },
-    "kairo_resolve_for_activation_error": {
+    kairo_resolve_for_activation_error: {
         errorMessageId: "kairo.error.resolve.for.activation.message",
         errorHintId: "kairo.error.resolve.for.activation.hint",
-        errorCode: "E100001"
+        errorCode: "E100001",
     },
-    "kairo_resolve_for_deactivation_error": {
+    kairo_resolve_for_deactivation_error: {
         errorMessageId: "kairo.error.resolve.for.deactivation.message",
         errorHintId: "kairo.error.resolve.for.deactivation.hint",
-        errorCode: "E100002"
-    }
-}
+        errorCode: "E100002",
+    },
+};

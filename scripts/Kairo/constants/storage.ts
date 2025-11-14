@@ -1,3 +1,3 @@
 export const STORAGE_KEYWORDS = {
-    ADDON_RECORDS: "AddonRecords"
-}
+    ADDON_RECORDS: "AddonRecords",
+};

@@ -30,8 +30,13 @@ export class AddonRequireValidatorForActivation {
                     .join("\n");
                 const messageForm = new MessageFormData()
                     .title({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_TITLE })
-                    .body({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_ACTIVATION_BODY, with: [queueAddonList] })
-                    .button1({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_ACTIVE_CONFIRM })
+                    .body({
+                    translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_ACTIVATION_BODY,
+                    with: [queueAddonList],
+                })
+                    .button1({
+                    translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_ACTIVE_CONFIRM,
+                })
                     .button2({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED_CANCEL });
                 const { selection, canceled } = await messageForm.show(player);
                 if (canceled || selection === undefined || selection === 1) {
@@ -88,7 +93,8 @@ export class AddonRequireValidatorForActivation {
                     }
                     if (VersionManager.compare(requireLatestStableVersion, version) < 0) {
                         const requireLatestVersion = this.requireValidator.getLatestVersion(id);
-                        if (!requireLatestVersion || VersionManager.compare(requireLatestVersion, version) < 0) {
+                        if (!requireLatestVersion ||
+                            VersionManager.compare(requireLatestVersion, version) < 0) {
                             ConsoleManager.error(`Addon data corrupted: missing required=${id}@${version}`);
                             return false;
                         }

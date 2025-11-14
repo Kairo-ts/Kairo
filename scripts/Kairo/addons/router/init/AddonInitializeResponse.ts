@@ -7,7 +7,7 @@ import { SCRIPT_EVENT_IDS, SCRIPT_EVENT_MESSAGES } from "../../../constants/scri
 /**
  * アドオンの properties を参照して、ルーターに応答するためのクラス
  * propertiesの必要な部分を抜粋して、JSON.stringifyで送信します
- * 
+ *
  * A class that responds to the router by referencing the addon's properties
  * Extracts the necessary parts of the properties and sends them using JSON.stringify
  */
@@ -24,18 +24,20 @@ export class AddonInitializeResponse {
      */
     public sendResponse(addonProperty: AddonProperty): void {
         system.sendScriptEvent(
-            SCRIPT_EVENT_IDS.BEHAVIOR_REGISTRATION_RESPONSE, 
+            SCRIPT_EVENT_IDS.BEHAVIOR_REGISTRATION_RESPONSE,
             JSON.stringify([
                 addonProperty,
-                world.scoreboard.getObjective(SCOREBOARD_NAMES.ADDON_COUNTER)?.getScore(SCOREBOARD_NAMES.ADDON_COUNTER) ?? 0
-            ])
+                world.scoreboard
+                    .getObjective(SCOREBOARD_NAMES.ADDON_COUNTER)
+                    ?.getScore(SCOREBOARD_NAMES.ADDON_COUNTER) ?? 0,
+            ]),
         );
     }
 
     public sendInitializationCompleteResponse(): void {
         system.sendScriptEvent(
             SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZATION_COMPLETE_RESPONSE,
-            SCRIPT_EVENT_MESSAGES.NONE
+            SCRIPT_EVENT_MESSAGES.NONE,
         );
     }
 }

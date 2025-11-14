@@ -24,5 +24,5 @@ export const KAIRO_TRANSLATE_IDS = {
     ADDON_SETTING_REQUIRED_CANCEL: "kairo.addonSetting.required.cancel",
     ERROR_FORM_TITLE: "kairo.errorForm.title",
     ERROR_FORM_HEADER: "kairo.errorForm.header",
-    ERROR_FORM_FOOTER: "kairo.errorForm.footer"
+    ERROR_FORM_FOOTER: "kairo.errorForm.footer",
 };

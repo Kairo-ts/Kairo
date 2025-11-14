@@ -6,9 +6,7 @@ export const properties = {
     id: "kairo", // a-z & 0-9 - _
     metadata: {
         /** 製作者の名前 */
-        authors: [
-            "shizuku86"
-        ]
+        authors: ["shizuku86"],
     },
     header: {
         name: "Kairo",
@@ -21,7 +19,7 @@ export const properties = {
             // build: "abc123",
         },
         min_engine_version: [1, 21, 100],
-        uuid: "45826daa-bf9f-4443-b746-944a0970bfef"
+        uuid: "45826daa-bf9f-4443-b746-944a0970bfef",
     },
     resourcepack: {
         name: "Use BP Name",
@@ -35,18 +33,18 @@ export const properties = {
             language: "javascript",
             entry: "scripts/index.js",
             version: "header.version",
-            uuid: "1d3bfdf2-7456-435b-bacf-c94c0d7b7c64"
-        }
+            uuid: "1d3bfdf2-7456-435b-bacf-c94c0d7b7c64",
+        },
     ],
     dependencies: [
         {
             module_name: "@minecraft/server",
-            version: "2.1.0"
+            version: "2.1.0",
         },
         {
             module_name: "@minecraft/server-ui",
-            version: "2.0.0"
-        }
+            version: "2.0.0",
+        },
     ],
     /** 前提アドオン */
     requiredAddons: {
@@ -54,14 +52,6 @@ export const properties = {
      * id: version (string) // "kairo": "1.0.0"
      */
     },
-    tags: [
-        "official",
-        "stable",
-    ],
+    tags: ["official", "stable"],
 };
-export const supportedTags = [
-    "official",
-    "approved",
-    "stable",
-    "experimental"
-];
+export const supportedTags = ["official", "approved", "stable", "experimental"];

@@ -22,7 +22,9 @@ export class AddonInitializeResponse {
     sendResponse(addonProperty) {
         system.sendScriptEvent(SCRIPT_EVENT_IDS.BEHAVIOR_REGISTRATION_RESPONSE, JSON.stringify([
             addonProperty,
-            world.scoreboard.getObjective(SCOREBOARD_NAMES.ADDON_COUNTER)?.getScore(SCOREBOARD_NAMES.ADDON_COUNTER) ?? 0
+            world.scoreboard
+                .getObjective(SCOREBOARD_NAMES.ADDON_COUNTER)
+                ?.getScore(SCOREBOARD_NAMES.ADDON_COUNTER) ?? 0,
         ]));
     }
     sendInitializationCompleteResponse() {

@@ -11,7 +11,7 @@ export interface AddonRecords {
         name: string;
         description: [string, string];
         selectedVersion: string;
-        versions: string[]
+        versions: string[];
         isActive: boolean;
     };
 }
@@ -33,21 +33,21 @@ export class AddonRecord {
                 description: ["0.0.0", ""],
                 selectedVersion: VERSION_KEYWORDS.LATEST,
                 versions: Object.keys(addonData?.versions),
-                isActive: true
-            }
+                isActive: true,
+            };
         }
 
         addonRecords[id].description = addonData.description;
         addonRecords[id].selectedVersion = addonData.selectedVersion;
         addonRecords[id].isActive = addonData.isActive;
-        
+
         DynamicPropertyStorage.save(STORAGE_KEYWORDS.ADDON_RECORDS, addonRecords);
     }
 
     public saveAddons(addons: AddonProperty[]): void {
         const addonRecords: AddonRecords = this.loadAddons();
 
-        addons.forEach(addon => {
+        addons.forEach((addon) => {
             const { id, name, version } = addon;
             const vStr = VersionManager.toVersionString(version);
 
@@ -57,7 +57,7 @@ export class AddonRecord {
                     description: ["0.0.0", ""],
                     selectedVersion: VERSION_KEYWORDS.LATEST,
                     versions: [],
-                    isActive: true
+                    isActive: true,
                 };
             }
 

@@ -4,7 +4,9 @@ import { properties } from "../scripts/properties";
 
 export type Triple = [number, number, number];
 export type SemVer = {
-    major: number; minor: number; patch: number;
+    major: number;
+    minor: number;
+    patch: number;
     prerelease?: string;
     build?: string;
 };
@@ -23,7 +25,7 @@ export function resolveVersionRef(ref: any, headerSemver: SemVer): Triple {
     if (ref === "header.version") return toManifestTriple(headerSemver);
     if (Array.isArray(ref) && ref.length >= 3) return [ref[0], ref[1], ref[2]];
     if (typeof ref === "string" && /^\d+\.\d+\.\d+$/.test(ref)) {
-        const [a, b, c] = ref.split(".").map(n => parseInt(n, 10));
+        const [a, b, c] = ref.split(".").map((n) => parseInt(n, 10));
         return [a, b, c];
     }
     return toManifestTriple(headerSemver);
@@ -73,9 +75,7 @@ export function buildRPManifest(props: any, bpHeader: any, bpUUID: string) {
     const v: SemVer = props.header.version as SemVer;
 
     const name =
-        props.resourcepack.name === "Use BP Name"
-            ? bpHeader.name
-            : props.resourcepack.name;
+        props.resourcepack.name === "Use BP Name" ? bpHeader.name : props.resourcepack.name;
 
     const description =
         props.resourcepack.description === "Use BP Description"
@@ -103,9 +103,7 @@ export function buildRPManifest(props: any, bpHeader: any, bpUUID: string) {
             format_version: 2,
             header,
             modules,
-            dependencies: [
-                { uuid: bpUUID, version: toManifestTriple(v) },
-            ],
+            dependencies: [{ uuid: bpUUID, version: toManifestTriple(v) }],
         },
         versionString: toVersionString(v),
     };
@@ -121,11 +119,7 @@ export function writeManifests(rootDir: string) {
     let versionString: string;
 
     if (properties.resourcepack) {
-        const rpResult = buildRPManifest(
-            properties,
-            properties.header,
-            properties.header.uuid
-        );
+        const rpResult = buildRPManifest(properties, properties.header, properties.header.uuid);
         rpManifest = rpResult.manifest;
         versionString = rpResult.versionString;
 
@@ -136,7 +130,7 @@ export function writeManifests(rootDir: string) {
         fs.writeFileSync(
             path.join(rpDir, "manifest.json"),
             JSON.stringify(rpManifest, null, 2),
-            "utf-8"
+            "utf-8",
         );
     } else {
         const bpResult = buildBPManifest(properties);
@@ -148,7 +142,7 @@ export function writeManifests(rootDir: string) {
     fs.writeFileSync(
         path.join(bpDir, "manifest.json"),
         JSON.stringify(bpManifest, null, 2),
-        "utf-8"
+        "utf-8",
     );
 
     return { bpManifest, rpManifest, versionString };

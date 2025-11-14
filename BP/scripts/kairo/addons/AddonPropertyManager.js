@@ -2,7 +2,9 @@ import { properties } from "../../properties";
 export class AddonPropertyManager {
     constructor(kairo) {
         this.kairo = kairo;
-        this.charset = [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'];
+        this.charset = [
+            ..."abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+        ];
         this.self = {
             id: properties.id,
             name: properties.header.name,
@@ -11,7 +13,7 @@ export class AddonPropertyManager {
             version: properties.header.version,
             dependencies: properties.dependencies,
             requiredAddons: properties.requiredAddons,
-            tags: properties.tags
+            tags: properties.tags,
         };
     }
     static create(kairo) {
@@ -24,6 +26,6 @@ export class AddonPropertyManager {
         this.self.sessionId = this.generateRandomId(8);
     }
     generateRandomId(length = 8) {
-        return Array.from({ length }, () => this.charset[Math.floor(Math.random() * this.charset.length)]).join('');
+        return Array.from({ length }, () => this.charset[Math.floor(Math.random() * this.charset.length)]).join("");
     }
 }

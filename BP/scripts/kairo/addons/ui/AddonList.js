@@ -23,8 +23,16 @@ export class AddonList {
         const addonListForm = new ActionFormData();
         addonListForm.title({ translate: KAIRO_TRANSLATE_IDS.ADDON_LIST_TITLE });
         addonsData.forEach(([id, data]) => {
-            const isActive = data.isActive ? { translate: KAIRO_TRANSLATE_IDS.ADDON_LIST_ACTIVE } : { translate: KAIRO_TRANSLATE_IDS.ADDON_LIST_INACTIVE };
-            addonListForm.button({ rawtext: [{ text: `§l§8${data.name}§r\n` }, isActive, { text: ` §8(${data.selectedVersion})§r` }] }, `textures/${id}/pack_icon`);
+            const isActive = data.isActive
+                ? { translate: KAIRO_TRANSLATE_IDS.ADDON_LIST_ACTIVE }
+                : { translate: KAIRO_TRANSLATE_IDS.ADDON_LIST_INACTIVE };
+            addonListForm.button({
+                rawtext: [
+                    { text: `§l§8${data.name}§r\n` },
+                    isActive,
+                    { text: ` §8(${data.selectedVersion})§r` },
+                ],
+            }, `textures/${id}/pack_icon`);
         });
         const { selection, canceled: listFormCanceled } = await addonListForm.show(player);
         if (listFormCanceled || selection === undefined)
@@ -36,10 +44,16 @@ export class AddonList {
     }
     async formatAddonDataForDisplay(player, addonData) {
         const entries = Object.entries(addonData.versions);
-        const isActive = addonData.isActive ? { translate: KAIRO_TRANSLATE_IDS.ADDON_LIST_ACTIVE } : { translate: KAIRO_TRANSLATE_IDS.ADDON_LIST_INACTIVE };
+        const isActive = addonData.isActive
+            ? { translate: KAIRO_TRANSLATE_IDS.ADDON_LIST_ACTIVE }
+            : { translate: KAIRO_TRANSLATE_IDS.ADDON_LIST_INACTIVE };
         const selectedVersion = addonData.isEditable
             ? addonData.selectedVersion === VERSION_KEYWORDS.LATEST
-                ? [{ text: " §7|§r " }, { translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_LATEST_VERSION }, { text: ` (ver.${addonData.activeVersion})` }]
+                ? [
+                    { text: " §7|§r " },
+                    { translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_LATEST_VERSION },
+                    { text: ` (ver.${addonData.activeVersion})` },
+                ]
                 : [{ text: " §7|§r " }, { text: `ver.${addonData.selectedVersion}` }]
             : [];
         const tags = addonData.versions[addonData.activeVersion]?.tags || [];
@@ -57,19 +71,24 @@ export class AddonList {
         const requiredAddonsRawtext = requiredAddons.length > 0
             ? {
                 rawtext: [
-                    { translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED }, { text: "\n" },
+                    { translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED },
+                    { text: "\n" },
                     ...requiredAddons.flatMap(([name, version], i, arr) => {
-                        const elements = [
-                            { text: `§f${name}§r §7- (ver.${version})§r` }
-                        ];
+                        const elements = [{ text: `§f${name}§r §7- (ver.${version})§r` }];
                         if (i < arr.length - 1) {
                             elements.push({ text: "\n" });
                         }
                         return elements;
-                    })
-                ]
+                    }),
+                ],
             }
-            : { rawtext: [{ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED }, { text: "\n" }, { translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_NONE_REQUIRED }] };
+            : {
+                rawtext: [
+                    { translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REQUIRED },
+                    { text: "\n" },
+                    { translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_NONE_REQUIRED },
+                ],
+            };
         const versionListRawtext = entries.flatMap(([version, data]) => {
             let versionRawtext = [];
             switch (data.registrationState) {
@@ -93,10 +112,14 @@ export class AddonList {
                 case "registered":
                     break;
                 case "unregistered":
-                    versionRawtext.push({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_UNINSTALLED });
+                    versionRawtext.push({
+                        translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_UNINSTALLED,
+                    });
                     break;
                 case "missing_requiredAddons":
-                    versionRawtext.push({ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_MISSING_REQUIRED });
+                    versionRawtext.push({
+                        translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_MISSING_REQUIRED,
+                    });
                     break;
             }
             versionRawtext.push({ text: "\n" });
@@ -105,12 +128,26 @@ export class AddonList {
         const addonDataRawtexts = {
             name: { translate: `${addonData.id}.name` },
             description: { translate: `${addonData.id}.description` },
-            details: { rawtext: [isActive, ...selectedVersion, ...lineBreak, ...activeVersionTags, { text: "§r" }] },
+            details: {
+                rawtext: [
+                    isActive,
+                    ...selectedVersion,
+                    ...lineBreak,
+                    ...activeVersionTags,
+                    { text: "§r" },
+                ],
+            },
             required: { rawtext: [requiredAddonsRawtext] },
-            versionList: { rawtext: [{ translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REGISTERED_ADDON_LIST }, { text: "\n" }, ...versionListRawtext] },
+            versionList: {
+                rawtext: [
+                    { translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_REGISTERED_ADDON_LIST },
+                    { text: "\n" },
+                    ...versionListRawtext,
+                ],
+            },
             selectVersion: { translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_SELECT_VERSION },
             activate: { translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_ACTIVATE },
-            submit: { translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_SUBMIT }
+            submit: { translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_SUBMIT },
         };
         if (addonData.isEditable)
             this.settingAddonDataForm(player, addonData, addonDataRawtexts);
@@ -120,9 +157,7 @@ export class AddonList {
     async settingAddonDataForm(player, addonData, addonDataRawtexts) {
         const entries = Object.entries(addonData.versions);
         const registeredVersions = [
-            ...entries
-                .filter(([version, data]) => data.isRegistered)
-                .map(([version]) => version)
+            ...entries.filter(([version, data]) => data.isRegistered).map(([version]) => version),
         ];
         const selectableVersions = [VERSION_KEYWORDS.LATEST, ...registeredVersions];
         let selectedVersionIndex = selectableVersions.indexOf(addonData.selectedVersion);
@@ -130,7 +165,7 @@ export class AddonList {
             selectedVersionIndex = 0;
         const selectableVersionsRawtexts = [
             { translate: KAIRO_TRANSLATE_IDS.ADDON_SETTING_LATEST_VERSION },
-            ...registeredVersions.map(version => ({ text: version }))
+            ...registeredVersions.map((version) => ({ text: version })),
         ];
         const currentActiveState = addonData.isActive;
         const addonDataForm = new ModalFormData()
@@ -143,7 +178,9 @@ export class AddonList {
             .divider()
             .label(addonDataRawtexts.required)
             .divider()
-            .dropdown(addonDataRawtexts.selectVersion, selectableVersionsRawtexts, { defaultValueIndex: selectedVersionIndex })
+            .dropdown(addonDataRawtexts.selectVersion, selectableVersionsRawtexts, {
+            defaultValueIndex: selectedVersionIndex,
+        })
             .toggle(addonDataRawtexts.activate, { defaultValue: currentActiveState })
             .submitButton(addonDataRawtexts.submit);
         const { formValues, canceled } = await addonDataForm.show(player);
@@ -160,7 +197,8 @@ export class AddonList {
             // 無効化にする場合
             this.addonManager.deactivateAddon(player, addonData);
         }
-        else if ((currentActiveState === false && newActiveState === true) || newVersionIndex !== selectedVersionIndex) {
+        else if ((currentActiveState === false && newActiveState === true) ||
+            newVersionIndex !== selectedVersionIndex) {
             // 有効化にする場合 or バージョンを変更する場合
             this.addonManager.activateAddon(player, addonData, newSelectedVersion);
         }

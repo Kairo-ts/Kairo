@@ -2,7 +2,7 @@ import type { Kairo } from "..";
 import { properties, type SemVer } from "../../properties";
 
 export interface AddonProperty {
-    id: string,
+    id: string;
     name: string;
     description: string;
     sessionId: string;
@@ -19,7 +19,9 @@ export interface AddonProperty {
 
 export class AddonPropertyManager {
     private self: AddonProperty;
-    private readonly charset = [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'];
+    private readonly charset = [
+        ..."abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+    ];
 
     private constructor(private readonly kairo: Kairo) {
         this.self = {
@@ -30,8 +32,8 @@ export class AddonPropertyManager {
             version: properties.header.version,
             dependencies: properties.dependencies,
             requiredAddons: properties.requiredAddons,
-            tags: properties.tags
-        }
+            tags: properties.tags,
+        };
     }
 
     public static create(kairo: Kairo): AddonPropertyManager {
@@ -47,6 +49,9 @@ export class AddonPropertyManager {
     }
 
     private generateRandomId(length: number = 8): string {
-        return Array.from({ length }, () => this.charset[Math.floor(Math.random() * this.charset.length)]).join('');
+        return Array.from(
+            { length },
+            () => this.charset[Math.floor(Math.random() * this.charset.length)],
+        ).join("");
     }
 }

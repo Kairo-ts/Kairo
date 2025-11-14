@@ -13,7 +13,7 @@ export class AddonInitializeRegister {
         this.addonInitializer = addonInitializer;
         this.registeredAddons = new Map();
         this._resolveReady = null;
-        this.ready = new Promise(resolve => {
+        this.ready = new Promise((resolve) => {
             this._resolveReady = resolve;
         });
         this.initializationCompleteCounter = 0;
@@ -36,7 +36,8 @@ export class AddonInitializeRegister {
                         ConsoleManager.log("All addons initialized. Ready!");
                     }
                     break;
-                default: break;
+                default:
+                    break;
             }
         };
     }

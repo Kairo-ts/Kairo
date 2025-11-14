@@ -19,7 +19,7 @@ export class DataVaultReceiver {
             this.lastDataLoaded = data;
             this.lastDataLoadedCount += 1;
         }
-    }
+    };
 
     public getLastDataLoaded(): { data: string; count: number } {
         return { data: this.lastDataLoaded, count: this.lastDataLoadedCount };

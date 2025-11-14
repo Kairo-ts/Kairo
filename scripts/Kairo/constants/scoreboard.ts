@@ -1,3 +1,3 @@
 export const SCOREBOARD_NAMES = {
-    ADDON_COUNTER: "AddonCounter"
-}
+    ADDON_COUNTER: "AddonCounter",
+};

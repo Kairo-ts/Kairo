@@ -16,20 +16,42 @@ export class AddonRequireValidator {
         return new AddonRequireValidator(addonActivator);
     }
 
-    public async validateRequiredAddonsForActivation(player: Player, addonData: AddonData, newVersion: string): Promise<string[]> {
-        return this.forActivation.validateRequiredAddonsForActivation(player, addonData, newVersion);
+    public async validateRequiredAddonsForActivation(
+        player: Player,
+        addonData: AddonData,
+        newVersion: string,
+    ): Promise<string[]> {
+        return this.forActivation.validateRequiredAddonsForActivation(
+            player,
+            addonData,
+            newVersion,
+        );
     }
 
-    public async validateRequiredAddonsForDeactivation(player: Player, addonData: AddonData, newVersion: string = addonData.activeVersion): Promise<string[]> {
-        return this.forDeactivation.validateRequiredAddonsForDeactivation(player, addonData, newVersion);
+    public async validateRequiredAddonsForDeactivation(
+        player: Player,
+        addonData: AddonData,
+        newVersion: string = addonData.activeVersion,
+    ): Promise<string[]> {
+        return this.forDeactivation.validateRequiredAddonsForDeactivation(
+            player,
+            addonData,
+            newVersion,
+        );
     }
 
-    public async validateRequiredAddons(player: Player, addonData: AddonData, newVersion: string, isActive: boolean): Promise<void> {
+    public async validateRequiredAddons(
+        player: Player,
+        addonData: AddonData,
+        newVersion: string,
+        isActive: boolean,
+    ): Promise<void> {
         /**
          * 有効にする場合は、前提アドオンも有効にする必要がある
          * 無効にする場合は、自身が依存されているかどうかを調べ、依存されていれば、そのアドオンも無効化する
          */
-        if (isActive) this.forActivation.validateRequiredAddonsForActivation(player, addonData, newVersion);
+        if (isActive)
+            this.forActivation.validateRequiredAddonsForActivation(player, addonData, newVersion);
         else this.forDeactivation.validateRequiredAddonsForDeactivation(player, addonData);
     }
 

@@ -33,8 +33,8 @@ export interface AddonData {
             requiredAddons?: {
                 [name: string]: string;
             };
-        }
-    }
+        };
+    };
 }
 
 export class AddonManager {
@@ -98,25 +98,25 @@ export class AddonManager {
 
     public handleAddonRouterScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
         this.addonRouter.handleScriptEvent(ev);
-    }
+    };
 
     public handleAddonListScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
         this.addonList.handleScriptEvent(ev);
-    }
+    };
 
     public getLatestPreferStableVersion(id: string): string | undefined {
         const addonData = this.getAddonsData().get(id);
         if (!addonData) return undefined;
 
         const sorted = Object.keys(addonData.versions)
-            .filter(v => addonData.versions[v]?.isRegistered)
+            .filter((v) => addonData.versions[v]?.isRegistered)
             .sort((a, b) => VersionManager.compare(b, a));
 
         if (sorted.length === 0) {
             return undefined;
         }
 
-        const stable = sorted.find(v => !VersionManager.fromString(v).prerelease);
+        const stable = sorted.find((v) => !VersionManager.fromString(v).prerelease);
         return stable ?? sorted[0]!;
     }
 
@@ -125,7 +125,7 @@ export class AddonManager {
         if (!addonData) return undefined;
 
         const latestVersion = Object.keys(addonData.versions)
-            .filter(v => addonData.versions[v]?.isRegistered)
+            .filter((v) => addonData.versions[v]?.isRegistered)
             .sort((a, b) => VersionManager.compare(b, a))[0];
 
         return latestVersion ?? undefined;
