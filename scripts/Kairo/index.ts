@@ -73,9 +73,9 @@ export class Kairo {
         system.sendScriptEvent(SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE, "");
     }
 
-    public static dataVaultHandleOnScriptEvent(message: string): void {
+    public static dataVaultHandleOnScriptEvent = (message: string): void => {
         this.getInstance().addonManager.dataVaultHandleOnScriptEvent(message);
-    }
+    };
 
     public getDataVaultLastDataLoaded(): { data: string; count: number } {
         return this.addonManager.getDataVaultLastDataLoaded();

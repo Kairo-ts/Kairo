@@ -1,3 +1,4 @@
+var _a;
 import { Player, ScriptEventCommandMessageAfterEvent, system } from "@minecraft/server";
 import { AddonPropertyManager } from "./addons/AddonPropertyManager";
 import { AddonInitializer } from "./addons/router/init/AddonInitializer";
@@ -12,7 +13,7 @@ export class Kairo {
     }
     static getInstance() {
         if (!this.instance) {
-            this.instance = new Kairo();
+            this.instance = new _a();
         }
         return this.instance;
     }
@@ -41,9 +42,6 @@ export class Kairo {
     static unsubscribeInitializeHooks() {
         system.sendScriptEvent(SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE, "");
     }
-    static dataVaultHandleOnScriptEvent(message) {
-        this.getInstance().addonManager.dataVaultHandleOnScriptEvent(message);
-    }
     getDataVaultLastDataLoaded() {
         return this.addonManager.getDataVaultLastDataLoaded();
     }
@@ -70,10 +68,10 @@ export class Kairo {
         this.addonManager.sendDeactiveRequest(sessionId);
     }
     static handleAddonRouterScriptEvent(ev) {
-        Kairo.getInstance().addonManager.handleAddonRouterScriptEvent(ev);
+        _a.getInstance().addonManager.handleAddonRouterScriptEvent(ev);
     }
     static handleAddonListScriptEvent(ev) {
-        Kairo.getInstance().addonManager.handleAddonListScriptEvent(ev);
+        _a.getInstance().addonManager.handleAddonListScriptEvent(ev);
     }
     static set onActivate(val) {
         if (typeof val === "function")
@@ -103,13 +101,13 @@ export class Kairo {
         this._pushSorted(this._seHooks, fn, opt);
     }
     _scriptEvent(message) {
-        void Kairo._runScriptEvent(message);
+        void _a._runScriptEvent(message);
     }
     _activateAddon() {
-        void Kairo._runActivateHooks();
+        void _a._runActivateHooks();
     }
     _deactivateAddon() {
-        void Kairo._runDeactivateHooks();
+        void _a._runDeactivateHooks();
     }
     static _pushSorted(arr, fn, opt) {
         arr.push({ fn, priority: opt?.priority ?? 0 });
@@ -151,6 +149,10 @@ export class Kairo {
         this.addonInitializer.saveAddon(addonData);
     }
 }
+_a = Kairo;
 Kairo._initHooks = [];
 Kairo._deinitHooks = [];
 Kairo._seHooks = [];
+Kairo.dataVaultHandleOnScriptEvent = (message) => {
+    _a.getInstance().addonManager.dataVaultHandleOnScriptEvent(message);
+};
