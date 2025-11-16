@@ -45,6 +45,8 @@ export class AddonManager {
     private readonly addonList: AddonList;
     private readonly addonsData: Map<string, AddonData> = new Map();
 
+    private _isActive: boolean = false;
+
     private constructor(private readonly kairo: Kairo) {
         this.activator = AddonActivator.create(this);
         this.receiver = AddonReceiver.create(this);
@@ -149,5 +151,13 @@ export class AddonManager {
 
     public saveAddon(addonData: AddonData): void {
         this.kairo.saveAddon(addonData);
+    }
+
+    public get isActive(): boolean {
+        return this._isActive;
+    }
+
+    public setActiveState(state: boolean): void {
+        this._isActive = state;
     }
 }
