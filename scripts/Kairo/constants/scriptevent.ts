@@ -2,6 +2,10 @@ export const SCRIPT_EVENT_ID_PREFIX = {
     KAIRO: "kairo",
 };
 
+export const SCRIPT_EVENT_ID_SUFFIX = {
+    BROADCAST: "_kBroadcast",
+};
+
 export const SCRIPT_EVENT_IDS = {
     BEHAVIOR_REGISTRATION_REQUEST: "kairo:registrationRequest",
     BEHAVIOR_REGISTRATION_RESPONSE: "kairo:registrationResponse",
