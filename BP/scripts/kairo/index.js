@@ -124,6 +124,7 @@ export class Kairo {
                 system.run(() => console.warn(`[Kairo.onActivate] ${e instanceof Error ? (e.stack ?? e.message) : String(e)}`));
             }
         }
+        this.getInstance().addonManager.setActiveState(true);
     }
     static async _runDeactivateHooks() {
         for (const { fn } of [...this._deinitHooks].reverse()) {
@@ -134,6 +135,7 @@ export class Kairo {
                 system.run(() => console.warn(`[Kairo.onDeactivate] ${e instanceof Error ? (e.stack ?? e.message) : String(e)}`));
             }
         }
+        this.getInstance().addonManager.setActiveState(false);
     }
     static async _runScriptEvent(message) {
         for (const { fn } of this._seHooks) {
