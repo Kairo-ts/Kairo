@@ -9,6 +9,7 @@ export class AddonManager {
     constructor(kairo) {
         this.kairo = kairo;
         this.addonsData = new Map();
+        this._isActive = false;
         this.handleAddonRouterScriptEvent = (ev) => {
             this.addonRouter.handleScriptEvent(ev);
         };
@@ -90,5 +91,11 @@ export class AddonManager {
     }
     saveAddon(addonData) {
         this.kairo.saveAddon(addonData);
+    }
+    get isActive() {
+        return this._isActive;
+    }
+    setActiveState(state) {
+        this._isActive = state;
     }
 }
