@@ -4,10 +4,11 @@ import { AddonInitializer } from "./addons/router/init/AddonInitializer";
 import { AddonManager, type AddonData } from "./addons/AddonManager";
 import type { AddonRecords } from "./addons/record/AddonRecord";
 import { SCRIPT_EVENT_IDS } from "./constants/scriptevent";
+import type { KairoCommand } from "./utils/KairoUtils";
 
 type ActivateHandler = () => void | Promise<void>;
 type DeactivateHandler = () => void | Promise<void>;
-type ScriptEventHandler = (message: string) => void | Promise<void>;
+type ScriptEventHandler = (data: KairoCommand) => void | Promise<void>;
 
 type HandlerOptions = {
     priority?: number;
@@ -73,8 +74,8 @@ export class Kairo {
         system.sendScriptEvent(SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE, "");
     }
 
-    public static dataVaultHandleOnScriptEvent = (message: string): void => {
-        this.getInstance().addonManager.dataVaultHandleOnScriptEvent(message);
+    public static dataVaultHandleOnScriptEvent = (data: KairoCommand): void => {
+        this.getInstance().addonManager.dataVaultHandleOnScriptEvent(data);
     };
 
     public getDataVaultLastDataLoaded(): { data: string; count: number } {
@@ -141,8 +142,8 @@ export class Kairo {
         this._pushSorted(this._seHooks, fn, opt);
     }
 
-    public _scriptEvent(message: string): void {
-        void Kairo._runScriptEvent(message);
+    public _scriptEvent(data: KairoCommand): void {
+        void Kairo._runScriptEvent(data);
     }
 
     public _activateAddon(): void {
@@ -190,10 +191,10 @@ export class Kairo {
         this.getInstance().addonManager.setActiveState(false);
     }
 
-    private static async _runScriptEvent(message: string) {
+    private static async _runScriptEvent(data: KairoCommand) {
         for (const { fn } of this._seHooks) {
             try {
-                await fn(message);
+                await fn(data);
             } catch (e) {
                 system.run(() =>
                     console.warn(

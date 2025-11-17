@@ -1,6 +1,8 @@
 import type { ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
 import type { AddonManager } from "../AddonManager";
 import { SCRIPT_EVENT_ID_PREFIX, SCRIPT_EVENT_MESSAGES } from "../../constants/scriptevent";
+import type { KairoCommand } from "../../utils/KairoUtils";
+import { ConsoleManager } from "../../utils/ConsoleManager";
 
 export class AddonReceiver {
     private constructor(private readonly addonManager: AddonManager) {}
@@ -27,7 +29,21 @@ export class AddonReceiver {
                 this.addonManager._deactivateAddon();
                 break;
             default:
-                this.addonManager._scriptEvent(message);
+                let data: any;
+                try {
+                    data = JSON.parse(message);
+                } catch (e) {
+                    ConsoleManager.warn(`[ScriptEventReceiver] Invalid JSON: ${message}`);
+                    return;
+                }
+
+                if (!data || typeof data !== "object") return;
+                if (typeof data.commandId !== "string") return;
+                if (typeof data.addonId !== "string") return;
+
+                const command: KairoCommand = data;
+
+                this.addonManager._scriptEvent(command);
                 break;
         }
     };

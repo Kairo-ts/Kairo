@@ -1,4 +1,5 @@
 import { SCRIPT_EVENT_COMMAND_IDS } from "../../constants/scriptevent";
+import type { KairoCommand } from "../../utils/KairoUtils";
 import type { AddonManager } from "../AddonManager";
 
 export class DataVaultReceiver {
@@ -10,13 +11,9 @@ export class DataVaultReceiver {
         return new DataVaultReceiver(addonManager);
     }
 
-    public handleOnScriptEvent = (message: string): void => {
-        const split = message.split(" ");
-        const command = split[0];
-        const data = split.slice(1).join(" ");
-
-        if (command === SCRIPT_EVENT_COMMAND_IDS.DATA_LOADED) {
-            this.lastDataLoaded = data;
+    public handleOnScriptEvent = (data: KairoCommand): void => {
+        if (data.commandId === SCRIPT_EVENT_COMMAND_IDS.DATA_LOADED) {
+            this.lastDataLoaded = data.dataLoaded;
             this.lastDataLoadedCount += 1;
         }
     };
