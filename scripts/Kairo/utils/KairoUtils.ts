@@ -9,6 +9,9 @@ export interface KairoCommand {
 
 export class KairoUtils {
     public static sendKairoCommand(targetAddonId: string, data: KairoCommand) {
-        system.sendScriptEvent(`${SCRIPT_EVENT_ID_PREFIX}:${targetAddonId}`, JSON.stringify(data));
+        system.sendScriptEvent(
+            `${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${targetAddonId}`,
+            JSON.stringify(data),
+        );
     }
 }
