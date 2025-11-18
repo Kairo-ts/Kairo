@@ -1,4 +1,5 @@
 import { SCRIPT_EVENT_ID_PREFIX, SCRIPT_EVENT_MESSAGES } from "../../constants/scriptevent";
+import { ConsoleManager } from "../../utils/ConsoleManager";
 export class AddonReceiver {
     constructor(addonManager) {
         this.addonManager = addonManager;
@@ -19,7 +20,22 @@ export class AddonReceiver {
                     this.addonManager._deactivateAddon();
                     break;
                 default:
-                    this.addonManager._scriptEvent(message);
+                    let data;
+                    try {
+                        data = JSON.parse(message);
+                    }
+                    catch (e) {
+                        ConsoleManager.warn(`[ScriptEventReceiver] Invalid JSON: ${message}`);
+                        return;
+                    }
+                    if (!data || typeof data !== "object")
+                        return;
+                    if (typeof data.commandId !== "string")
+                        return;
+                    if (typeof data.addonId !== "string")
+                        return;
+                    const command = data;
+                    this.addonManager._scriptEvent(command);
                     break;
             }
         };

@@ -4,12 +4,9 @@ export class DataVaultReceiver {
         this.addonManager = addonManager;
         this.lastDataLoaded = "";
         this.lastDataLoadedCount = 0;
-        this.handleOnScriptEvent = (message) => {
-            const split = message.split(" ");
-            const command = split[0];
-            const data = split.slice(1).join(" ");
-            if (command === SCRIPT_EVENT_COMMAND_IDS.DATA_LOADED) {
-                this.lastDataLoaded = data;
+        this.handleOnScriptEvent = (data) => {
+            if (data.commandId === SCRIPT_EVENT_COMMAND_IDS.DATA_LOADED) {
+                this.lastDataLoaded = data.dataLoaded;
                 this.lastDataLoadedCount += 1;
             }
         };

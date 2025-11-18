@@ -46,11 +46,11 @@ export class AddonManager {
     _deactivateAddon() {
         this.kairo._deactivateAddon();
     }
-    _scriptEvent(message) {
-        this.kairo._scriptEvent(message);
+    _scriptEvent(data) {
+        this.kairo._scriptEvent(data);
     }
-    dataVaultHandleOnScriptEvent(message) {
-        this.dataVaultReceiver.handleOnScriptEvent(message);
+    dataVaultHandleOnScriptEvent(data) {
+        this.dataVaultReceiver.handleOnScriptEvent(data);
     }
     getDataVaultLastDataLoaded() {
         return this.dataVaultReceiver.getLastDataLoaded();
