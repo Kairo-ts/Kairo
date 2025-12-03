@@ -9,7 +9,7 @@ export class AddonRouter {
         return new AddonRouter(addonManager);
     }
 
-    public handleScriptEvent(ev: ScriptEventCommandMessageAfterEvent): void {
+    public handleScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
         const { id, message } = ev;
         const splitId = id.split(":");
         if (splitId[0] !== SCRIPT_EVENT_ID_PREFIX.KAIRO) return;
@@ -33,7 +33,7 @@ export class AddonRouter {
             `${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${activeVersionData.sessionId}`,
             message,
         );
-    }
+    };
 
     private sendToAllAddons(message: string): void {
         const addons = this.addonManager.getAddonsData();

@@ -5,6 +5,8 @@ import { AddonManager, type AddonData } from "./addons/AddonManager";
 import type { AddonRecords } from "./addons/record/AddonRecord";
 import { SCRIPT_EVENT_IDS } from "./constants/scriptevent";
 import type { KairoCommand } from "./utils/KairoUtils";
+import { DEFAULT_KAIRO_STATES } from "./constants/states";
+import { SystemManager } from "./system/SystemManager";
 
 type ActivateHandler = () => void | Promise<void>;
 type DeactivateHandler = () => void | Promise<void>;
@@ -24,6 +26,7 @@ export class Kairo {
     private readonly addonManager: AddonManager;
     private readonly addonPropertyManager: AddonPropertyManager;
     private readonly addonInitializer: AddonInitializer;
+    private readonly systemManager: SystemManager;
 
     private static _initHooks: Stored<ActivateHandler>[] = [];
     private static _deinitHooks: Stored<DeactivateHandler>[] = [];
@@ -33,6 +36,7 @@ export class Kairo {
         this.addonManager = AddonManager.create(this);
         this.addonPropertyManager = AddonPropertyManager.create(this);
         this.addonInitializer = AddonInitializer.create(this);
+        this.systemManager = SystemManager.create(this);
     }
 
     private static getInstance(): Kairo {
@@ -111,13 +115,15 @@ export class Kairo {
         this.addonManager.sendDeactiveRequest(sessionId);
     }
 
-    public static handleAddonRouterScriptEvent(ev: ScriptEventCommandMessageAfterEvent): void {
+    public static handleAddonRouterScriptEvent = (
+        ev: ScriptEventCommandMessageAfterEvent,
+    ): void => {
         Kairo.getInstance().addonManager.handleAddonRouterScriptEvent(ev);
-    }
+    };
 
-    public static handleAddonListScriptEvent(ev: ScriptEventCommandMessageAfterEvent): void {
+    public static handleAddonListScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {
         Kairo.getInstance().addonManager.handleAddonListScriptEvent(ev);
-    }
+    };
 
     public static set onActivate(val: Assignable<ActivateHandler>) {
         if (typeof val === "function") this._pushSorted(this._initHooks, val);
