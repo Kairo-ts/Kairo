@@ -5,8 +5,8 @@ import { AddonManager, type AddonData } from "./addons/AddonManager";
 import type { AddonRecords } from "./addons/record/AddonRecord";
 import { SCRIPT_EVENT_IDS } from "./constants/scriptevent";
 import type { KairoCommand } from "./utils/KairoUtils";
-import { DEFAULT_KAIRO_STATES } from "./constants/states";
 import { SystemManager } from "./system/SystemManager";
+import type { DataVaultLastDataLoaded } from "./addons/router/DataVaultReceiver";
 
 type ActivateHandler = () => void | Promise<void>;
 type DeactivateHandler = () => void | Promise<void>;
@@ -82,8 +82,15 @@ export class Kairo {
         this.getInstance().addonManager.dataVaultHandleOnScriptEvent(data);
     };
 
-    public getDataVaultLastDataLoaded(): { data: string; count: number } {
+    public getDataVaultLastDataLoaded(): DataVaultLastDataLoaded {
         return this.addonManager.getDataVaultLastDataLoaded();
+    }
+
+    public waitForDataVaultNewDataLoaded(
+        key: string,
+        lastCount: number | undefined = undefined,
+    ): Promise<DataVaultLastDataLoaded> {
+        return this.addonManager.waitForDataVaultNewDataLoaded(key, lastCount);
     }
 
     public static initSaveAddons(): void {
@@ -214,4 +221,16 @@ export class Kairo {
     public saveAddon(addonData: AddonData): void {
         this.addonInitializer.saveAddon(addonData);
     }
+
+    public static subscribeEvents = (): void => {
+        Kairo.getInstance().systemManager.subscribeEvents();
+    };
+
+    public static unsubscribeEvents = (): void => {
+        Kairo.getInstance().systemManager.unsubscribeEvents();
+    };
+
+    public static systemInitialize = (): void => {
+        Kairo.getInstance().systemManager.initialize();
+    };
 }

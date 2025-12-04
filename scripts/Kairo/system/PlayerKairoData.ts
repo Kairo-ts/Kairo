@@ -4,9 +4,13 @@ export class PlayerKairoData {
     private JoinOrder: number = 0;
     private kairoState: Set<PlayerKairoState>;
 
-    constructor(manager: PlayerKairoDataManager, JoinOrder: number) {
+    private constructor(manager: PlayerKairoDataManager, JoinOrder: number) {
         this.JoinOrder = JoinOrder;
         this.kairoState = new Set();
+    }
+
+    public static create(manager: PlayerKairoDataManager, JoinOrder: number): PlayerKairoData {
+        return new PlayerKairoData(manager, JoinOrder);
     }
 
     public getJoinOrder(): number {

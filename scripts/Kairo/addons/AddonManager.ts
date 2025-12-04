@@ -7,7 +7,7 @@ import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./router/AddonReceiver";
 import { VersionManager } from "../utils/VersionManager";
 import { AddonRouter } from "./router/AddonRouter";
-import { DataVaultReceiver } from "./router/DataVaultReceiver";
+import { DataVaultReceiver, type DataVaultLastDataLoaded } from "./router/DataVaultReceiver";
 import type { KairoCommand } from "../utils/KairoUtils";
 
 export type RegistrationState = "registered" | "unregistered" | "missing_requiredAddons";
@@ -95,8 +95,15 @@ export class AddonManager {
         this.dataVaultReceiver.handleOnScriptEvent(data);
     }
 
-    public getDataVaultLastDataLoaded(): { data: string; count: number } {
+    public getDataVaultLastDataLoaded(): DataVaultLastDataLoaded {
         return this.dataVaultReceiver.getLastDataLoaded();
+    }
+
+    public waitForDataVaultNewDataLoaded(
+        key: string,
+        lastCount: number | undefined = undefined,
+    ): Promise<DataVaultLastDataLoaded> {
+        return this.dataVaultReceiver.waitForNewDataLoaded(key, lastCount);
     }
 
     public handleAddonRouterScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {

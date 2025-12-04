@@ -1,4 +1,10 @@
+import { world } from "@minecraft/server";
 import type { SystemManager } from "./SystemManager";
+import { PlayerKairoData } from "./PlayerKairoData";
+import { KairoUtils } from "../utils/KairoUtils";
+import { KAIRO_COMMAND_TARGET_ADDON_IDS, KAIRO_DATAVAULT_KEYS } from "../constants/system";
+import { SCRIPT_EVENT_COMMAND_IDS } from "../constants/scriptevent";
+import { properties } from "../../properties";
 
 export type PlayerKairoState = string & { __brand: "PlayerKairoState" };
 
@@ -19,6 +25,18 @@ export class PlayerKairoDataManager {
         initialStates: string[],
     ): PlayerKairoDataManager {
         return new PlayerKairoDataManager(systemManager, initialStates);
+    }
+
+    public async init(): Promise<void> {
+        KairoUtils.loadFromDataVault(KAIRO_DATAVAULT_KEYS.KAIRO_PLAYERS_DATA);
+
+        const dataLoaded = await this.systemManager.waitForDataVaultNewDataLoaded(
+            KAIRO_DATAVAULT_KEYS.KAIRO_PLAYERS_DATA,
+        );
+
+        const players = world.getPlayers();
+        for (const player of players) {
+        }
     }
 
     public registerState(state: string): PlayerKairoState {
