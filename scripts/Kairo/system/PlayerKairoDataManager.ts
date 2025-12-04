@@ -1,10 +1,7 @@
 import { world } from "@minecraft/server";
 import type { SystemManager } from "./SystemManager";
-import { PlayerKairoData } from "./PlayerKairoData";
 import { KairoUtils } from "../utils/KairoUtils";
-import { KAIRO_COMMAND_TARGET_ADDON_IDS, KAIRO_DATAVAULT_KEYS } from "../constants/system";
-import { SCRIPT_EVENT_COMMAND_IDS } from "../constants/scriptevent";
-import { properties } from "../../properties";
+import { KAIRO_DATAVAULT_KEYS } from "../constants/system";
 
 export type PlayerKairoState = string & { __brand: "PlayerKairoState" };
 

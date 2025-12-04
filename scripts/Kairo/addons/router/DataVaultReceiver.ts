@@ -1,16 +1,17 @@
+import type { Vector3 } from "@minecraft/server";
 import { SCRIPT_EVENT_COMMAND_IDS } from "../../constants/scriptevent";
 import type { KairoCommand } from "../../utils/KairoUtils";
 import type { AddonManager } from "../AddonManager";
 
 export interface DataVaultLastDataLoaded {
-    data: string;
+    value: boolean | number | string | Vector3 | null;
     key: string;
     count: number;
 }
 
 export class DataVaultReceiver {
     private lastLoaded: DataVaultLastDataLoaded = {
-        data: "",
+        value: null,
         key: "",
         count: 0,
     };
@@ -28,8 +29,10 @@ export class DataVaultReceiver {
 
     public handleOnScriptEvent = (data: KairoCommand): void => {
         if (data.commandId === SCRIPT_EVENT_COMMAND_IDS.DATA_LOADED) {
+            const value = data.type === "string" ? data.value : JSON.parse(data.value);
+
             this.lastLoaded = {
-                data: data.dataLoaded,
+                value,
                 key: data.key,
                 count: this.lastLoaded.count + 1,
             };

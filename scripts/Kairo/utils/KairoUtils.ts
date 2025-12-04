@@ -9,6 +9,8 @@ export interface KairoCommand {
     [key: string]: any;
 }
 
+export type AllowedDynamicValue = boolean | number | string | Vector3 | null;
+
 export class KairoUtils {
     public static sendKairoCommand(targetAddonId: string, data: KairoCommand) {
         system.sendScriptEvent(
@@ -21,11 +23,19 @@ export class KairoUtils {
         key: string,
         value: boolean | number | string | Vector3 | null,
     ): void {
+        const type = value === null ? "null" : typeof value;
+        if (type === "object" && !this.isVector3(value)) {
+            throw new Error(
+                `Invalid value type for saveToDataVault: expected Vector3 for object, got ${JSON.stringify(value)}`,
+            );
+        }
+
         KairoUtils.sendKairoCommand(KAIRO_COMMAND_TARGET_ADDON_IDS.KAIRO_DATAVAULT, {
             commandId: SCRIPT_EVENT_COMMAND_IDS.SAVE_DATA,
             addonId: properties.id,
+            type,
             key,
-            value,
+            value: JSON.stringify(value),
         });
     }
 
@@ -83,5 +93,16 @@ export class KairoUtils {
         }
 
         return true;
+    }
+
+    private static isVector3(value: any): value is Vector3 {
+        return (
+            typeof value === "object" &&
+            value !== null &&
+            typeof value.x === "number" &&
+            typeof value.y === "number" &&
+            typeof value.z === "number" &&
+            Object.keys(value).length === 3
+        );
     }
 }
