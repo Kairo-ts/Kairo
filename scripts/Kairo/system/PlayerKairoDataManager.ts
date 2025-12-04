@@ -2,11 +2,19 @@ import { world } from "@minecraft/server";
 import type { SystemManager } from "./SystemManager";
 import { KairoUtils } from "../utils/KairoUtils";
 import { KAIRO_DATAVAULT_KEYS } from "../constants/system";
+import { PlayerKairoData } from "./PlayerKairoData";
 
 export type PlayerKairoState = string & { __brand: "PlayerKairoState" };
 
+export interface PlayerKairoDataSerialized {
+    playerId: string;
+    states: PlayerKairoState[];
+}
+
 export class PlayerKairoDataManager {
+    private playersKairoData = new Map<string, PlayerKairoData>();
     private validStates = new Set<string>();
+    private joinOrder = 0;
 
     private constructor(
         private readonly systemManager: SystemManager,
@@ -31,9 +39,37 @@ export class PlayerKairoDataManager {
             KAIRO_DATAVAULT_KEYS.KAIRO_PLAYERS_DATA,
         );
 
+        if (dataLoaded.value !== "string") return;
+
+        const playersDataSerialized = JSON.parse(dataLoaded.value) as PlayerKairoDataSerialized[];
+        const playersDataSerializedMap = new Map<string, PlayerKairoDataSerialized>(
+            playersDataSerialized.map((item) => [item.playerId, item]),
+        );
+
         const players = world.getPlayers();
         for (const player of players) {
+            const playerDataSerialized = playersDataSerializedMap.get(player.id);
+            const initialStates =
+                playerDataSerialized !== undefined ? playerDataSerialized.states : [];
+
+            const playerKairoData = new PlayerKairoData(this, this.joinOrder++, initialStates);
+            this.playersKairoData.set(player.id, playerKairoData);
         }
+
+        this.savePlayersKairoDataToDataVault();
+    }
+
+    public savePlayersKairoDataToDataVault(): void {
+        const serialized: PlayerKairoDataSerialized[] = Array.from(
+            this.playersKairoData,
+            ([playerId, kairoData]) => ({
+                playerId,
+                states: [...kairoData.getStates()],
+            }),
+        );
+
+        const json = JSON.stringify(serialized);
+        KairoUtils.saveToDataVault(KAIRO_DATAVAULT_KEYS.KAIRO_PLAYERS_DATA, json);
     }
 
     public registerState(state: string): PlayerKairoState {
