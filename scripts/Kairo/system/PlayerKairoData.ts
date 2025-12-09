@@ -5,7 +5,7 @@ export class PlayerKairoData {
     private kairoState: Set<PlayerKairoState>;
 
     public constructor(
-        manager: PlayerKairoDataManager,
+        private readonly manager: PlayerKairoDataManager,
         JoinOrder: number,
         initialStates: PlayerKairoState[],
     ) {
@@ -17,8 +17,12 @@ export class PlayerKairoData {
         return this.JoinOrder;
     }
 
-    public addState(manager: PlayerKairoDataManager, newState: string): void {
-        const validated = manager.validateOrThrow(newState);
+    public setJoinOrder(order: number): void {
+        this.JoinOrder = order;
+    }
+
+    public addState(newState: string): void {
+        const validated = this.manager.validateOrThrow(newState);
         this.kairoState.add(validated);
     }
 

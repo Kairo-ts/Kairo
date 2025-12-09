@@ -14,5 +14,9 @@ export class PlayerSpawnHandler extends BaseEventHandler<undefined, PlayerSpawnA
 
     protected handleAfter(ev: PlayerSpawnAfterEvent): void {
         const { initialSpawn, player } = ev;
+
+        if (initialSpawn) {
+            this.systemEventManager.getSystemManager().addOrRestorePlayerKairoData(player);
+        }
     }
 }

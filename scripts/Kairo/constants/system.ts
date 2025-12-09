@@ -1,5 +1,6 @@
 export const KAIRO_COMMAND_TARGET_ADDON_IDS = {
     BROADCAST: "_kBroadcast",
+    KAIRO: "kairo",
     KAIRO_DATAVAULT: "kairo-datavault",
 };
 

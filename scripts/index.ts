@@ -48,8 +48,10 @@ Kairo.onScriptEvent = (data: KairoCommand) => {
      * Write the handler logic for when the addon receives a scriptEvent
      * The only available property is { data: KairoCommand }
      */
+    Kairo.handleOnScriptEvent(data);
 };
 
+Kairo.addScriptEvent(Kairo.systemEventHandleOnScriptEvent);
 Kairo.addScriptEvent(Kairo.dataVaultHandleOnScriptEvent);
 
 main();

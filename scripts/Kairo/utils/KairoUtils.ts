@@ -2,22 +2,33 @@ import { system, type Vector3 } from "@minecraft/server";
 import { SCRIPT_EVENT_COMMAND_IDS, SCRIPT_EVENT_ID_PREFIX } from "../constants/scriptevent";
 import { KAIRO_COMMAND_TARGET_ADDON_IDS } from "../constants/system";
 import { properties } from "../../properties";
+import type { PlayerKairoData } from "../system/PlayerKairoData";
 
 export interface KairoCommand {
     commandId: string;
     addonId: string;
+    requestId?: string;
+
     [key: string]: any;
 }
 
 export type AllowedDynamicValue = boolean | number | string | Vector3 | null;
 
 export class KairoUtils {
-    public static sendKairoCommand(targetAddonId: string, data: KairoCommand) {
+    public static async sendKairoCommand(targetAddonId: string, data: KairoCommand): Promise<void> {
         system.sendScriptEvent(
             `${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${targetAddonId}`,
             JSON.stringify(data),
         );
+
+        await
     }
+
+    public static async sendKairoCommandForResponse(
+        targetAddonId: string,
+        commandId: string,
+        data: any = undefined,
+    ): Promise<KairoCommand> {}
 
     public static saveToDataVault(
         key: string,
@@ -45,6 +56,37 @@ export class KairoUtils {
             addonId: properties.id,
             key,
         });
+    }
+
+    public static getPlayerKairoData(playerId: string): PlayerKairoData {
+        KairoUtils.sendKairoCommand(KAIRO_COMMAND_TARGET_ADDON_IDS.KAIRO, {
+            commandId: SCRIPT_EVENT_COMMAND_IDS.GET_PLAYER_KAIRO_DATA,
+            addonId: properties.id,
+        });
+    }
+
+    public static getPlayersKairoData(): PlayerKairoData[] {}
+
+    private static readonly chars =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static readonly charsLength = KairoUtils.chars.length;
+
+    /**
+     * ランダムな requestId を生成します。
+     * 文字種: a-z, A-Z, 0-9
+     * 長さ: 48
+     */
+    public static generate(length: number = 48): string {
+        let result = "";
+        const chars = KairoUtils.chars;
+        const n = KairoUtils.charsLength;
+
+        for (let i = 0; i < length; i++) {
+            const rand = (Math.random() * n) | 0;
+            result += chars[rand];
+        }
+
+        return result;
     }
 
     public static isRawMessage(value: unknown): boolean {

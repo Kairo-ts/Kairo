@@ -1,4 +1,4 @@
-import { world } from "@minecraft/server";
+import { Player, world } from "@minecraft/server";
 import type { SystemManager } from "./SystemManager";
 import { KairoUtils } from "../utils/KairoUtils";
 import { KAIRO_DATAVAULT_KEYS } from "../constants/system";
@@ -13,6 +13,7 @@ export interface PlayerKairoDataSerialized {
 
 export class PlayerKairoDataManager {
     private playersKairoData = new Map<string, PlayerKairoData>();
+    private lastSavedPlayersKairoData = new Map<string, PlayerKairoDataSerialized>();
     private validStates = new Set<string>();
     private joinOrder = 0;
 
@@ -39,12 +40,20 @@ export class PlayerKairoDataManager {
             KAIRO_DATAVAULT_KEYS.KAIRO_PLAYERS_DATA,
         );
 
-        if (dataLoaded.value !== "string") return;
+        let playersDataSerializedMap = new Map<string, PlayerKairoDataSerialized>();
 
-        const playersDataSerialized = JSON.parse(dataLoaded.value) as PlayerKairoDataSerialized[];
-        const playersDataSerializedMap = new Map<string, PlayerKairoDataSerialized>(
-            playersDataSerialized.map((item) => [item.playerId, item]),
-        );
+        if (typeof dataLoaded.value === "string" && dataLoaded.value.length > 0) {
+            try {
+                const playersDataSerialized = JSON.parse(
+                    dataLoaded.value,
+                ) as PlayerKairoDataSerialized[];
+                playersDataSerializedMap = new Map(
+                    playersDataSerialized.map((item) => [item.playerId, item]),
+                );
+            } catch {
+                playersDataSerializedMap = new Map();
+            }
+        }
 
         const players = world.getPlayers();
         for (const player of players) {
@@ -59,6 +68,27 @@ export class PlayerKairoDataManager {
         this.savePlayersKairoDataToDataVault();
     }
 
+    public addOrRestorePlayerKairoData(player: Player): void {
+        const existing = this.playersKairoData.get(player.id);
+
+        if (existing) {
+            existing.setJoinOrder(this.joinOrder++);
+            this.savePlayersKairoDataToDataVault();
+            return;
+        }
+
+        const past = this.lastSavedPlayersKairoData.get(player.id);
+
+        let initialStates: PlayerKairoState[] = [];
+        if (past) {
+            initialStates = past.states ?? [];
+        }
+
+        const playerData = new PlayerKairoData(this, this.joinOrder++, initialStates);
+        this.playersKairoData.set(player.id, playerData);
+        this.savePlayersKairoDataToDataVault();
+    }
+
     public savePlayersKairoDataToDataVault(): void {
         const serialized: PlayerKairoDataSerialized[] = Array.from(
             this.playersKairoData,
@@ -68,6 +98,7 @@ export class PlayerKairoDataManager {
             }),
         );
 
+        this.lastSavedPlayersKairoData = new Map(serialized.map((item) => [item.playerId, item]));
         const json = JSON.stringify(serialized);
         KairoUtils.saveToDataVault(KAIRO_DATAVAULT_KEYS.KAIRO_PLAYERS_DATA, json);
     }
@@ -84,11 +115,19 @@ export class PlayerKairoDataManager {
         return state as PlayerKairoState;
     }
 
-    public has(state: string): state is PlayerKairoState {
+    public hasState(state: string): state is PlayerKairoState {
         return this.validStates.has(state);
     }
 
-    public getAll(): PlayerKairoState[] {
+    public getAllStates(): PlayerKairoState[] {
         return [...this.validStates] as PlayerKairoState[];
+    }
+
+    public getPlayerKairoData(playerId: string): PlayerKairoData {
+        return this.playersKairoData.get(playerId) as PlayerKairoData;
+    }
+
+    public getPlayersKairoData(): Map<string, PlayerKairoData> {
+        return this.playersKairoData;
     }
 }
