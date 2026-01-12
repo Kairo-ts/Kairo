@@ -7,8 +7,7 @@ import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./router/AddonReceiver";
 import { VersionManager } from "../utils/VersionManager";
 import { AddonRouter } from "./router/AddonRouter";
-import { DataVaultReceiver, type DataVaultLastDataLoaded } from "./router/DataVaultReceiver";
-import type { KairoCommand } from "../utils/KairoUtils";
+import type { KairoCommand, KairoResponse } from "../utils/KairoUtils";
 
 export type RegistrationState = "registered" | "unregistered" | "missing_requiredAddons";
 
@@ -41,7 +40,6 @@ export interface AddonData {
 export class AddonManager {
     private readonly activator: AddonActivator;
     private readonly receiver: AddonReceiver;
-    private readonly dataVaultReceiver: DataVaultReceiver;
     private readonly addonRouter: AddonRouter;
     private readonly addonList: AddonList;
     private readonly addonsData: Map<string, AddonData> = new Map();
@@ -51,7 +49,6 @@ export class AddonManager {
     private constructor(private readonly kairo: Kairo) {
         this.activator = AddonActivator.create(this);
         this.receiver = AddonReceiver.create(this);
-        this.dataVaultReceiver = DataVaultReceiver.create(this);
         this.addonRouter = AddonRouter.create(this);
         this.addonList = AddonList.create(this);
     }
@@ -87,23 +84,8 @@ export class AddonManager {
         this.kairo._deactivateAddon();
     }
 
-    public _scriptEvent(data: KairoCommand): void {
-        this.kairo._scriptEvent(data);
-    }
-
-    public dataVaultHandleOnScriptEvent(data: KairoCommand): void {
-        this.dataVaultReceiver.handleOnScriptEvent(data);
-    }
-
-    public getDataVaultLastDataLoaded(): DataVaultLastDataLoaded {
-        return this.dataVaultReceiver.getLastDataLoaded();
-    }
-
-    public waitForDataVaultNewDataLoaded(
-        key: string,
-        lastCount: number | undefined = undefined,
-    ): Promise<DataVaultLastDataLoaded> {
-        return this.dataVaultReceiver.waitForNewDataLoaded(key, lastCount);
+    public async _scriptEvent(data: KairoCommand): Promise<void | KairoResponse> {
+        return this.kairo._scriptEvent(data);
     }
 
     public handleAddonRouterScriptEvent = (ev: ScriptEventCommandMessageAfterEvent): void => {

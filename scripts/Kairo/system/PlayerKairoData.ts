@@ -1,4 +1,5 @@
-import type { PlayerKairoDataManager, PlayerKairoState } from "./PlayerKairoDataManager";
+import type { PlayerKairoState } from "../utils/KairoUtils";
+import type { PlayerKairoDataManager } from "./PlayerKairoDataManager";
 
 export class PlayerKairoData {
     private JoinOrder: number = 0;

@@ -1,39 +1,106 @@
 import { system, type Vector3 } from "@minecraft/server";
-import { SCRIPT_EVENT_COMMAND_IDS, SCRIPT_EVENT_ID_PREFIX } from "../constants/scriptevent";
+import { SCRIPT_EVENT_COMMAND_TYPES, SCRIPT_EVENT_ID_PREFIX } from "../constants/scriptevent";
 import { KAIRO_COMMAND_TARGET_ADDON_IDS } from "../constants/system";
 import { properties } from "../../properties";
-import type { PlayerKairoData } from "../system/PlayerKairoData";
 
 export interface KairoCommand {
+    sourceAddonId: string;
     commandId: string;
-    addonId: string;
-    requestId?: string;
-
-    [key: string]: any;
+    commandType: string;
+    data: Record<string, any>;
 }
+
+export interface KairoResponse extends KairoCommand {
+    success: boolean;
+    errorMessage?: string;
+}
+
+type PendingRequest = {
+    resolve: (value?: KairoResponse) => void;
+    reject: (reason?: any) => void;
+
+    timeoutTick: number;
+    expectResponse: boolean;
+};
 
 export type AllowedDynamicValue = boolean | number | string | Vector3 | null;
 
-export class KairoUtils {
-    public static async sendKairoCommand(targetAddonId: string, data: KairoCommand): Promise<void> {
-        system.sendScriptEvent(
-            `${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${targetAddonId}`,
-            JSON.stringify(data),
-        );
+export type PlayerKairoState = string & { __brand: "PlayerKairoState" };
+export interface PlayerKairoDataDTO {
+    playerId: string;
+    joinOrder: number;
+    states: PlayerKairoState[];
+}
 
-        await
+export class KairoUtils {
+    private static pendingRequests = new Map<string, PendingRequest>();
+
+    public static async sendKairoCommand(
+        targetAddonId: string,
+        commandType: string,
+        data: Record<string, any> = {},
+        timeoutTicks: number = 20,
+    ) {
+        return this.sendInternal(targetAddonId, commandType, data, timeoutTicks, false);
     }
 
-    public static async sendKairoCommandForResponse(
+    public static async sendKairoCommandAndWaitResponse(
         targetAddonId: string,
-        commandId: string,
-        data: any = undefined,
-    ): Promise<KairoCommand> {}
+        commandType: string,
+        data: Record<string, any> = {},
+        timeoutTicks: number = 20,
+    ) {
+        return this.sendInternal(targetAddonId, commandType, data, timeoutTicks, true);
+    }
 
-    public static saveToDataVault(
-        key: string,
-        value: boolean | number | string | Vector3 | null,
-    ): void {
+    public static buildKairoResponse(
+        data: Record<string, any> = {},
+        success: boolean = true,
+        errorMessage?: string,
+    ): KairoResponse {
+        return {
+            sourceAddonId: properties.id,
+            commandId: this.generateRandomId(16),
+            commandType: SCRIPT_EVENT_COMMAND_TYPES.KAIRO_RESPONSE,
+            data,
+            success,
+            ...(errorMessage !== undefined ? { errorMessage } : {}),
+        };
+    }
+
+    private static readonly charset = [
+        ..."abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+    ];
+
+    public static generateRandomId(length: number = 8): string {
+        return Array.from(
+            { length },
+            () => this.charset[Math.floor(Math.random() * this.charset.length)],
+        ).join("");
+    }
+
+    public static async getPlayerKairoData(playerId: string): Promise<PlayerKairoDataDTO> {
+        const kairoResponse = await KairoUtils.sendKairoCommandAndWaitResponse(
+            KAIRO_COMMAND_TARGET_ADDON_IDS.KAIRO,
+            SCRIPT_EVENT_COMMAND_TYPES.GET_PLAYER_KAIRO_DATA,
+            {
+                playerId,
+            },
+        );
+
+        return kairoResponse.data.playerKairoData as PlayerKairoDataDTO;
+    }
+
+    public static async getPlayersKairoData(): Promise<PlayerKairoDataDTO[]> {
+        const kairoResponse = await KairoUtils.sendKairoCommandAndWaitResponse(
+            KAIRO_COMMAND_TARGET_ADDON_IDS.KAIRO,
+            SCRIPT_EVENT_COMMAND_TYPES.GET_PLAYERS_KAIRO_DATA,
+        );
+
+        return kairoResponse.data.playerKairoData as PlayerKairoDataDTO[];
+    }
+
+    public static async saveToDataVault(key: string, value: AllowedDynamicValue): Promise<void> {
         const type = value === null ? "null" : typeof value;
         if (type === "object" && !this.isVector3(value)) {
             throw new Error(
@@ -41,52 +108,110 @@ export class KairoUtils {
             );
         }
 
-        KairoUtils.sendKairoCommand(KAIRO_COMMAND_TARGET_ADDON_IDS.KAIRO_DATAVAULT, {
-            commandId: SCRIPT_EVENT_COMMAND_IDS.SAVE_DATA,
-            addonId: properties.id,
-            type,
-            key,
-            value: JSON.stringify(value),
-        });
+        return KairoUtils.sendKairoCommand(
+            KAIRO_COMMAND_TARGET_ADDON_IDS.KAIRO_DATAVAULT,
+            SCRIPT_EVENT_COMMAND_TYPES.SAVE_DATA,
+            {
+                type,
+                key,
+                value: JSON.stringify(value),
+            },
+        );
     }
 
-    public static loadFromDataVault(key: string): void {
-        KairoUtils.sendKairoCommand(KAIRO_COMMAND_TARGET_ADDON_IDS.KAIRO_DATAVAULT, {
-            commandId: SCRIPT_EVENT_COMMAND_IDS.LOAD_DATA,
-            addonId: properties.id,
-            key,
-        });
+    public static async loadFromDataVault(key: string): Promise<AllowedDynamicValue> {
+        const kairoResponse = await KairoUtils.sendKairoCommandAndWaitResponse(
+            KAIRO_COMMAND_TARGET_ADDON_IDS.KAIRO_DATAVAULT,
+            SCRIPT_EVENT_COMMAND_TYPES.LOAD_DATA,
+            {
+                key,
+            },
+        );
+
+        return kairoResponse.data.dataLoaded;
     }
 
-    public static getPlayerKairoData(playerId: string): PlayerKairoData {
-        KairoUtils.sendKairoCommand(KAIRO_COMMAND_TARGET_ADDON_IDS.KAIRO, {
-            commandId: SCRIPT_EVENT_COMMAND_IDS.GET_PLAYER_KAIRO_DATA,
-            addonId: properties.id,
-        });
-    }
+    public static resolvePendingRequest(commandId: string, response?: KairoResponse): void {
+        const pending = this.pendingRequests.get(commandId);
+        if (!pending) return;
 
-    public static getPlayersKairoData(): PlayerKairoData[] {}
+        this.pendingRequests.delete(commandId);
 
-    private static readonly chars =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private static readonly charsLength = KairoUtils.chars.length;
-
-    /**
-     * ランダムな requestId を生成します。
-     * 文字種: a-z, A-Z, 0-9
-     * 長さ: 48
-     */
-    public static generate(length: number = 48): string {
-        let result = "";
-        const chars = KairoUtils.chars;
-        const n = KairoUtils.charsLength;
-
-        for (let i = 0; i < length; i++) {
-            const rand = (Math.random() * n) | 0;
-            result += chars[rand];
+        if (pending.expectResponse && response === undefined) {
+            pending.reject(
+                new Error(`Kairo response expected but none received (commandId=${commandId})`),
+            );
+            return;
         }
 
-        return result;
+        pending.resolve(response);
+    }
+
+    public static rejectPendingRequest(commandId: string, error?: unknown): void {
+        const pending = this.pendingRequests.get(commandId);
+        if (!pending) return;
+
+        this.pendingRequests.delete(commandId);
+
+        pending.reject(error ?? new Error("Kairo request rejected"));
+    }
+
+    private static async sendInternal(
+        targetAddonId: string,
+        commandType: string,
+        data: Record<string, any>,
+        timeoutTicks: number,
+        expectResponse: false,
+    ): Promise<void>;
+
+    private static async sendInternal(
+        targetAddonId: string,
+        commandType: string,
+        data: Record<string, any>,
+        timeoutTicks: number,
+        expectResponse: true,
+    ): Promise<KairoResponse>;
+
+    private static async sendInternal(
+        targetAddonId: string,
+        commandType: string,
+        data: Record<string, any>,
+        timeoutTicks: number,
+        expectResponse: boolean,
+    ): Promise<void | KairoResponse> {
+        const kairoCommand: KairoCommand = {
+            sourceAddonId: properties.id,
+            commandId: this.generateRandomId(16),
+            commandType,
+            data,
+        };
+
+        return new Promise((resolve, reject) => {
+            this.pendingRequests.set(kairoCommand.commandId, {
+                expectResponse,
+                resolve,
+                reject,
+                timeoutTick: system.currentTick + timeoutTicks,
+            });
+
+            system.sendScriptEvent(
+                `${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${targetAddonId}`,
+                JSON.stringify(kairoCommand),
+            );
+        });
+    }
+
+    private static lastTick: number;
+    public static onTick(): void {
+        if (this.lastTick === system.currentTick) return;
+        this.lastTick = system.currentTick;
+
+        for (const [requestId, pending] of this.pendingRequests) {
+            if (system.currentTick >= pending.timeoutTick) {
+                this.pendingRequests.delete(requestId);
+                pending.reject(new Error("Kairo command timeout"));
+            }
+        }
     }
 
     public static isRawMessage(value: unknown): boolean {

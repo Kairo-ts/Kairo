@@ -1,10 +1,8 @@
 import { Player, world } from "@minecraft/server";
 import type { SystemManager } from "./SystemManager";
-import { KairoUtils } from "../utils/KairoUtils";
+import { KairoUtils, type PlayerKairoState } from "../utils/KairoUtils";
 import { KAIRO_DATAVAULT_KEYS } from "../constants/system";
 import { PlayerKairoData } from "./PlayerKairoData";
-
-export type PlayerKairoState = string & { __brand: "PlayerKairoState" };
 
 export interface PlayerKairoDataSerialized {
     playerId: string;
@@ -36,17 +34,15 @@ export class PlayerKairoDataManager {
     public async init(): Promise<void> {
         KairoUtils.loadFromDataVault(KAIRO_DATAVAULT_KEYS.KAIRO_PLAYERS_DATA);
 
-        const dataLoaded = await this.systemManager.waitForDataVaultNewDataLoaded(
+        const dataLoaded = await KairoUtils.loadFromDataVault(
             KAIRO_DATAVAULT_KEYS.KAIRO_PLAYERS_DATA,
         );
 
         let playersDataSerializedMap = new Map<string, PlayerKairoDataSerialized>();
 
-        if (typeof dataLoaded.value === "string" && dataLoaded.value.length > 0) {
+        if (typeof dataLoaded === "string" && dataLoaded.length > 0) {
             try {
-                const playersDataSerialized = JSON.parse(
-                    dataLoaded.value,
-                ) as PlayerKairoDataSerialized[];
+                const playersDataSerialized = JSON.parse(dataLoaded) as PlayerKairoDataSerialized[];
                 playersDataSerializedMap = new Map(
                     playersDataSerialized.map((item) => [item.playerId, item]),
                 );
