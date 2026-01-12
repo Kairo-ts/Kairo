@@ -4,7 +4,6 @@ import { AddonList } from "./ui/AddonList";
 import { AddonReceiver } from "./router/AddonReceiver";
 import { VersionManager } from "../utils/VersionManager";
 import { AddonRouter } from "./router/AddonRouter";
-import { DataVaultReceiver } from "./router/DataVaultReceiver";
 export class AddonManager {
     constructor(kairo) {
         this.kairo = kairo;
@@ -18,7 +17,6 @@ export class AddonManager {
         };
         this.activator = AddonActivator.create(this);
         this.receiver = AddonReceiver.create(this);
-        this.dataVaultReceiver = DataVaultReceiver.create(this);
         this.addonRouter = AddonRouter.create(this);
         this.addonList = AddonList.create(this);
     }
@@ -46,14 +44,8 @@ export class AddonManager {
     _deactivateAddon() {
         this.kairo._deactivateAddon();
     }
-    _scriptEvent(data) {
-        this.kairo._scriptEvent(data);
-    }
-    dataVaultHandleOnScriptEvent(data) {
-        this.dataVaultReceiver.handleOnScriptEvent(data);
-    }
-    getDataVaultLastDataLoaded() {
-        return this.dataVaultReceiver.getLastDataLoaded();
+    async _scriptEvent(data) {
+        return this.kairo._scriptEvent(data);
     }
     getLatestPreferStableVersion(id) {
         const addonData = this.getAddonsData().get(id);
