@@ -3,31 +3,31 @@ import { SCRIPT_EVENT_ID_PREFIX, SCRIPT_EVENT_ID_SUFFIX } from "../../constants/
 export class AddonRouter {
     constructor(addonManager) {
         this.addonManager = addonManager;
+        this.handleScriptEvent = (ev) => {
+            const { id, message } = ev;
+            const splitId = id.split(":");
+            if (splitId[0] !== SCRIPT_EVENT_ID_PREFIX.KAIRO)
+                return;
+            const suffix = splitId[1];
+            if (suffix === undefined)
+                return;
+            if (suffix === SCRIPT_EVENT_ID_SUFFIX.BROADCAST) {
+                this.sendToAllAddons(message);
+                return;
+            }
+            const addonData = this.addonManager.getAddonsData().get(suffix);
+            if (addonData === undefined)
+                return;
+            if (!addonData.isActive)
+                return;
+            const activeVersionData = addonData.versions[addonData.activeVersion];
+            if (!activeVersionData)
+                return;
+            system.sendScriptEvent(`${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${activeVersionData.sessionId}`, message);
+        };
     }
     static create(addonManager) {
         return new AddonRouter(addonManager);
-    }
-    handleScriptEvent(ev) {
-        const { id, message } = ev;
-        const splitId = id.split(":");
-        if (splitId[0] !== SCRIPT_EVENT_ID_PREFIX.KAIRO)
-            return;
-        const suffix = splitId[1];
-        if (suffix === undefined)
-            return;
-        if (suffix === SCRIPT_EVENT_ID_SUFFIX.BROADCAST) {
-            this.sendToAllAddons(message);
-            return;
-        }
-        const addonData = this.addonManager.getAddonsData().get(suffix);
-        if (addonData === undefined)
-            return;
-        if (!addonData.isActive)
-            return;
-        const activeVersionData = addonData.versions[addonData.activeVersion];
-        if (!activeVersionData)
-            return;
-        system.sendScriptEvent(`${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${activeVersionData.sessionId}`, message);
     }
     sendToAllAddons(message) {
         const addons = this.addonManager.getAddonsData();

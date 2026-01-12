@@ -1,15 +1,13 @@
 import { properties } from "../../properties";
+import { KairoUtils } from "../utils/KairoUtils";
 export class AddonPropertyManager {
     constructor(kairo) {
         this.kairo = kairo;
-        this.charset = [
-            ..."abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-        ];
         this.self = {
             id: properties.id,
             name: properties.header.name,
             description: properties.header.description,
-            sessionId: this.generateRandomId(8),
+            sessionId: KairoUtils.generateRandomId(8),
             version: properties.header.version,
             dependencies: properties.dependencies,
             requiredAddons: properties.requiredAddons,
@@ -23,9 +21,6 @@ export class AddonPropertyManager {
         return this.self;
     }
     refreshSessionId() {
-        this.self.sessionId = this.generateRandomId(8);
-    }
-    generateRandomId(length = 8) {
-        return Array.from({ length }, () => this.charset[Math.floor(Math.random() * this.charset.length)]).join("");
+        this.self.sessionId = KairoUtils.generateRandomId(8);
     }
 }

@@ -1,9 +1,12 @@
-import { SCRIPT_EVENT_ID_PREFIX, SCRIPT_EVENT_MESSAGES } from "../../constants/scriptevent";
+import { system } from "@minecraft/server";
+import { SCRIPT_EVENT_COMMAND_TYPES, SCRIPT_EVENT_ID_PREFIX, SCRIPT_EVENT_MESSAGES, } from "../../constants/scriptevent";
 import { ConsoleManager } from "../../utils/ConsoleManager";
+import { KairoUtils } from "../../utils/KairoUtils";
+import { properties } from "../../../properties";
 export class AddonReceiver {
     constructor(addonManager) {
         this.addonManager = addonManager;
-        this.handleScriptEvent = (ev) => {
+        this.handleScriptEvent = async (ev) => {
             const { id, message } = ev;
             const addonProperty = this.addonManager.getSelfAddonProperty();
             if (id !== `${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${addonProperty.sessionId}`)
@@ -28,14 +31,26 @@ export class AddonReceiver {
                         ConsoleManager.warn(`[ScriptEventReceiver] Invalid JSON: ${message}`);
                         return;
                     }
-                    if (!data || typeof data !== "object")
+                    if (typeof data.sourceAddonId !== "string")
                         return;
+                    if (typeof data.commandType !== "string")
+                        return;
+                    if (data.ackFor && typeof data.ackFor === "string") {
+                        KairoUtils.resolvePendingRequest(data.ackFor, data.response);
+                        return;
+                    }
                     if (typeof data.commandId !== "string")
                         return;
-                    if (typeof data.addonId !== "string")
+                    if (!data || typeof data !== "object")
                         return;
                     const command = data;
-                    this.addonManager._scriptEvent(command);
+                    const response = await this.addonManager._scriptEvent(command);
+                    system.sendScriptEvent(`${SCRIPT_EVENT_ID_PREFIX.KAIRO}:${command.sourceAddonId}`, JSON.stringify({
+                        sourceAddonId: properties.id,
+                        commandType: SCRIPT_EVENT_COMMAND_TYPES.KAIRO_ACK,
+                        ackFor: command.commandId,
+                        response,
+                    }));
                     break;
             }
         };
