@@ -26,6 +26,4 @@ export const SCRIPT_EVENT_COMMAND_TYPES = {
     DATA_LOADED: "data_loaded",
     GET_PLAYER_KAIRO_DATA: "getPlayerKairoData",
     GET_PLAYERS_KAIRO_DATA: "getPlayersKairoData",
-    GET_PLAYER_KAIRO_DATA_RESPONSE: "getPlayerKairoData_Response",
-    GET_PLAYERS_KAIRO_DATA_RESPONSE: "getPlayersKairoData_Response",
 };
