@@ -30,7 +30,7 @@ export class KairoUtils {
     }
     static async getPlayersKairoData() {
         const kairoResponse = await KairoUtils.sendKairoCommandAndWaitResponse(KAIRO_COMMAND_TARGET_ADDON_IDS.KAIRO, SCRIPT_EVENT_COMMAND_TYPES.GET_PLAYERS_KAIRO_DATA);
-        return kairoResponse.data.playerKairoData;
+        return kairoResponse.data.playersKairoData;
     }
     static async saveToDataVault(key, value) {
         const type = value === null ? "null" : typeof value;

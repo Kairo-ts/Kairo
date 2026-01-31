@@ -3,7 +3,7 @@ import type { Kairo } from "..";
 import { DEFAULT_KAIRO_STATES } from "../constants/states";
 import { SystemEventManager } from "./events/SystemEventManager";
 import { PlayerKairoDataManager } from "./PlayerKairoDataManager";
-import type { KairoCommand } from "../utils/KairoUtils";
+import type { KairoCommand, KairoResponse } from "../utils/KairoUtils";
 import { ScriptEventReceiver } from "./ScriptEventReceiver";
 import type { PlayerKairoData } from "./PlayerKairoData";
 
@@ -37,15 +37,15 @@ export class SystemManager {
         this.playerKairoDataManager.addOrRestorePlayerKairoData(player);
     }
 
-    public handleOnScriptEvent = (data: KairoCommand): void => {
-        this.scriptEventReceiver.handleScriptEvent(data);
+    public handleOnScriptEvent = async (data: KairoCommand): Promise<void | KairoResponse> => {
+        return this.scriptEventReceiver.handleScriptEvent(data);
     };
 
-    public getPlayerKairoData(playerId: string): PlayerKairoData {
+    public async getPlayerKairoData(playerId: string): Promise<PlayerKairoData> {
         return this.playerKairoDataManager.getPlayerKairoData(playerId);
     }
 
-    public getPlayersKairoData(): Map<string, PlayerKairoData> {
+    public async getPlayersKairoData(): Promise<Map<string, PlayerKairoData>> {
         return this.playerKairoDataManager.getPlayersKairoData();
     }
 }

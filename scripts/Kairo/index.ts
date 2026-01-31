@@ -84,8 +84,10 @@ export class Kairo {
         system.sendScriptEvent(SCRIPT_EVENT_IDS.UNSUBSCRIBE_INITIALIZE, "");
     }
 
-    public static handleOnScriptEvent = (data: KairoCommand): void => {
-        this.getInstance().systemManager.handleOnScriptEvent(data);
+    public static handleOnScriptEvent = async (
+        data: KairoCommand,
+    ): Promise<void | KairoResponse> => {
+        return this.getInstance().systemManager.handleOnScriptEvent(data);
     };
 
     public static initSaveAddons(): void {

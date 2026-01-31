@@ -5,8 +5,8 @@ import { ScriptEventReceiver } from "./ScriptEventReceiver";
 export class SystemManager {
     constructor(kairo) {
         this.kairo = kairo;
-        this.handleOnScriptEvent = (data) => {
-            this.scriptEventReceiver.handleScriptEvent(data);
+        this.handleOnScriptEvent = async (data) => {
+            return this.scriptEventReceiver.handleScriptEvent(data);
         };
         this.systemEventManager = SystemEventManager.create(this);
         this.scriptEventReceiver = ScriptEventReceiver.create(this);
@@ -27,10 +27,10 @@ export class SystemManager {
     addOrRestorePlayerKairoData(player) {
         this.playerKairoDataManager.addOrRestorePlayerKairoData(player);
     }
-    getPlayerKairoData(playerId) {
+    async getPlayerKairoData(playerId) {
         return this.playerKairoDataManager.getPlayerKairoData(playerId);
     }
-    getPlayersKairoData() {
+    async getPlayersKairoData() {
         return this.playerKairoDataManager.getPlayersKairoData();
     }
 }

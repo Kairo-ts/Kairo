@@ -97,7 +97,7 @@ export class KairoUtils {
             SCRIPT_EVENT_COMMAND_TYPES.GET_PLAYERS_KAIRO_DATA,
         );
 
-        return kairoResponse.data.playerKairoData as PlayerKairoDataDTO[];
+        return kairoResponse.data.playersKairoData as PlayerKairoDataDTO[];
     }
 
     public static async saveToDataVault(key: string, value: AllowedDynamicValue): Promise<void> {

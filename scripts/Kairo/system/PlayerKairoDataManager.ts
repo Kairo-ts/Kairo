@@ -15,6 +15,9 @@ export class PlayerKairoDataManager {
     private validStates = new Set<string>();
     private joinOrder = 0;
 
+    private initPromise: Promise<void> | null = null;
+    private initialized = false;
+
     private constructor(
         private readonly systemManager: SystemManager,
         initialStates: string[] = [],
@@ -32,36 +35,51 @@ export class PlayerKairoDataManager {
     }
 
     public async init(): Promise<void> {
-        KairoUtils.loadFromDataVault(KAIRO_DATAVAULT_KEYS.KAIRO_PLAYERS_DATA);
+        if (this.initialized) return;
 
-        const dataLoaded = await KairoUtils.loadFromDataVault(
-            KAIRO_DATAVAULT_KEYS.KAIRO_PLAYERS_DATA,
-        );
+        if (!this.initPromise) {
+            this.initPromise = (async () => {
+                KairoUtils.loadFromDataVault(KAIRO_DATAVAULT_KEYS.KAIRO_PLAYERS_DATA);
 
-        let playersDataSerializedMap = new Map<string, PlayerKairoDataSerialized>();
-
-        if (typeof dataLoaded === "string" && dataLoaded.length > 0) {
-            try {
-                const playersDataSerialized = JSON.parse(dataLoaded) as PlayerKairoDataSerialized[];
-                playersDataSerializedMap = new Map(
-                    playersDataSerialized.map((item) => [item.playerId, item]),
+                const dataLoaded = await KairoUtils.loadFromDataVault(
+                    KAIRO_DATAVAULT_KEYS.KAIRO_PLAYERS_DATA,
                 );
-            } catch {
-                playersDataSerializedMap = new Map();
-            }
+
+                let playersDataSerializedMap = new Map<string, PlayerKairoDataSerialized>();
+
+                if (typeof dataLoaded === "string" && dataLoaded.length > 0) {
+                    try {
+                        const playersDataSerialized = JSON.parse(
+                            dataLoaded,
+                        ) as PlayerKairoDataSerialized[];
+                        playersDataSerializedMap = new Map(
+                            playersDataSerialized.map((item) => [item.playerId, item]),
+                        );
+                    } catch {
+                        playersDataSerializedMap = new Map();
+                    }
+                }
+
+                const players = world.getPlayers();
+                for (const player of players) {
+                    const playerDataSerialized = playersDataSerializedMap.get(player.id);
+                    const initialStates =
+                        playerDataSerialized !== undefined ? playerDataSerialized.states : [];
+
+                    const playerKairoData = new PlayerKairoData(
+                        this,
+                        this.joinOrder++,
+                        initialStates,
+                    );
+                    this.playersKairoData.set(player.id, playerKairoData);
+                }
+
+                this.savePlayersKairoDataToDataVault();
+                this.initialized = true;
+            })();
         }
 
-        const players = world.getPlayers();
-        for (const player of players) {
-            const playerDataSerialized = playersDataSerializedMap.get(player.id);
-            const initialStates =
-                playerDataSerialized !== undefined ? playerDataSerialized.states : [];
-
-            const playerKairoData = new PlayerKairoData(this, this.joinOrder++, initialStates);
-            this.playersKairoData.set(player.id, playerKairoData);
-        }
-
-        this.savePlayersKairoDataToDataVault();
+        await this.initPromise;
     }
 
     public addOrRestorePlayerKairoData(player: Player): void {
@@ -119,11 +137,13 @@ export class PlayerKairoDataManager {
         return [...this.validStates] as PlayerKairoState[];
     }
 
-    public getPlayerKairoData(playerId: string): PlayerKairoData {
+    public async getPlayerKairoData(playerId: string): Promise<PlayerKairoData> {
+        await this.init();
         return this.playersKairoData.get(playerId) as PlayerKairoData;
     }
 
-    public getPlayersKairoData(): Map<string, PlayerKairoData> {
+    public async getPlayersKairoData(): Promise<Map<string, PlayerKairoData>> {
+        await this.init();
         return this.playersKairoData;
     }
 }

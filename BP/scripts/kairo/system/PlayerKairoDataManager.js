@@ -9,6 +9,8 @@ export class PlayerKairoDataManager {
         this.lastSavedPlayersKairoData = new Map();
         this.validStates = new Set();
         this.joinOrder = 0;
+        this.initPromise = null;
+        this.initialized = false;
         for (const s of initialStates) {
             this.registerState(s);
         }
@@ -17,26 +19,34 @@ export class PlayerKairoDataManager {
         return new PlayerKairoDataManager(systemManager, initialStates);
     }
     async init() {
-        KairoUtils.loadFromDataVault(KAIRO_DATAVAULT_KEYS.KAIRO_PLAYERS_DATA);
-        const dataLoaded = await KairoUtils.loadFromDataVault(KAIRO_DATAVAULT_KEYS.KAIRO_PLAYERS_DATA);
-        let playersDataSerializedMap = new Map();
-        if (typeof dataLoaded === "string" && dataLoaded.length > 0) {
-            try {
-                const playersDataSerialized = JSON.parse(dataLoaded);
-                playersDataSerializedMap = new Map(playersDataSerialized.map((item) => [item.playerId, item]));
-            }
-            catch {
-                playersDataSerializedMap = new Map();
-            }
+        if (this.initialized)
+            return;
+        if (!this.initPromise) {
+            this.initPromise = (async () => {
+                KairoUtils.loadFromDataVault(KAIRO_DATAVAULT_KEYS.KAIRO_PLAYERS_DATA);
+                const dataLoaded = await KairoUtils.loadFromDataVault(KAIRO_DATAVAULT_KEYS.KAIRO_PLAYERS_DATA);
+                let playersDataSerializedMap = new Map();
+                if (typeof dataLoaded === "string" && dataLoaded.length > 0) {
+                    try {
+                        const playersDataSerialized = JSON.parse(dataLoaded);
+                        playersDataSerializedMap = new Map(playersDataSerialized.map((item) => [item.playerId, item]));
+                    }
+                    catch {
+                        playersDataSerializedMap = new Map();
+                    }
+                }
+                const players = world.getPlayers();
+                for (const player of players) {
+                    const playerDataSerialized = playersDataSerializedMap.get(player.id);
+                    const initialStates = playerDataSerialized !== undefined ? playerDataSerialized.states : [];
+                    const playerKairoData = new PlayerKairoData(this, this.joinOrder++, initialStates);
+                    this.playersKairoData.set(player.id, playerKairoData);
+                }
+                this.savePlayersKairoDataToDataVault();
+                this.initialized = true;
+            })();
         }
-        const players = world.getPlayers();
-        for (const player of players) {
-            const playerDataSerialized = playersDataSerializedMap.get(player.id);
-            const initialStates = playerDataSerialized !== undefined ? playerDataSerialized.states : [];
-            const playerKairoData = new PlayerKairoData(this, this.joinOrder++, initialStates);
-            this.playersKairoData.set(player.id, playerKairoData);
-        }
-        this.savePlayersKairoDataToDataVault();
+        await this.initPromise;
     }
     addOrRestorePlayerKairoData(player) {
         const existing = this.playersKairoData.get(player.id);
@@ -79,10 +89,12 @@ export class PlayerKairoDataManager {
     getAllStates() {
         return [...this.validStates];
     }
-    getPlayerKairoData(playerId) {
+    async getPlayerKairoData(playerId) {
+        await this.init();
         return this.playersKairoData.get(playerId);
     }
-    getPlayersKairoData() {
+    async getPlayersKairoData() {
+        await this.init();
         return this.playersKairoData;
     }
 }

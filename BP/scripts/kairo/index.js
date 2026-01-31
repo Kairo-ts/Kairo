@@ -197,8 +197,8 @@ Kairo._deinitHooks = [];
 Kairo._seHooks = [];
 Kairo._tickHooks = [];
 Kairo._tickEnabled = false;
-Kairo.handleOnScriptEvent = (data) => {
-    _a.getInstance().systemManager.handleOnScriptEvent(data);
+Kairo.handleOnScriptEvent = async (data) => {
+    return _a.getInstance().systemManager.handleOnScriptEvent(data);
 };
 Kairo.handleAddonRouterScriptEvent = (ev) => {
     _a.getInstance().addonManager.handleAddonRouterScriptEvent(ev);
