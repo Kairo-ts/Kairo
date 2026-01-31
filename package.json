@@ -3,15 +3,15 @@
     "version": "1.0.0",
     "description": "**Stable Script API**\r - @minecraft/server - 2.0.0",
     "main": "index.js",
+    "type": "module",
     "scripts": {
-        "build": "rimraf BP/scripts && tsc && npm run deploy",
-        "deploy": "tsx src/deploy.ts",
-        "dev": "concurrently \"tsc --watch\" \"chokidar './BP/scripts/**/*.js' -c 'npm run deploy'\"",
-        "predev": "rimraf BP/scripts"
+        "typecheck": "tsc --noEmit",
+        "build": "rimraf BP/scripts && npm run typecheck && node build.mjs && npm run deploy",
+        "deploy": "node src/deploy.js"
     },
     "repository": {
         "type": "git",
-        "url": "git@github.com-shizu:Minecraft-Werewolf/Werewolf-AddonRouter.git"
+        "url": "git@github.com:Kairo-ts/Kairo.git"
     },
     "keywords": [],
     "author": "",
@@ -19,13 +19,12 @@
     "devDependencies": {
         "@minecraft/server": "^2.1.0",
         "@minecraft/server-ui": "^2.0.0",
+        "@minecraft/vanilla-data": "^1.21.131",
         "@types/node": "^24.1.0",
-        "chokidar-cli": "^3.0.0",
-        "concurrently": "^9.2.0",
+        "esbuild": "^0.27.2",
         "fs-extra": "^11.3.0",
         "prettier": "3.6.2",
         "rimraf": "^6.0.1",
-        "tsx": "^4.20.3",
         "typescript": "^5.9.2"
     }
 }

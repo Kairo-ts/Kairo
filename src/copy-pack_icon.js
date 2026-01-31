@@ -1,9 +1,8 @@
 import path from "path";
 import fs from "fs";
 import fse from "fs-extra";
-import { properties } from "../scripts/properties";
 
-export function writePackIcon(rootDir: string) {
+export function writePackIcon(rootDir, properties) {
     const srcIcon = path.join(rootDir, "pack_icon.png");
     if (!fs.existsSync(srcIcon)) {
         throw new Error("pack_icon.png not found in root directory.");
