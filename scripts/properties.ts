@@ -49,7 +49,7 @@ export const properties = {
     dependencies: [
         {
             module_name: "@minecraft/server",
-            version: "2.1.0",
+            version: "2.4.0",
         },
         {
             module_name: "@minecraft/server-ui",
