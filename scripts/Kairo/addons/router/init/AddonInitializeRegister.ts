@@ -41,7 +41,7 @@ export class AddonInitializeRegister {
             case SCRIPT_EVENT_IDS.BEHAVIOR_INITIALIZATION_COMPLETE_RESPONSE:
                 this.initializationCompleteCounter += 1;
 
-                console.log(
+                ConsoleManager.log(
                     `${this.initializationCompleteCounter} / ${addonCount} addons have completed initialization.`,
                 );
                 if (this.initializationCompleteCounter === addonCount) {
