@@ -17,7 +17,7 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "@minecraft/server": "^2.1.0",
+        "@minecraft/server": "^2.4.0",
         "@minecraft/server-ui": "^2.0.0",
         "@minecraft/vanilla-data": "^1.21.131",
         "@types/node": "^24.1.0",
