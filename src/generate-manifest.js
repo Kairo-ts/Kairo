@@ -4,6 +4,10 @@ import { pathToFileURL } from "url";
 
 const VERSION_STORE_FILE = ".manifest-version.json";
 
+function getVersionStorePath(rootDir) {
+    return path.join(rootDir, "src", VERSION_STORE_FILE);
+}
+
 function toManifestTriple(v) {
     return [v.major, v.minor, v.patch];
 }
@@ -30,13 +34,14 @@ function incrementPatch(v) {
 }
 
 function loadStoredVersion(rootDir) {
-    const p = path.join(rootDir, VERSION_STORE_FILE);
+    const p = getVersionStorePath(rootDir);
     if (!fs.existsSync(p)) return null;
     return JSON.parse(fs.readFileSync(p, "utf-8")).version;
 }
 
 function saveStoredVersion(rootDir, version) {
-    const p = path.join(rootDir, VERSION_STORE_FILE);
+    const p = getVersionStorePath(rootDir);
+    fs.mkdirSync(path.dirname(p), { recursive: true });
     fs.writeFileSync(p, JSON.stringify({ version }, null, 2), "utf-8");
 }
 
