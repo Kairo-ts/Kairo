@@ -128,7 +128,31 @@ export class KairoUtils {
             },
         );
 
-        return kairoResponse.data.dataLoaded;
+        const { type, value } = kairoResponse.data.dataLoaded;
+
+        if (value === null) return null;
+
+        switch (type) {
+            case "string":
+                try {
+                    return JSON.parse(value);
+                } catch {
+                    return value;
+                }
+
+            case "number":
+            case "boolean":
+                return JSON.parse(value);
+
+            case "object":
+                return JSON.parse(value);
+
+            case "null":
+                return null;
+
+            default:
+                throw new Error(`Unsupported DataVault value type: ${type}`);
+        }
     }
 
     public static resolvePendingRequest(commandId: string, response?: KairoResponse): void {
