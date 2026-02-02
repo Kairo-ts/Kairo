@@ -7,39 +7,43 @@ export abstract class BaseEventHandler<
 > {
     protected isSubscribed = false;
 
-    private boundHandleBefore: ((ev: TBefore) => void) | undefined = undefined;
-    private boundHandleAfter: ((ev: TAfter) => void) | undefined = undefined;
+    private boundBefore?: (ev: TBefore) => void;
+    private boundAfter?: (ev: TAfter) => void;
 
     protected constructor(protected readonly eventManager: TManager) {}
 
-    protected beforeEvent?:
-        | {
-              subscribe: (callback: (ev: TBefore) => void) => void;
-              unsubscribe: (callback: (ev: TBefore) => void) => void;
-          }
-        | undefined;
+    protected beforeEvent?: {
+        subscribe(cb: (ev: TBefore) => void): void;
+        unsubscribe(cb: (ev: TBefore) => void): void;
+    };
 
-    protected afterEvent?:
-        | {
-              subscribe: (callback: (ev: TAfter) => void) => void;
-              unsubscribe: (callback: (ev: TAfter) => void) => void;
-          }
-        | undefined;
+    protected afterEvent?: {
+        subscribe(cb: (ev: TAfter) => void): void;
+        unsubscribe(cb: (ev: TAfter) => void): void;
+    };
 
-    protected handleBefore?(ev: TBefore): void;
-    protected handleAfter?(ev: TAfter): void;
+    protected handleBefore?(ev: TBefore): void | Promise<void>;
+    protected handleAfter?(ev: TAfter): void | Promise<void>;
+
+    protected async _handleBefore(ev: TBefore): Promise<void> {
+        await this.handleBefore?.(ev);
+    }
+
+    protected async _handleAfter(ev: TAfter): Promise<void> {
+        await this.handleAfter?.(ev);
+    }
 
     public subscribe(): void {
         if (this.isSubscribed) return;
 
-        if (this.beforeEvent && this.handleBefore) {
-            this.boundHandleBefore = this.handleBefore.bind(this);
-            this.beforeEvent.subscribe(this.boundHandleBefore);
+        if (this.beforeEvent) {
+            this.boundBefore = (ev) => void this._handleBefore(ev);
+            this.beforeEvent.subscribe(this.boundBefore);
         }
 
-        if (this.afterEvent && this.handleAfter) {
-            this.boundHandleAfter = this.handleAfter.bind(this);
-            this.afterEvent.subscribe(this.boundHandleAfter);
+        if (this.afterEvent) {
+            this.boundAfter = (ev) => void this._handleAfter(ev);
+            this.afterEvent.subscribe(this.boundAfter);
         }
 
         this.isSubscribed = true;
@@ -48,14 +52,12 @@ export abstract class BaseEventHandler<
     public unsubscribe(): void {
         if (!this.isSubscribed) return;
 
-        if (this.beforeEvent && this.boundHandleBefore) {
-            this.beforeEvent.unsubscribe(this.boundHandleBefore);
-            this.boundHandleBefore = undefined;
+        if (this.beforeEvent && this.boundBefore) {
+            this.beforeEvent.unsubscribe(this.boundBefore);
         }
 
-        if (this.afterEvent && this.boundHandleAfter) {
-            this.afterEvent.unsubscribe(this.boundHandleAfter);
-            this.boundHandleAfter = undefined;
+        if (this.afterEvent && this.boundAfter) {
+            this.afterEvent.unsubscribe(this.boundAfter);
         }
 
         this.isSubscribed = false;
