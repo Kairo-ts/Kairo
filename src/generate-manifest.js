@@ -2,6 +2,8 @@ import fs from "fs";
 import path from "path";
 import { pathToFileURL } from "url";
 
+const VERSION_STORE_FILE = ".manifest-version.json";
+
 function toManifestTriple(v) {
     return [v.major, v.minor, v.patch];
 }
@@ -11,6 +13,31 @@ function toVersionString(v) {
     if (v.prerelease) s += `-${v.prerelease}`;
     if (v.build) s += `+${v.build}`;
     return s;
+}
+
+function compareVersion(a, b) {
+    if (a.major !== b.major) return a.major - b.major;
+    if (a.minor !== b.minor) return a.minor - b.minor;
+    return a.patch - b.patch;
+}
+
+function incrementPatch(v) {
+    return {
+        major: v.major,
+        minor: v.minor,
+        patch: v.patch + 1,
+    };
+}
+
+function loadStoredVersion(rootDir) {
+    const p = path.join(rootDir, VERSION_STORE_FILE);
+    if (!fs.existsSync(p)) return null;
+    return JSON.parse(fs.readFileSync(p, "utf-8")).version;
+}
+
+function saveStoredVersion(rootDir, version) {
+    const p = path.join(rootDir, VERSION_STORE_FILE);
+    fs.writeFileSync(p, JSON.stringify({ version }, null, 2), "utf-8");
 }
 
 function resolveVersionRef(ref, headerSemver) {
@@ -98,6 +125,24 @@ export async function writeManifests(rootDir) {
     const propertiesPath = path.join(rootDir, "BP", "scripts", "properties.js");
     const { properties } = await import(pathToFileURL(propertiesPath).href);
 
+    const baseVersion = properties.header.version;
+    const storedVersion = loadStoredVersion(rootDir);
+
+    const effectiveBase =
+        storedVersion && compareVersion(storedVersion, baseVersion) > 0
+            ? storedVersion
+            : baseVersion;
+
+    const buildVersion = incrementPatch(effectiveBase);
+
+    const buildProperties = {
+        ...properties,
+        header: {
+            ...properties.header,
+            version: buildVersion,
+        },
+    };
+
     const bpDir = path.join(rootDir, "BP");
     const rpDir = path.join(rootDir, "RP");
 
@@ -105,12 +150,16 @@ export async function writeManifests(rootDir) {
     let bpManifest;
     let versionString;
 
-    if (properties.resourcepack) {
-        const rpResult = buildRPManifest(properties, properties.header, properties.header.uuid);
+    if (buildProperties.resourcepack) {
+        const rpResult = buildRPManifest(
+            buildProperties,
+            buildProperties.header,
+            buildProperties.header.uuid,
+        );
         rpManifest = rpResult.manifest;
         versionString = rpResult.versionString;
 
-        const bpResult = buildBPManifest(properties, rpManifest.header.uuid);
+        const bpResult = buildBPManifest(buildProperties, rpManifest.header.uuid);
         bpManifest = bpResult.manifest;
 
         fs.mkdirSync(rpDir, { recursive: true });
@@ -120,7 +169,7 @@ export async function writeManifests(rootDir) {
             "utf-8",
         );
     } else {
-        const bpResult = buildBPManifest(properties);
+        const bpResult = buildBPManifest(buildProperties);
         bpManifest = bpResult.manifest;
         versionString = bpResult.versionString;
     }
@@ -131,6 +180,8 @@ export async function writeManifests(rootDir) {
         JSON.stringify(bpManifest, null, 2),
         "utf-8",
     );
+
+    saveStoredVersion(rootDir, buildVersion);
 
     return { bpManifest, rpManifest, versionString, properties };
 }
