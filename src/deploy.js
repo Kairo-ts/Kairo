@@ -38,29 +38,35 @@ async function main() {
 
     writePackIcon(rootDir, properties);
 
-    const bpName = bpManifest?.header?.name;
-    if (!bpName) throw new Error("BP addon name not found.");
+    const bpDisplayName = bpManifest?.header?.name;
+    if (!bpDisplayName) throw new Error("BP addon name not found.");
+
+    const bpFolderName = properties.id;
+    if (!bpFolderName) throw new Error("Addon id not found in properties.");
 
     const bpDir = path.join(rootDir, "BP");
-    const dstBP = resolveMinecraftDevPath(bpName, "behavior");
+    const dstBP = resolveMinecraftDevPath(bpFolderName, "behavior");
     fse.ensureDirSync(dstBP);
     fse.emptyDirSync(dstBP);
     fse.copySync(bpDir, dstBP, { overwrite: true });
     console.log(`[deploy] BP => ${dstBP}`);
 
     if (rpManifest) {
-        const rpName = rpManifest.header?.name;
-        if (!rpName) throw new Error("RP addon name not found.");
+        const rpDisplayName = rpManifest.header?.name;
+        if (!rpDisplayName) throw new Error("RP addon name not found.");
 
         const rpDir = path.join(rootDir, "RP");
-        const dstRP = resolveMinecraftDevPath(rpName, "resource");
+        const dstRP = resolveMinecraftDevPath(bpFolderName, "resource");
         fse.ensureDirSync(dstRP);
         fse.emptyDirSync(dstRP);
         fse.copySync(rpDir, dstRP, { overwrite: true });
+
         console.log(`[deploy] RP => ${dstRP}`);
-        console.log(`[deploy] ${bpName}/${rpName} ${versionString} deployed.`);
+        console.log(`[deploy] ${bpDisplayName} (${bpFolderName}) ${versionString} deployed.`);
     } else {
-        console.log(`[deploy] ${bpName} ${versionString} deployed (BP only).`);
+        console.log(
+            `[deploy] ${bpDisplayName} (${bpFolderName}) ${versionString} deployed (BP only).`,
+        );
     }
 }
 
