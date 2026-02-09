@@ -45,6 +45,13 @@ function saveStoredVersion(rootDir, version) {
     fs.writeFileSync(p, JSON.stringify({ version }, null, 2), "utf-8");
 }
 
+function ensureStoredVersion(rootDir, version) {
+    const p = getVersionStorePath(rootDir);
+    if (!fs.existsSync(p)) {
+        saveStoredVersion(rootDir, version);
+    }
+}
+
 function resolveVersionRef(ref, headerSemver) {
     if (ref === "header.version") return toManifestTriple(headerSemver);
     if (Array.isArray(ref) && ref.length >= 3) return [ref[0], ref[1], ref[2]];
@@ -131,6 +138,7 @@ export async function writeManifests(rootDir) {
     const { properties } = await import(pathToFileURL(propertiesPath).href);
 
     const baseVersion = properties.header.version;
+    ensureStoredVersion(rootDir, baseVersion);
     const storedVersion = loadStoredVersion(rootDir);
 
     const effectiveBase =

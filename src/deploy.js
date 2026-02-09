@@ -5,6 +5,7 @@ import fse from "fs-extra";
 import { fileURLToPath } from "url";
 import { writeManifests } from "./generate-manifest.js";
 import { writePackIcon } from "./copy-pack_icon.js";
+import { getSafeFolderName } from "./path-utils.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,9 +44,10 @@ async function main() {
 
     const bpFolderName = properties.id;
     if (!bpFolderName) throw new Error("Addon id not found in properties.");
+    const safeFolderName = getSafeFolderName(bpFolderName, "addon id");
 
     const bpDir = path.join(rootDir, "BP");
-    const dstBP = resolveMinecraftDevPath(bpFolderName, "behavior");
+    const dstBP = resolveMinecraftDevPath(safeFolderName, "behavior");
     fse.ensureDirSync(dstBP);
     fse.emptyDirSync(dstBP);
     fse.copySync(bpDir, dstBP, { overwrite: true });
@@ -56,16 +58,16 @@ async function main() {
         if (!rpDisplayName) throw new Error("RP addon name not found.");
 
         const rpDir = path.join(rootDir, "RP");
-        const dstRP = resolveMinecraftDevPath(bpFolderName, "resource");
+        const dstRP = resolveMinecraftDevPath(safeFolderName, "resource");
         fse.ensureDirSync(dstRP);
         fse.emptyDirSync(dstRP);
         fse.copySync(rpDir, dstRP, { overwrite: true });
 
         console.log(`[deploy] RP => ${dstRP}`);
-        console.log(`[deploy] ${bpDisplayName} (${bpFolderName}) ${versionString} deployed.`);
+        console.log(`[deploy] ${bpDisplayName} (${safeFolderName}) ${versionString} deployed.`);
     } else {
         console.log(
-            `[deploy] ${bpDisplayName} (${bpFolderName}) ${versionString} deployed (BP only).`,
+            `[deploy] ${bpDisplayName} (${safeFolderName}) ${versionString} deployed (BP only).`,
         );
     }
 }
