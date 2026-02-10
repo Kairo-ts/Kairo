@@ -1,20 +1,6 @@
-/**
- * scripts/properties から manifest.jsonを自動生成する
- * propertiesは、アドオン間通信においても、識別などに利用する
- */
-
-export type SemVer = {
-    major: number;
-    minor: number;
-    patch: number;
-    prerelease?: string | undefined; // "preview.3" / "rc.1"
-    build?: string | undefined; // "abc123" (commit)
-};
-
-export const properties = {
-    id: "kairo", // a-z & 0-9 - _
+export const properties: KairoAddonProperties = {
+    id: "kairo", //# // a-z & 0-9 - _
     metadata: {
-        /** 製作者の名前 */
         authors: ["shizuku86"],
     },
     header: {
@@ -25,27 +11,11 @@ export const properties = {
             major: 1,
             minor: 0,
             patch: 0,
-            prerelease: "dev.40",
+            // prerelease: "preview.1",
             // build: "abc123",
         },
-        min_engine_version: [1, 21, 100],
-        uuid: "45826daa-bf9f-4443-b746-944a0970bfef",
+        min_engine_version: [1, 21, 132],
     },
-    resourcepack: {
-        name: "Use BP Name",
-        description: "Use BP Description",
-        uuid: "5586bc68-ca19-4d34-9b8d-0cf522ff421d",
-        module_uuid: "f9cf1b9e-5d91-477a-b9d8-b1cc6f64c335",
-    },
-    modules: [
-        {
-            type: "script",
-            language: "javascript",
-            entry: "scripts/index.js",
-            version: "header.version",
-            uuid: "1d3bfdf2-7456-435b-bacf-c94c0d7b7c64",
-        },
-    ],
     dependencies: [
         {
             module_name: "@minecraft/server",
@@ -65,4 +35,45 @@ export const properties = {
     tags: ["official", "stable"],
 };
 
-export const supportedTags: string[] = ["official", "approved", "stable", "experimental"];
+export type SemVer = {
+    readonly major: number;
+    readonly minor: number;
+    readonly patch: number;
+    readonly prerelease?: string;
+    readonly build?: string;
+};
+
+export type EngineVersion = [number, number, number];
+
+export type ManifestDependency = {
+    readonly module_name: "@minecraft/server" | "@minecraft/server-ui";
+    readonly version: string;
+};
+
+export type AddonHeader = {
+    readonly name: string;
+    readonly description: string;
+    readonly version: SemVer;
+    readonly min_engine_version: EngineVersion;
+};
+
+export type AddonMetadata = {
+    readonly authors?: string[];
+    readonly url?: string;
+    readonly license?: string;
+};
+
+export type RequiredAddons = {
+    readonly [addonId: string]: string;
+};
+
+export type SupportedTag = "official" | "approved" | "stable" | "experimental";
+
+export type KairoAddonProperties = {
+    readonly id: string;
+    readonly metadata?: AddonMetadata;
+    readonly header: AddonHeader;
+    readonly dependencies?: ManifestDependency[];
+    readonly requiredAddons?: RequiredAddons;
+    readonly tags?: SupportedTag[];
+};
