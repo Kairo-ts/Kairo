@@ -28,9 +28,9 @@ export class AddonPropertyManager {
             description: properties.header.description,
             sessionId: KairoUtils.generateRandomId(8),
             version: properties.header.version,
-            dependencies: properties.dependencies,
-            requiredAddons: properties.requiredAddons,
-            tags: properties.tags,
+            dependencies: properties.dependencies ?? [],
+            requiredAddons: properties.requiredAddons ?? {},
+            tags: properties.tags ?? [],
         };
     }
 

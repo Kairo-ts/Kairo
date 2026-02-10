@@ -67,7 +67,8 @@ export type RequiredAddons = {
     readonly [addonId: string]: string;
 };
 
-export type SupportedTag = "official" | "approved" | "stable" | "experimental";
+export const SupportedTagValues = ["official", "approved", "stable", "experimental"] as const;
+export type SupportedTag = (typeof SupportedTagValues)[number];
 
 export type KairoAddonProperties = {
     readonly id: string;

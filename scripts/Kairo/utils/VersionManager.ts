@@ -33,8 +33,8 @@ export class VersionManager {
             major: parseInt(g.major, 10),
             minor: parseInt(g.minor, 10),
             patch: parseInt(g.patch, 10),
-            prerelease: g.prerelease, // string | undefined でOK
-            build: g.build, // string | undefined でOK
+            prerelease: g.prerelease ?? "", // string | undefined でOK
+            build: g.build ?? "", // string | undefined でOK
         };
     }
 

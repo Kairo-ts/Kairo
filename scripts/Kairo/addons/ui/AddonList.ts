@@ -1,10 +1,10 @@
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import type { AddonData, AddonManager } from "../AddonManager";
 import type { Player, RawMessage, ScriptEventCommandMessageAfterEvent } from "@minecraft/server";
-import { supportedTags } from "../../../properties";
 import { SCRIPT_EVENT_IDS } from "../../constants/scriptevent";
 import { KAIRO_TRANSLATE_IDS } from "../../constants/translate";
 import { VERSION_KEYWORDS } from "../../constants/version_keywords";
+import { SupportedTagValues, type SupportedTag } from "../../../properties";
 
 interface AddonDataRawtexts {
     name: RawMessage;
@@ -83,7 +83,7 @@ export class AddonList {
         const tags = addonData.versions[addonData.activeVersion]?.tags || [];
         const lineBreak = tags.length > 0 ? [{ text: "\n§7§o" }] : [];
         const activeVersionTags = tags.flatMap((tag, index) => {
-            const element = supportedTags.includes(tag)
+            const element = this.isSupportedTag(tag)
                 ? { translate: `kairo.tags.${tag}` }
                 : { text: tag };
 
@@ -247,6 +247,10 @@ export class AddonList {
             // 有効化にする場合 or バージョンを変更する場合
             this.addonManager.activateAddon(player, addonData, newSelectedVersion);
         }
+    }
+
+    private isSupportedTag(tag: string): tag is SupportedTag {
+        return SupportedTagValues.includes(tag as SupportedTag);
     }
 
     private async showAddonDataForm(

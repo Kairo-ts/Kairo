@@ -3,7 +3,7 @@ import path from "path";
 import { randomUUID } from "crypto";
 import { pathToFileURL } from "url";
 
-const UUID_STORE_FILE = "uuid.json";
+const UUID_STORE_FILE = ".uuid.json";
 
 function getUUIDStorePath(rootDir) {
     return path.join(rootDir, "src", UUID_STORE_FILE);
