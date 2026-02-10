@@ -84,7 +84,7 @@ function buildCommonManifestPart(props, kairoVersion) {
         metadata: {
             ...(props.metadata ?? {}),
             generated_with: {
-                kairo: kairoVersion,
+                kairo: [kairoVersion.join(".")],
             },
         },
         header: {
