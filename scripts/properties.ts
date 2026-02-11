@@ -9,7 +9,7 @@ export const properties: KairoAddonProperties = {
             "Enables communication between multiple behavior packs by leveraging the ScriptAPI as a communication layer.",
         version: {
             major: 1,
-            minor: 0,
+            minor: 1,
             patch: 0,
             // prerelease: "preview.1",
             // build: "abc123",
