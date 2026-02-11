@@ -4,107 +4,116 @@ import { randomUUID } from "crypto";
 import { pathToFileURL } from "url";
 
 const UUID_STORE_FILE = ".uuid.json";
+const VERSION_STORE_FILE = ".manifest-version.json";
 
-function getUUIDStorePath(rootDir) {
-    return path.join(rootDir, "src", UUID_STORE_FILE);
-}
+const DEFAULT_BP_DEPENDENCIES = {
+    "@minecraft/server": "2.4.0",
+    "@minecraft/server-ui": "2.0.0",
+};
+
+const uuidStorePath = (rootDir) => path.join(rootDir, "src", UUID_STORE_FILE);
+const versionStorePath = (rootDir) => path.join(rootDir, "src", VERSION_STORE_FILE);
 
 function toVersionString(v) {
-    let s = `${v.major}.${v.minor}.${v.patch}`;
-    if (v.prerelease) s += `-${v.prerelease}`;
-    if (v.build) s += `+${v.build}`;
-    return s;
+    return `${v.major}.${v.minor}.${v.patch}`;
 }
 
-function toVersionTriple(v) {
+function toManifestTriple(v) {
     return [v.major, v.minor, v.patch];
 }
 
-function readJSONIfExists(filePath) {
-    if (!fs.existsSync(filePath)) return null;
-    return JSON.parse(fs.readFileSync(filePath, "utf-8"));
+function compareVersion(a, b) {
+    if (a.major !== b.major) return a.major - b.major;
+    if (a.minor !== b.minor) return a.minor - b.minor;
+    return a.patch - b.patch;
 }
 
-function parseSemverParts(versionText) {
-    const match = versionText.match(/(\d+)\.(\d+)\.(\d+)/);
-    if (!match) return null;
-
-    return [parseInt(match[1], 10), parseInt(match[2], 10), parseInt(match[3], 10)];
+function incrementPatch(v) {
+    return { ...v, patch: v.patch + 1 };
 }
 
-function resolveInstalledKairoVersion(rootDir) {
-    const installedPkgPath = path.join(
-        rootDir,
-        "node_modules",
-        "@kairo-ts",
-        "router",
-        "package.json",
-    );
-    const installedPkg = readJSONIfExists(installedPkgPath);
-    if (installedPkg?.version) {
-        const parsed = parseSemverParts(installedPkg.version);
-        if (parsed) return parsed;
-    }
+function loadStoredVersion(rootDir) {
+    const p = versionStorePath(rootDir);
+    if (!fs.existsSync(p)) return null;
+    return JSON.parse(fs.readFileSync(p, "utf-8")).version;
+}
 
-    const rootPkgPath = path.join(rootDir, "package.json");
-    const rootPkg = readJSONIfExists(rootPkgPath) ?? {};
-    const declaredVersion =
-        rootPkg.dependencies?.["@kairo-ts/router"] ?? rootPkg.devDependencies?.["@kairo-ts/router"];
-
-    if (typeof declaredVersion === "string") {
-        const parsed = parseSemverParts(declaredVersion);
-        if (parsed) return parsed;
-    }
-
-    return [0, 0, 0];
+function saveStoredVersion(rootDir, version) {
+    const p = versionStorePath(rootDir);
+    fs.mkdirSync(path.dirname(p), { recursive: true });
+    fs.writeFileSync(p, JSON.stringify({ version }, null, 2), "utf-8");
 }
 
 function loadOrCreateUUIDStore(rootDir) {
-    const storePath = getUUIDStorePath(rootDir);
-    const existing = readJSONIfExists(storePath) ?? {};
+    const p = uuidStorePath(rootDir);
+
+    let raw = null;
+    if (fs.existsSync(p)) {
+        raw = JSON.parse(fs.readFileSync(p, "utf-8"));
+    }
 
     const store = {
         bp: {
-            header: existing.bp?.header ?? randomUUID(),
-            module: existing.bp?.module ?? randomUUID(),
+            header: raw?.bp?.header ?? randomUUID(),
+            module: {
+                data: raw?.bp?.module?.data ?? randomUUID(),
+                script: raw?.bp?.module?.script ?? randomUUID(),
+            },
         },
         rp: {
-            header: existing.rp?.header ?? randomUUID(),
+            header: raw?.rp?.header ?? randomUUID(),
+            modules: {
+                resources: raw?.rp?.modules?.resources ?? raw?.rp?.module ?? randomUUID(),
+            },
         },
     };
 
-    fs.mkdirSync(path.dirname(storePath), { recursive: true });
-    fs.writeFileSync(storePath, JSON.stringify(store, null, 2), "utf-8");
-
+    fs.mkdirSync(path.dirname(p), { recursive: true });
+    fs.writeFileSync(p, JSON.stringify(store, null, 2), "utf-8");
     return store;
 }
 
-function buildCommonManifestPart(props, kairoVersion) {
+function buildCommon(header, metadata, version) {
     return {
-        metadata: {
-            ...(props.metadata ?? {}),
-            generated_with: {
-                kairo: [kairoVersion.join(".")],
-            },
-        },
+        metadata: metadata ?? {},
         header: {
-            name: props.header.name,
-            description: props.header.description,
-            version: toVersionString(props.header.version),
-            min_engine_version: props.header.min_engine_version,
+            name: header.name,
+            description: header.description,
+            version: toVersionString(version),
+            min_engine_version: header.min_engine_version,
         },
     };
 }
 
-function buildBPManifest(props, common, uuids) {
-    const dependencies = [
-        ...(props.dependencies ?? []),
-        {
-            uuid: uuids.rp.header,
-            version: toVersionTriple(props.header.version),
-        },
-    ];
+function buildBPDependencies(propDeps = [], rpHeaderUUID, version) {
+    const result = Array.isArray(propDeps) ? [...propDeps] : [];
 
+    const hasServer = result.some((d) => d.module_name === "@minecraft/server");
+    const hasServerUI = result.some((d) => d.module_name === "@minecraft/server-ui");
+
+    if (!hasServer) {
+        result.push({
+            module_name: "@minecraft/server",
+            version: DEFAULT_BP_DEPENDENCIES["@minecraft/server"],
+        });
+    }
+
+    if (!hasServerUI) {
+        result.push({
+            module_name: "@minecraft/server-ui",
+            version: DEFAULT_BP_DEPENDENCIES["@minecraft/server-ui"],
+        });
+    }
+
+    result.push({
+        uuid: rpHeaderUUID,
+        version: toManifestTriple(version),
+    });
+
+    return result;
+}
+
+function buildBP(common, uuids, version, propDependencies) {
     return {
         format_version: 2,
         ...common,
@@ -114,19 +123,24 @@ function buildBPManifest(props, common, uuids) {
         },
         modules: [
             {
+                type: "data",
+                uuid: uuids.bp.module.data,
+                version: toManifestTriple(version),
+            },
+            {
                 type: "script",
                 language: "javascript",
                 entry: "scripts/index.js",
-                uuid: uuids.bp.module,
-                version: toVersionTriple(props.header.version),
+                uuid: uuids.bp.module.script,
+                version: toManifestTriple(version),
             },
         ],
-        dependencies,
+        dependencies: buildBPDependencies(propDependencies, uuids.rp.header, version),
         capabilities: ["script_eval"],
     };
 }
 
-function buildRPManifest(props, common, uuids) {
+function buildRP(common, uuids, version) {
     return {
         format_version: 2,
         ...common,
@@ -134,10 +148,17 @@ function buildRPManifest(props, common, uuids) {
             ...common.header,
             uuid: uuids.rp.header,
         },
+        modules: [
+            {
+                type: "resources",
+                uuid: uuids.rp.modules.resources,
+                version: toManifestTriple(version),
+            },
+        ],
         dependencies: [
             {
                 uuid: uuids.bp.header,
-                version: toVersionTriple(props.header.version),
+                version: toManifestTriple(version),
             },
         ],
     };
@@ -147,30 +168,42 @@ export async function writeManifests(rootDir) {
     const propertiesPath = path.join(rootDir, "BP", "scripts", "properties.js");
     const { properties } = await import(pathToFileURL(propertiesPath).href);
 
-    const kairoVersion = resolveInstalledKairoVersion(rootDir);
+    const declaredVersion = properties.header.version;
+    const storedVersion = loadStoredVersion(rootDir);
+
+    const finalVersion =
+        storedVersion && compareVersion(storedVersion, declaredVersion) >= 0
+            ? incrementPatch(storedVersion)
+            : declaredVersion;
+
     const uuids = loadOrCreateUUIDStore(rootDir);
-    const common = buildCommonManifestPart(properties, kairoVersion);
 
-    const bpManifest = buildBPManifest(properties, common, uuids);
-    const rpManifest = buildRPManifest(properties, common, uuids);
-    const versionString = common.header.version;
+    const common = buildCommon(properties.header, properties.metadata, finalVersion);
 
-    const bpDir = path.join(rootDir, "BP");
-    const rpDir = path.join(rootDir, "RP");
+    const bpManifest = buildBP(common, uuids, finalVersion, properties.dependencies);
 
-    fs.mkdirSync(bpDir, { recursive: true });
+    const rpManifest = buildRP(common, uuids, finalVersion);
+
+    fs.mkdirSync(path.join(rootDir, "BP"), { recursive: true });
+    fs.mkdirSync(path.join(rootDir, "RP"), { recursive: true });
+
     fs.writeFileSync(
-        path.join(bpDir, "manifest.json"),
+        path.join(rootDir, "BP", "manifest.json"),
         JSON.stringify(bpManifest, null, 2),
         "utf-8",
     );
-
-    fs.mkdirSync(rpDir, { recursive: true });
     fs.writeFileSync(
-        path.join(rpDir, "manifest.json"),
+        path.join(rootDir, "RP", "manifest.json"),
         JSON.stringify(rpManifest, null, 2),
         "utf-8",
     );
 
-    return { bpManifest, rpManifest, versionString, properties };
+    saveStoredVersion(rootDir, finalVersion);
+
+    return {
+        bpManifest,
+        rpManifest,
+        versionString: toVersionString(finalVersion),
+        properties,
+    };
 }
