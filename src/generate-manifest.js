@@ -73,9 +73,38 @@ function loadOrCreateUUIDStore(rootDir) {
     return store;
 }
 
-function buildCommon(header, metadata, version) {
+function resolveInstalledKairoVersion(rootDir) {
+    const installedPkgPath = path.join(
+        rootDir,
+        "node_modules",
+        "@kairo-js",
+        "router",
+        "package.json",
+    );
+
+    if (fs.existsSync(installedPkgPath)) {
+        const pkg = JSON.parse(fs.readFileSync(installedPkgPath, "utf-8"));
+        if (pkg.version) {
+            return pkg.version;
+        }
+    }
+
+    return "0.0.0";
+}
+
+function buildCommon(header, metadata, version, kairoVersion) {
+    const baseMetadata = metadata ?? {};
+
+    const generatedWith = {
+        ...(baseMetadata.generated_with ?? {}),
+        kairo: [kairoVersion],
+    };
+
     return {
-        metadata: metadata ?? {},
+        metadata: {
+            ...baseMetadata,
+            generated_with: generatedWith,
+        },
         header: {
             name: header.name,
             description: header.description,
@@ -178,10 +207,10 @@ export async function writeManifests(rootDir) {
 
     const uuids = loadOrCreateUUIDStore(rootDir);
 
-    const common = buildCommon(properties.header, properties.metadata, finalVersion);
+    const kairoVersion = resolveInstalledKairoVersion(rootDir);
+    const common = buildCommon(properties.header, properties.metadata, finalVersion, kairoVersion);
 
     const bpManifest = buildBP(common, uuids, finalVersion, properties.dependencies);
-
     const rpManifest = buildRP(common, uuids, finalVersion);
 
     fs.mkdirSync(path.join(rootDir, "BP"), { recursive: true });
